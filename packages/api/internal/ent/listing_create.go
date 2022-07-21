@@ -37,9 +37,15 @@ func (lc *ListingCreate) SetSource(l listing.Source) *ListingCreate {
 	return lc
 }
 
-// SetOrder sets the "order" field.
-func (lc *ListingCreate) SetOrder(jm json.RawMessage) *ListingCreate {
-	lc.mutation.SetOrder(jm)
+// SetWyvernOrder sets the "wyvern_order" field.
+func (lc *ListingCreate) SetWyvernOrder(jm json.RawMessage) *ListingCreate {
+	lc.mutation.SetWyvernOrder(jm)
+	return lc
+}
+
+// SetSeaportOrder sets the "seaport_order" field.
+func (lc *ListingCreate) SetSeaportOrder(jm json.RawMessage) *ListingCreate {
+	lc.mutation.SetSeaportOrder(jm)
 	return lc
 }
 
@@ -251,13 +257,21 @@ func (lc *ListingCreate) createSpec() (*Listing, *sqlgraph.CreateSpec) {
 		})
 		_node.Source = value
 	}
-	if value, ok := lc.mutation.Order(); ok {
+	if value, ok := lc.mutation.WyvernOrder(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
 			Value:  value,
-			Column: listing.FieldOrder,
+			Column: listing.FieldWyvernOrder,
 		})
-		_node.Order = value
+		_node.WyvernOrder = value
+	}
+	if value, ok := lc.mutation.SeaportOrder(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: listing.FieldSeaportOrder,
+		})
+		_node.SeaportOrder = value
 	}
 	if nodes := lc.mutation.DopeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -414,21 +428,39 @@ func (u *ListingUpsert) UpdateSource() *ListingUpsert {
 	return u
 }
 
-// SetOrder sets the "order" field.
-func (u *ListingUpsert) SetOrder(v json.RawMessage) *ListingUpsert {
-	u.Set(listing.FieldOrder, v)
+// SetWyvernOrder sets the "wyvern_order" field.
+func (u *ListingUpsert) SetWyvernOrder(v json.RawMessage) *ListingUpsert {
+	u.Set(listing.FieldWyvernOrder, v)
 	return u
 }
 
-// UpdateOrder sets the "order" field to the value that was provided on create.
-func (u *ListingUpsert) UpdateOrder() *ListingUpsert {
-	u.SetExcluded(listing.FieldOrder)
+// UpdateWyvernOrder sets the "wyvern_order" field to the value that was provided on create.
+func (u *ListingUpsert) UpdateWyvernOrder() *ListingUpsert {
+	u.SetExcluded(listing.FieldWyvernOrder)
 	return u
 }
 
-// ClearOrder clears the value of the "order" field.
-func (u *ListingUpsert) ClearOrder() *ListingUpsert {
-	u.SetNull(listing.FieldOrder)
+// ClearWyvernOrder clears the value of the "wyvern_order" field.
+func (u *ListingUpsert) ClearWyvernOrder() *ListingUpsert {
+	u.SetNull(listing.FieldWyvernOrder)
+	return u
+}
+
+// SetSeaportOrder sets the "seaport_order" field.
+func (u *ListingUpsert) SetSeaportOrder(v json.RawMessage) *ListingUpsert {
+	u.Set(listing.FieldSeaportOrder, v)
+	return u
+}
+
+// UpdateSeaportOrder sets the "seaport_order" field to the value that was provided on create.
+func (u *ListingUpsert) UpdateSeaportOrder() *ListingUpsert {
+	u.SetExcluded(listing.FieldSeaportOrder)
+	return u
+}
+
+// ClearSeaportOrder clears the value of the "seaport_order" field.
+func (u *ListingUpsert) ClearSeaportOrder() *ListingUpsert {
+	u.SetNull(listing.FieldSeaportOrder)
 	return u
 }
 
@@ -513,24 +545,45 @@ func (u *ListingUpsertOne) UpdateSource() *ListingUpsertOne {
 	})
 }
 
-// SetOrder sets the "order" field.
-func (u *ListingUpsertOne) SetOrder(v json.RawMessage) *ListingUpsertOne {
+// SetWyvernOrder sets the "wyvern_order" field.
+func (u *ListingUpsertOne) SetWyvernOrder(v json.RawMessage) *ListingUpsertOne {
 	return u.Update(func(s *ListingUpsert) {
-		s.SetOrder(v)
+		s.SetWyvernOrder(v)
 	})
 }
 
-// UpdateOrder sets the "order" field to the value that was provided on create.
-func (u *ListingUpsertOne) UpdateOrder() *ListingUpsertOne {
+// UpdateWyvernOrder sets the "wyvern_order" field to the value that was provided on create.
+func (u *ListingUpsertOne) UpdateWyvernOrder() *ListingUpsertOne {
 	return u.Update(func(s *ListingUpsert) {
-		s.UpdateOrder()
+		s.UpdateWyvernOrder()
 	})
 }
 
-// ClearOrder clears the value of the "order" field.
-func (u *ListingUpsertOne) ClearOrder() *ListingUpsertOne {
+// ClearWyvernOrder clears the value of the "wyvern_order" field.
+func (u *ListingUpsertOne) ClearWyvernOrder() *ListingUpsertOne {
 	return u.Update(func(s *ListingUpsert) {
-		s.ClearOrder()
+		s.ClearWyvernOrder()
+	})
+}
+
+// SetSeaportOrder sets the "seaport_order" field.
+func (u *ListingUpsertOne) SetSeaportOrder(v json.RawMessage) *ListingUpsertOne {
+	return u.Update(func(s *ListingUpsert) {
+		s.SetSeaportOrder(v)
+	})
+}
+
+// UpdateSeaportOrder sets the "seaport_order" field to the value that was provided on create.
+func (u *ListingUpsertOne) UpdateSeaportOrder() *ListingUpsertOne {
+	return u.Update(func(s *ListingUpsert) {
+		s.UpdateSeaportOrder()
+	})
+}
+
+// ClearSeaportOrder clears the value of the "seaport_order" field.
+func (u *ListingUpsertOne) ClearSeaportOrder() *ListingUpsertOne {
+	return u.Update(func(s *ListingUpsert) {
+		s.ClearSeaportOrder()
 	})
 }
 
@@ -780,24 +833,45 @@ func (u *ListingUpsertBulk) UpdateSource() *ListingUpsertBulk {
 	})
 }
 
-// SetOrder sets the "order" field.
-func (u *ListingUpsertBulk) SetOrder(v json.RawMessage) *ListingUpsertBulk {
+// SetWyvernOrder sets the "wyvern_order" field.
+func (u *ListingUpsertBulk) SetWyvernOrder(v json.RawMessage) *ListingUpsertBulk {
 	return u.Update(func(s *ListingUpsert) {
-		s.SetOrder(v)
+		s.SetWyvernOrder(v)
 	})
 }
 
-// UpdateOrder sets the "order" field to the value that was provided on create.
-func (u *ListingUpsertBulk) UpdateOrder() *ListingUpsertBulk {
+// UpdateWyvernOrder sets the "wyvern_order" field to the value that was provided on create.
+func (u *ListingUpsertBulk) UpdateWyvernOrder() *ListingUpsertBulk {
 	return u.Update(func(s *ListingUpsert) {
-		s.UpdateOrder()
+		s.UpdateWyvernOrder()
 	})
 }
 
-// ClearOrder clears the value of the "order" field.
-func (u *ListingUpsertBulk) ClearOrder() *ListingUpsertBulk {
+// ClearWyvernOrder clears the value of the "wyvern_order" field.
+func (u *ListingUpsertBulk) ClearWyvernOrder() *ListingUpsertBulk {
 	return u.Update(func(s *ListingUpsert) {
-		s.ClearOrder()
+		s.ClearWyvernOrder()
+	})
+}
+
+// SetSeaportOrder sets the "seaport_order" field.
+func (u *ListingUpsertBulk) SetSeaportOrder(v json.RawMessage) *ListingUpsertBulk {
+	return u.Update(func(s *ListingUpsert) {
+		s.SetSeaportOrder(v)
+	})
+}
+
+// UpdateSeaportOrder sets the "seaport_order" field to the value that was provided on create.
+func (u *ListingUpsertBulk) UpdateSeaportOrder() *ListingUpsertBulk {
+	return u.Update(func(s *ListingUpsert) {
+		s.UpdateSeaportOrder()
+	})
+}
+
+// ClearSeaportOrder clears the value of the "seaport_order" field.
+func (u *ListingUpsertBulk) ClearSeaportOrder() *ListingUpsertBulk {
+	return u.Update(func(s *ListingUpsert) {
+		s.ClearSeaportOrder()
 	})
 }
 

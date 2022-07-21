@@ -17,8 +17,10 @@ const (
 	FieldActive = "active"
 	// FieldSource holds the string denoting the source field in the database.
 	FieldSource = "source"
-	// FieldOrder holds the string denoting the order field in the database.
-	FieldOrder = "order"
+	// FieldWyvernOrder holds the string denoting the wyvern_order field in the database.
+	FieldWyvernOrder = "wyvern_order"
+	// FieldSeaportOrder holds the string denoting the seaport_order field in the database.
+	FieldSeaportOrder = "seaport_order"
 	// EdgeDope holds the string denoting the dope edge name in mutations.
 	EdgeDope = "dope"
 	// EdgeDopeLastsales holds the string denoting the dope_lastsales edge name in mutations.
@@ -64,7 +66,8 @@ var Columns = []string{
 	FieldID,
 	FieldActive,
 	FieldSource,
-	FieldOrder,
+	FieldWyvernOrder,
+	FieldSeaportOrder,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "listings"

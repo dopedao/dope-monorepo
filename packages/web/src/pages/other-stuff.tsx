@@ -2,13 +2,15 @@ import IconGrid from 'components/IconGrid';
 import DesktopIcon from 'components/DesktopIcon';
 import DesktopWindow from 'components/DesktopWindow';
 import { css } from '@emotion/react';
+import DesktopIconList from 'components/DesktopIconList';
 
 const SocialLinks = () => {
   const openBrowserTab = (url: string): void => {
     window.open(url, '_blank')?.focus();
   };
 
-  return (
+  return (<>
+    <DesktopIconList />
     <DesktopWindow title="Other Stuff" width={600} height={800} scrollable hideWalletAddress>
       <IconGrid
         css={css`
@@ -35,11 +37,11 @@ const SocialLinks = () => {
           label="Discord"
           clickAction={() => openBrowserTab('https://discord.gg/dopewars')}
         />
-        <DesktopIcon
+        {/* <DesktopIcon
           icon="telegram"
           label="Telegram"
           clickAction={() => openBrowserTab('https://t.me/DopeWarsPaper')}
-        />
+        /> */}
         <DesktopIcon
           icon="open-sea"
           label="OpenSea"
@@ -62,7 +64,7 @@ const SocialLinks = () => {
         />
       </IconGrid>
     </DesktopWindow>
-  );
+  </>);
 };
 
 export default SocialLinks;

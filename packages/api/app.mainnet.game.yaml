@@ -2,7 +2,7 @@ runtime: custom
 env: flex
 service: game
 
-main: ./cmd/game
+main: ./cmd/gameServer
 
 env_variables:
   PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2

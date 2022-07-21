@@ -15,11 +15,8 @@ import (
 // Launch a new Indexer HTTP Server because this is hosted on GCP
 // App Engine Standard Edition.
 //
-// Exposes HTTP endpoints for `/_ah/start` and `/_ah/stop` for autoscaling
-// https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed#startup
 //
-// The Indexer reads prices from NFT marketplaces,
-// and information about our DOPE NFT assets to place in a Postgres Database.
+// The Indexer reads info about DOPE NFT assets to place in a Postgres Database.
 func NewServer(ctx context.Context, drv *sql.Driver, network string) (http.Handler, error) {
 	_, log := logger.LogFor(ctx)
 	log.Debug().Msg("Starting Indexer")
@@ -32,10 +29,12 @@ func NewServer(ctx context.Context, drv *sql.Driver, network string) (http.Handl
 	r := mux.NewRouter()
 	r.Use(middleware.Session(middleware.Store))
 
+	// Exposes HTTP endpoints for `/_ah/start` and `/_ah/stop` for App Engine autoscaling
+	// https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed#startup
 	r.HandleFunc("/_ah/start", func(w http.ResponseWriter, r *http.Request) {
 		if started {
 			w.WriteHeader(200)
-			_, _ = w.Write([]byte(`{"success":false}`))
+			_, _ = w.Write([]byte(`{"success":true}`))
 			return
 		}
 
@@ -45,9 +44,6 @@ func NewServer(ctx context.Context, drv *sql.Driver, network string) (http.Handl
 			case EthConfig:
 				eth := NewEthereumIndexer(ctx, dbClient, c)
 				go eth.Sync(ctx)
-			case OpenseaConfig:
-				os := NewOpenseaIndexer(dbClient, c)
-				go os.Sync(ctx)
 			}
 		}
 		w.WriteHeader(200)

@@ -14,7 +14,6 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/dopedao/dope-monorepo/packages/api/indexer"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
@@ -24,6 +23,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/search"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/graph/model"
+	"github.com/dopedao/dope-monorepo/packages/api/jobs/opensea"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -49,9 +49,10 @@ type ResolverRoot interface {
 	Amount() AmountResolver
 	Item() ItemResolver
 	Listing() ListingResolver
-	OpenSeaOrder() OpenSeaOrderResolver
 	Query() QueryResolver
+	SeaportOrder() SeaportOrderResolver
 	SearchEdge() SearchEdgeResolver
+	WyvernOrder() WyvernOrderResolver
 	GameHustlerRelationWhereInput() GameHustlerRelationWhereInputResolver
 }
 
@@ -162,12 +163,13 @@ type ComplexityRoot struct {
 	}
 
 	Listing struct {
-		Active  func(childComplexity int) int
-		ID      func(childComplexity int) int
-		Inputs  func(childComplexity int) int
-		Order   func(childComplexity int) int
-		Outputs func(childComplexity int) int
-		Source  func(childComplexity int) int
+		Active       func(childComplexity int) int
+		ID           func(childComplexity int) int
+		Inputs       func(childComplexity int) int
+		Outputs      func(childComplexity int) int
+		SeaportOrder func(childComplexity int) int
+		Source       func(childComplexity int) int
+		WyvernOrder  func(childComplexity int) int
 	}
 
 	ListingConnection struct {
@@ -179,31 +181,6 @@ type ComplexityRoot struct {
 	ListingEdge struct {
 		Cursor func(childComplexity int) int
 		Node   func(childComplexity int) int
-	}
-
-	OpenSeaOrder struct {
-		Calldata           func(childComplexity int) int
-		CurrentPrice       func(childComplexity int) int
-		Exchange           func(childComplexity int) int
-		ExpirationTime     func(childComplexity int) int
-		Extra              func(childComplexity int) int
-		FeeMethod          func(childComplexity int) int
-		FeeRecipient       func(childComplexity int) int
-		HowToCall          func(childComplexity int) int
-		ListingTime        func(childComplexity int) int
-		Maker              func(childComplexity int) int
-		MakerProtocolFee   func(childComplexity int) int
-		MakerRelayerFee    func(childComplexity int) int
-		R                  func(childComplexity int) int
-		ReplacementPattern func(childComplexity int) int
-		S                  func(childComplexity int) int
-		SaleKind           func(childComplexity int) int
-		Salt               func(childComplexity int) int
-		Side               func(childComplexity int) int
-		StaticExtradata    func(childComplexity int) int
-		StaticTarget       func(childComplexity int) int
-		Target             func(childComplexity int) int
-		V                  func(childComplexity int) int
 	}
 
 	PageInfo struct {
@@ -228,6 +205,15 @@ type ComplexityRoot struct {
 	RLEs struct {
 		Female func(childComplexity int) int
 		Male   func(childComplexity int) int
+	}
+
+	SeaportOrder struct {
+		CurrentPrice   func(childComplexity int) int
+		ExpirationTime func(childComplexity int) int
+		ListingTime    func(childComplexity int) int
+		Maker          func(childComplexity int) int
+		OrderType      func(childComplexity int) int
+		Side           func(childComplexity int) int
 	}
 
 	SearchConnection struct {
@@ -277,6 +263,31 @@ type ComplexityRoot struct {
 		Cursor func(childComplexity int) int
 		Node   func(childComplexity int) int
 	}
+
+	WyvernOrder struct {
+		Calldata           func(childComplexity int) int
+		CurrentPrice       func(childComplexity int) int
+		Exchange           func(childComplexity int) int
+		ExpirationTime     func(childComplexity int) int
+		Extra              func(childComplexity int) int
+		FeeMethod          func(childComplexity int) int
+		FeeRecipient       func(childComplexity int) int
+		HowToCall          func(childComplexity int) int
+		ListingTime        func(childComplexity int) int
+		Maker              func(childComplexity int) int
+		MakerProtocolFee   func(childComplexity int) int
+		MakerRelayerFee    func(childComplexity int) int
+		R                  func(childComplexity int) int
+		ReplacementPattern func(childComplexity int) int
+		S                  func(childComplexity int) int
+		SaleKind           func(childComplexity int) int
+		Salt               func(childComplexity int) int
+		Side               func(childComplexity int) int
+		StaticExtradata    func(childComplexity int) int
+		StaticTarget       func(childComplexity int) int
+		Target             func(childComplexity int) int
+		V                  func(childComplexity int) int
+	}
 }
 
 type AmountResolver interface {
@@ -286,31 +297,8 @@ type ItemResolver interface {
 	Fullname(ctx context.Context, obj *ent.Item) (string, error)
 }
 type ListingResolver interface {
-	Order(ctx context.Context, obj *ent.Listing) (*indexer.Order, error)
-}
-type OpenSeaOrderResolver interface {
-	Exchange(ctx context.Context, obj *indexer.Order) (string, error)
-	ListingTime(ctx context.Context, obj *indexer.Order) (uint64, error)
-	ExpirationTime(ctx context.Context, obj *indexer.Order) (uint64, error)
-	Maker(ctx context.Context, obj *indexer.Order) (string, error)
-	CurrentPrice(ctx context.Context, obj *indexer.Order) (string, error)
-	MakerRelayerFee(ctx context.Context, obj *indexer.Order) (string, error)
-	MakerProtocolFee(ctx context.Context, obj *indexer.Order) (string, error)
-	FeeRecipient(ctx context.Context, obj *indexer.Order) (string, error)
-	FeeMethod(ctx context.Context, obj *indexer.Order) (int, error)
-	Side(ctx context.Context, obj *indexer.Order) (int, error)
-	SaleKind(ctx context.Context, obj *indexer.Order) (int, error)
-	Target(ctx context.Context, obj *indexer.Order) (string, error)
-	HowToCall(ctx context.Context, obj *indexer.Order) (int, error)
-	Calldata(ctx context.Context, obj *indexer.Order) (string, error)
-	ReplacementPattern(ctx context.Context, obj *indexer.Order) (string, error)
-	StaticTarget(ctx context.Context, obj *indexer.Order) (string, error)
-	StaticExtradata(ctx context.Context, obj *indexer.Order) (string, error)
-	Extra(ctx context.Context, obj *indexer.Order) (string, error)
-	Salt(ctx context.Context, obj *indexer.Order) (string, error)
-	V(ctx context.Context, obj *indexer.Order) (int, error)
-	R(ctx context.Context, obj *indexer.Order) (string, error)
-	S(ctx context.Context, obj *indexer.Order) (string, error)
+	WyvernOrder(ctx context.Context, obj *ent.Listing) (*opensea.WyvernOrder, error)
+	SeaportOrder(ctx context.Context, obj *ent.Listing) (*opensea.SeaportOrder, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (ent.Noder, error)
@@ -323,8 +311,38 @@ type QueryResolver interface {
 	Listings(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.ListingOrder, where *ent.ListingWhereInput) (*ent.ListingConnection, error)
 	Search(ctx context.Context, query string, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.SearchOrder, where *ent.SearchWhereInput) (*ent.SearchConnection, error)
 }
+type SeaportOrderResolver interface {
+	Maker(ctx context.Context, obj *opensea.SeaportOrder) (string, error)
+	CurrentPrice(ctx context.Context, obj *opensea.SeaportOrder) (string, error)
+	ListingTime(ctx context.Context, obj *opensea.SeaportOrder) (uint64, error)
+	ExpirationTime(ctx context.Context, obj *opensea.SeaportOrder) (uint64, error)
+}
 type SearchEdgeResolver interface {
 	Node(ctx context.Context, obj *ent.SearchEdge) (model.SearchResult, error)
+}
+type WyvernOrderResolver interface {
+	Exchange(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	ListingTime(ctx context.Context, obj *opensea.WyvernOrder) (uint64, error)
+	ExpirationTime(ctx context.Context, obj *opensea.WyvernOrder) (uint64, error)
+	Maker(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	CurrentPrice(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	MakerRelayerFee(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	MakerProtocolFee(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	FeeRecipient(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	FeeMethod(ctx context.Context, obj *opensea.WyvernOrder) (int, error)
+	Side(ctx context.Context, obj *opensea.WyvernOrder) (int, error)
+	SaleKind(ctx context.Context, obj *opensea.WyvernOrder) (int, error)
+	Target(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	HowToCall(ctx context.Context, obj *opensea.WyvernOrder) (int, error)
+	Calldata(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	ReplacementPattern(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	StaticTarget(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	StaticExtradata(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	Extra(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	Salt(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	V(ctx context.Context, obj *opensea.WyvernOrder) (int, error)
+	R(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
+	S(ctx context.Context, obj *opensea.WyvernOrder) (string, error)
 }
 
 type GameHustlerRelationWhereInputResolver interface {
@@ -857,13 +875,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Listing.Inputs(childComplexity), true
 
-	case "Listing.order":
-		if e.complexity.Listing.Order == nil {
-			break
-		}
-
-		return e.complexity.Listing.Order(childComplexity), true
-
 	case "Listing.outputs":
 		if e.complexity.Listing.Outputs == nil {
 			break
@@ -871,12 +882,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Listing.Outputs(childComplexity), true
 
+	case "Listing.seaportOrder":
+		if e.complexity.Listing.SeaportOrder == nil {
+			break
+		}
+
+		return e.complexity.Listing.SeaportOrder(childComplexity), true
+
 	case "Listing.source":
 		if e.complexity.Listing.Source == nil {
 			break
 		}
 
 		return e.complexity.Listing.Source(childComplexity), true
+
+	case "Listing.wyvernOrder":
+		if e.complexity.Listing.WyvernOrder == nil {
+			break
+		}
+
+		return e.complexity.Listing.WyvernOrder(childComplexity), true
 
 	case "ListingConnection.edges":
 		if e.complexity.ListingConnection.Edges == nil {
@@ -912,160 +937,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ListingEdge.Node(childComplexity), true
-
-	case "OpenSeaOrder.calldata":
-		if e.complexity.OpenSeaOrder.Calldata == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.Calldata(childComplexity), true
-
-	case "OpenSeaOrder.currentPrice":
-		if e.complexity.OpenSeaOrder.CurrentPrice == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.CurrentPrice(childComplexity), true
-
-	case "OpenSeaOrder.exchange":
-		if e.complexity.OpenSeaOrder.Exchange == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.Exchange(childComplexity), true
-
-	case "OpenSeaOrder.expirationTime":
-		if e.complexity.OpenSeaOrder.ExpirationTime == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.ExpirationTime(childComplexity), true
-
-	case "OpenSeaOrder.extra":
-		if e.complexity.OpenSeaOrder.Extra == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.Extra(childComplexity), true
-
-	case "OpenSeaOrder.feeMethod":
-		if e.complexity.OpenSeaOrder.FeeMethod == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.FeeMethod(childComplexity), true
-
-	case "OpenSeaOrder.feeRecipient":
-		if e.complexity.OpenSeaOrder.FeeRecipient == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.FeeRecipient(childComplexity), true
-
-	case "OpenSeaOrder.howToCall":
-		if e.complexity.OpenSeaOrder.HowToCall == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.HowToCall(childComplexity), true
-
-	case "OpenSeaOrder.listingTime":
-		if e.complexity.OpenSeaOrder.ListingTime == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.ListingTime(childComplexity), true
-
-	case "OpenSeaOrder.maker":
-		if e.complexity.OpenSeaOrder.Maker == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.Maker(childComplexity), true
-
-	case "OpenSeaOrder.makerProtocolFee":
-		if e.complexity.OpenSeaOrder.MakerProtocolFee == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.MakerProtocolFee(childComplexity), true
-
-	case "OpenSeaOrder.makerRelayerFee":
-		if e.complexity.OpenSeaOrder.MakerRelayerFee == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.MakerRelayerFee(childComplexity), true
-
-	case "OpenSeaOrder.r":
-		if e.complexity.OpenSeaOrder.R == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.R(childComplexity), true
-
-	case "OpenSeaOrder.replacementPattern":
-		if e.complexity.OpenSeaOrder.ReplacementPattern == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.ReplacementPattern(childComplexity), true
-
-	case "OpenSeaOrder.s":
-		if e.complexity.OpenSeaOrder.S == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.S(childComplexity), true
-
-	case "OpenSeaOrder.saleKind":
-		if e.complexity.OpenSeaOrder.SaleKind == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.SaleKind(childComplexity), true
-
-	case "OpenSeaOrder.salt":
-		if e.complexity.OpenSeaOrder.Salt == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.Salt(childComplexity), true
-
-	case "OpenSeaOrder.side":
-		if e.complexity.OpenSeaOrder.Side == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.Side(childComplexity), true
-
-	case "OpenSeaOrder.staticExtradata":
-		if e.complexity.OpenSeaOrder.StaticExtradata == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.StaticExtradata(childComplexity), true
-
-	case "OpenSeaOrder.staticTarget":
-		if e.complexity.OpenSeaOrder.StaticTarget == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.StaticTarget(childComplexity), true
-
-	case "OpenSeaOrder.target":
-		if e.complexity.OpenSeaOrder.Target == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.Target(childComplexity), true
-
-	case "OpenSeaOrder.v":
-		if e.complexity.OpenSeaOrder.V == nil {
-			break
-		}
-
-		return e.complexity.OpenSeaOrder.V(childComplexity), true
 
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
@@ -1216,6 +1087,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.RLEs.Male(childComplexity), true
+
+	case "SeaportOrder.currentPrice":
+		if e.complexity.SeaportOrder.CurrentPrice == nil {
+			break
+		}
+
+		return e.complexity.SeaportOrder.CurrentPrice(childComplexity), true
+
+	case "SeaportOrder.expirationTime":
+		if e.complexity.SeaportOrder.ExpirationTime == nil {
+			break
+		}
+
+		return e.complexity.SeaportOrder.ExpirationTime(childComplexity), true
+
+	case "SeaportOrder.listingTime":
+		if e.complexity.SeaportOrder.ListingTime == nil {
+			break
+		}
+
+		return e.complexity.SeaportOrder.ListingTime(childComplexity), true
+
+	case "SeaportOrder.maker":
+		if e.complexity.SeaportOrder.Maker == nil {
+			break
+		}
+
+		return e.complexity.SeaportOrder.Maker(childComplexity), true
+
+	case "SeaportOrder.orderType":
+		if e.complexity.SeaportOrder.OrderType == nil {
+			break
+		}
+
+		return e.complexity.SeaportOrder.OrderType(childComplexity), true
+
+	case "SeaportOrder.side":
+		if e.complexity.SeaportOrder.Side == nil {
+			break
+		}
+
+		return e.complexity.SeaportOrder.Side(childComplexity), true
 
 	case "SearchConnection.edges":
 		if e.complexity.SearchConnection.Edges == nil {
@@ -1384,6 +1297,160 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.WalletItemsEdge.Node(childComplexity), true
+
+	case "WyvernOrder.calldata":
+		if e.complexity.WyvernOrder.Calldata == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.Calldata(childComplexity), true
+
+	case "WyvernOrder.currentPrice":
+		if e.complexity.WyvernOrder.CurrentPrice == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.CurrentPrice(childComplexity), true
+
+	case "WyvernOrder.exchange":
+		if e.complexity.WyvernOrder.Exchange == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.Exchange(childComplexity), true
+
+	case "WyvernOrder.expirationTime":
+		if e.complexity.WyvernOrder.ExpirationTime == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.ExpirationTime(childComplexity), true
+
+	case "WyvernOrder.extra":
+		if e.complexity.WyvernOrder.Extra == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.Extra(childComplexity), true
+
+	case "WyvernOrder.feeMethod":
+		if e.complexity.WyvernOrder.FeeMethod == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.FeeMethod(childComplexity), true
+
+	case "WyvernOrder.feeRecipient":
+		if e.complexity.WyvernOrder.FeeRecipient == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.FeeRecipient(childComplexity), true
+
+	case "WyvernOrder.howToCall":
+		if e.complexity.WyvernOrder.HowToCall == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.HowToCall(childComplexity), true
+
+	case "WyvernOrder.listingTime":
+		if e.complexity.WyvernOrder.ListingTime == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.ListingTime(childComplexity), true
+
+	case "WyvernOrder.maker":
+		if e.complexity.WyvernOrder.Maker == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.Maker(childComplexity), true
+
+	case "WyvernOrder.makerProtocolFee":
+		if e.complexity.WyvernOrder.MakerProtocolFee == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.MakerProtocolFee(childComplexity), true
+
+	case "WyvernOrder.makerRelayerFee":
+		if e.complexity.WyvernOrder.MakerRelayerFee == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.MakerRelayerFee(childComplexity), true
+
+	case "WyvernOrder.r":
+		if e.complexity.WyvernOrder.R == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.R(childComplexity), true
+
+	case "WyvernOrder.replacementPattern":
+		if e.complexity.WyvernOrder.ReplacementPattern == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.ReplacementPattern(childComplexity), true
+
+	case "WyvernOrder.s":
+		if e.complexity.WyvernOrder.S == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.S(childComplexity), true
+
+	case "WyvernOrder.saleKind":
+		if e.complexity.WyvernOrder.SaleKind == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.SaleKind(childComplexity), true
+
+	case "WyvernOrder.salt":
+		if e.complexity.WyvernOrder.Salt == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.Salt(childComplexity), true
+
+	case "WyvernOrder.side":
+		if e.complexity.WyvernOrder.Side == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.Side(childComplexity), true
+
+	case "WyvernOrder.staticExtradata":
+		if e.complexity.WyvernOrder.StaticExtradata == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.StaticExtradata(childComplexity), true
+
+	case "WyvernOrder.staticTarget":
+		if e.complexity.WyvernOrder.StaticTarget == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.StaticTarget(childComplexity), true
+
+	case "WyvernOrder.target":
+		if e.complexity.WyvernOrder.Target == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.Target(childComplexity), true
+
+	case "WyvernOrder.v":
+		if e.complexity.WyvernOrder.V == nil {
+			break
+		}
+
+		return e.complexity.WyvernOrder.V(childComplexity), true
 
 	}
 	return 0, false
@@ -2920,7 +2987,8 @@ type Listing implements Node {
   active: Boolean!
   inputs: [Amount]!
   outputs: [Amount]!
-  order: OpenSeaOrder
+  wyvernOrder: WyvernOrder
+  seaportOrder: SeaportOrder
 }
 
 enum Source {
@@ -2928,7 +2996,8 @@ enum Source {
   SWAPMEET
 }
 
-type OpenSeaOrder {
+# OpenSea old-style order from old contract
+type WyvernOrder {
   exchange: Address!
   listingTime: Long!
   expirationTime: Long!
@@ -2952,6 +3021,17 @@ type OpenSeaOrder {
   r: Bytes!
   s: Bytes!
 }
+
+# OpenSea new-style order
+type SeaportOrder {
+  maker: Address!
+  currentPrice: String!
+  listingTime: Long!
+  expirationTime: Long!
+  side: String!
+  orderType: String!
+}
+
 
 enum AmountType {
   DOPE
@@ -4261,8 +4341,10 @@ func (ec *executionContext) fieldContext_Dope_listings(ctx context.Context, fiel
 				return ec.fieldContext_Listing_inputs(ctx, field)
 			case "outputs":
 				return ec.fieldContext_Listing_outputs(ctx, field)
-			case "order":
-				return ec.fieldContext_Listing_order(ctx, field)
+			case "wyvernOrder":
+				return ec.fieldContext_Listing_wyvernOrder(ctx, field)
+			case "seaportOrder":
+				return ec.fieldContext_Listing_seaportOrder(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Listing", field.Name)
 		},
@@ -4316,8 +4398,10 @@ func (ec *executionContext) fieldContext_Dope_lastSale(ctx context.Context, fiel
 				return ec.fieldContext_Listing_inputs(ctx, field)
 			case "outputs":
 				return ec.fieldContext_Listing_outputs(ctx, field)
-			case "order":
-				return ec.fieldContext_Listing_order(ctx, field)
+			case "wyvernOrder":
+				return ec.fieldContext_Listing_wyvernOrder(ctx, field)
+			case "seaportOrder":
+				return ec.fieldContext_Listing_seaportOrder(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Listing", field.Name)
 		},
@@ -7313,8 +7397,8 @@ func (ec *executionContext) fieldContext_Listing_outputs(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Listing_order(ctx context.Context, field graphql.CollectedField, obj *ent.Listing) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Listing_order(ctx, field)
+func (ec *executionContext) _Listing_wyvernOrder(ctx context.Context, field graphql.CollectedField, obj *ent.Listing) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Listing_wyvernOrder(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7327,7 +7411,7 @@ func (ec *executionContext) _Listing_order(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Listing().Order(rctx, obj)
+		return ec.resolvers.Listing().WyvernOrder(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7336,12 +7420,12 @@ func (ec *executionContext) _Listing_order(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*indexer.Order)
+	res := resTmp.(*opensea.WyvernOrder)
 	fc.Result = res
-	return ec.marshalOOpenSeaOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋindexerᚐOrder(ctx, field.Selections, res)
+	return ec.marshalOWyvernOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋjobsᚋopenseaᚐWyvernOrder(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Listing_order(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Listing_wyvernOrder(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Listing",
 		Field:      field,
@@ -7350,51 +7434,106 @@ func (ec *executionContext) fieldContext_Listing_order(ctx context.Context, fiel
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "exchange":
-				return ec.fieldContext_OpenSeaOrder_exchange(ctx, field)
+				return ec.fieldContext_WyvernOrder_exchange(ctx, field)
 			case "listingTime":
-				return ec.fieldContext_OpenSeaOrder_listingTime(ctx, field)
+				return ec.fieldContext_WyvernOrder_listingTime(ctx, field)
 			case "expirationTime":
-				return ec.fieldContext_OpenSeaOrder_expirationTime(ctx, field)
+				return ec.fieldContext_WyvernOrder_expirationTime(ctx, field)
 			case "maker":
-				return ec.fieldContext_OpenSeaOrder_maker(ctx, field)
+				return ec.fieldContext_WyvernOrder_maker(ctx, field)
 			case "currentPrice":
-				return ec.fieldContext_OpenSeaOrder_currentPrice(ctx, field)
+				return ec.fieldContext_WyvernOrder_currentPrice(ctx, field)
 			case "makerRelayerFee":
-				return ec.fieldContext_OpenSeaOrder_makerRelayerFee(ctx, field)
+				return ec.fieldContext_WyvernOrder_makerRelayerFee(ctx, field)
 			case "makerProtocolFee":
-				return ec.fieldContext_OpenSeaOrder_makerProtocolFee(ctx, field)
+				return ec.fieldContext_WyvernOrder_makerProtocolFee(ctx, field)
 			case "feeRecipient":
-				return ec.fieldContext_OpenSeaOrder_feeRecipient(ctx, field)
+				return ec.fieldContext_WyvernOrder_feeRecipient(ctx, field)
 			case "feeMethod":
-				return ec.fieldContext_OpenSeaOrder_feeMethod(ctx, field)
+				return ec.fieldContext_WyvernOrder_feeMethod(ctx, field)
 			case "side":
-				return ec.fieldContext_OpenSeaOrder_side(ctx, field)
+				return ec.fieldContext_WyvernOrder_side(ctx, field)
 			case "saleKind":
-				return ec.fieldContext_OpenSeaOrder_saleKind(ctx, field)
+				return ec.fieldContext_WyvernOrder_saleKind(ctx, field)
 			case "target":
-				return ec.fieldContext_OpenSeaOrder_target(ctx, field)
+				return ec.fieldContext_WyvernOrder_target(ctx, field)
 			case "howToCall":
-				return ec.fieldContext_OpenSeaOrder_howToCall(ctx, field)
+				return ec.fieldContext_WyvernOrder_howToCall(ctx, field)
 			case "calldata":
-				return ec.fieldContext_OpenSeaOrder_calldata(ctx, field)
+				return ec.fieldContext_WyvernOrder_calldata(ctx, field)
 			case "replacementPattern":
-				return ec.fieldContext_OpenSeaOrder_replacementPattern(ctx, field)
+				return ec.fieldContext_WyvernOrder_replacementPattern(ctx, field)
 			case "staticTarget":
-				return ec.fieldContext_OpenSeaOrder_staticTarget(ctx, field)
+				return ec.fieldContext_WyvernOrder_staticTarget(ctx, field)
 			case "staticExtradata":
-				return ec.fieldContext_OpenSeaOrder_staticExtradata(ctx, field)
+				return ec.fieldContext_WyvernOrder_staticExtradata(ctx, field)
 			case "extra":
-				return ec.fieldContext_OpenSeaOrder_extra(ctx, field)
+				return ec.fieldContext_WyvernOrder_extra(ctx, field)
 			case "salt":
-				return ec.fieldContext_OpenSeaOrder_salt(ctx, field)
+				return ec.fieldContext_WyvernOrder_salt(ctx, field)
 			case "v":
-				return ec.fieldContext_OpenSeaOrder_v(ctx, field)
+				return ec.fieldContext_WyvernOrder_v(ctx, field)
 			case "r":
-				return ec.fieldContext_OpenSeaOrder_r(ctx, field)
+				return ec.fieldContext_WyvernOrder_r(ctx, field)
 			case "s":
-				return ec.fieldContext_OpenSeaOrder_s(ctx, field)
+				return ec.fieldContext_WyvernOrder_s(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type OpenSeaOrder", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type WyvernOrder", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Listing_seaportOrder(ctx context.Context, field graphql.CollectedField, obj *ent.Listing) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Listing_seaportOrder(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Listing().SeaportOrder(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*opensea.SeaportOrder)
+	fc.Result = res
+	return ec.marshalOSeaportOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋjobsᚋopenseaᚐSeaportOrder(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Listing_seaportOrder(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Listing",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "maker":
+				return ec.fieldContext_SeaportOrder_maker(ctx, field)
+			case "currentPrice":
+				return ec.fieldContext_SeaportOrder_currentPrice(ctx, field)
+			case "listingTime":
+				return ec.fieldContext_SeaportOrder_listingTime(ctx, field)
+			case "expirationTime":
+				return ec.fieldContext_SeaportOrder_expirationTime(ctx, field)
+			case "side":
+				return ec.fieldContext_SeaportOrder_side(ctx, field)
+			case "orderType":
+				return ec.fieldContext_SeaportOrder_orderType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SeaportOrder", field.Name)
 		},
 	}
 	return fc, nil
@@ -7591,8 +7730,10 @@ func (ec *executionContext) fieldContext_ListingEdge_node(ctx context.Context, f
 				return ec.fieldContext_Listing_inputs(ctx, field)
 			case "outputs":
 				return ec.fieldContext_Listing_outputs(ctx, field)
-			case "order":
-				return ec.fieldContext_Listing_order(ctx, field)
+			case "wyvernOrder":
+				return ec.fieldContext_Listing_wyvernOrder(ctx, field)
+			case "seaportOrder":
+				return ec.fieldContext_Listing_seaportOrder(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Listing", field.Name)
 		},
@@ -7639,974 +7780,6 @@ func (ec *executionContext) fieldContext_ListingEdge_cursor(ctx context.Context,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Cursor does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_exchange(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_exchange(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().Exchange(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNAddress2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_exchange(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Address does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_listingTime(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_listingTime(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().ListingTime(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(uint64)
-	fc.Result = res
-	return ec.marshalNLong2uint64(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_listingTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Long does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_expirationTime(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_expirationTime(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().ExpirationTime(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(uint64)
-	fc.Result = res
-	return ec.marshalNLong2uint64(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_expirationTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Long does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_maker(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_maker(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().Maker(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNAddress2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_maker(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Address does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_currentPrice(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_currentPrice(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().CurrentPrice(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_currentPrice(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_makerRelayerFee(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_makerRelayerFee(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().MakerRelayerFee(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_makerRelayerFee(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_makerProtocolFee(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_makerProtocolFee(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().MakerProtocolFee(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_makerProtocolFee(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_feeRecipient(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_feeRecipient(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().FeeRecipient(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_feeRecipient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_feeMethod(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_feeMethod(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().FeeMethod(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_feeMethod(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_side(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_side(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().Side(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_side(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_saleKind(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_saleKind(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().SaleKind(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_saleKind(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_target(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_target(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().Target(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNAddress2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_target(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Address does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_howToCall(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_howToCall(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().HowToCall(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_howToCall(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_calldata(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_calldata(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().Calldata(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNBytes2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_calldata(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Bytes does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_replacementPattern(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_replacementPattern(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().ReplacementPattern(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNBytes2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_replacementPattern(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Bytes does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_staticTarget(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_staticTarget(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().StaticTarget(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_staticTarget(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_staticExtradata(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_staticExtradata(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().StaticExtradata(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNBytes2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_staticExtradata(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Bytes does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_extra(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_extra(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().Extra(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_extra(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_salt(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_salt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().Salt(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_salt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_v(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_v(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().V(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_v(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_r(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_r(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().R(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNBytes2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_r(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Bytes does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _OpenSeaOrder_s(ctx context.Context, field graphql.CollectedField, obj *indexer.Order) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OpenSeaOrder_s(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OpenSeaOrder().S(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNBytes2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_OpenSeaOrder_s(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "OpenSeaOrder",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -9537,6 +8710,270 @@ func (ec *executionContext) _RLEs_male(ctx context.Context, field graphql.Collec
 func (ec *executionContext) fieldContext_RLEs_male(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "RLEs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SeaportOrder_maker(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SeaportOrder_maker(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.SeaportOrder().Maker(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNAddress2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SeaportOrder_maker(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SeaportOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SeaportOrder_currentPrice(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SeaportOrder_currentPrice(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.SeaportOrder().CurrentPrice(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SeaportOrder_currentPrice(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SeaportOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SeaportOrder_listingTime(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SeaportOrder_listingTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.SeaportOrder().ListingTime(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint64)
+	fc.Result = res
+	return ec.marshalNLong2uint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SeaportOrder_listingTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SeaportOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Long does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SeaportOrder_expirationTime(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SeaportOrder_expirationTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.SeaportOrder().ExpirationTime(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint64)
+	fc.Result = res
+	return ec.marshalNLong2uint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SeaportOrder_expirationTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SeaportOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Long does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SeaportOrder_side(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SeaportOrder_side(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Side, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SeaportOrder_side(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SeaportOrder",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SeaportOrder_orderType(ctx context.Context, field graphql.CollectedField, obj *opensea.SeaportOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SeaportOrder_orderType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OrderType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SeaportOrder_orderType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SeaportOrder",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -10770,6 +10207,974 @@ func (ec *executionContext) fieldContext_WalletItemsEdge_cursor(ctx context.Cont
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_exchange(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_exchange(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().Exchange(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNAddress2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_exchange(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_listingTime(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_listingTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().ListingTime(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint64)
+	fc.Result = res
+	return ec.marshalNLong2uint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_listingTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Long does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_expirationTime(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_expirationTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().ExpirationTime(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint64)
+	fc.Result = res
+	return ec.marshalNLong2uint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_expirationTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Long does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_maker(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_maker(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().Maker(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNAddress2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_maker(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_currentPrice(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_currentPrice(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().CurrentPrice(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_currentPrice(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_makerRelayerFee(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_makerRelayerFee(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().MakerRelayerFee(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_makerRelayerFee(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_makerProtocolFee(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_makerProtocolFee(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().MakerProtocolFee(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_makerProtocolFee(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_feeRecipient(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_feeRecipient(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().FeeRecipient(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_feeRecipient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_feeMethod(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_feeMethod(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().FeeMethod(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_feeMethod(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_side(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_side(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().Side(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_side(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_saleKind(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_saleKind(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().SaleKind(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_saleKind(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_target(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_target(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().Target(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNAddress2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_target(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_howToCall(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_howToCall(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().HowToCall(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_howToCall(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_calldata(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_calldata(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().Calldata(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNBytes2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_calldata(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_replacementPattern(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_replacementPattern(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().ReplacementPattern(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNBytes2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_replacementPattern(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_staticTarget(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_staticTarget(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().StaticTarget(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_staticTarget(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_staticExtradata(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_staticExtradata(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().StaticExtradata(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNBytes2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_staticExtradata(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_extra(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_extra(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().Extra(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_extra(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_salt(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_salt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().Salt(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_salt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_v(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_v(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().V(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_v(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_r(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_r(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().R(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNBytes2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_r(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WyvernOrder_s(ctx context.Context, field graphql.CollectedField, obj *opensea.WyvernOrder) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WyvernOrder_s(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WyvernOrder().S(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNBytes2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WyvernOrder_s(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WyvernOrder",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -20419,7 +20824,7 @@ func (ec *executionContext) _Listing(ctx context.Context, sel ast.SelectionSet, 
 				return innerFunc(ctx)
 
 			})
-		case "order":
+		case "wyvernOrder":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -20428,7 +20833,24 @@ func (ec *executionContext) _Listing(ctx context.Context, sel ast.SelectionSet, 
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Listing_order(ctx, field, obj)
+				res = ec._Listing_wyvernOrder(ctx, field, obj)
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "seaportOrder":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Listing_seaportOrder(ctx, field, obj)
 				return res
 			}
 
@@ -20522,467 +20944,6 @@ func (ec *executionContext) _ListingEdge(ctx context.Context, sel ast.SelectionS
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
-var openSeaOrderImplementors = []string{"OpenSeaOrder"}
-
-func (ec *executionContext) _OpenSeaOrder(ctx context.Context, sel ast.SelectionSet, obj *indexer.Order) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, openSeaOrderImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("OpenSeaOrder")
-		case "exchange":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_exchange(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "listingTime":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_listingTime(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "expirationTime":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_expirationTime(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "maker":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_maker(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "currentPrice":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_currentPrice(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "makerRelayerFee":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_makerRelayerFee(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "makerProtocolFee":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_makerProtocolFee(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "feeRecipient":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_feeRecipient(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "feeMethod":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_feeMethod(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "side":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_side(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "saleKind":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_saleKind(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "target":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_target(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "howToCall":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_howToCall(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "calldata":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_calldata(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "replacementPattern":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_replacementPattern(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "staticTarget":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_staticTarget(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "staticExtradata":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_staticExtradata(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "extra":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_extra(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "salt":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_salt(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "v":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_v(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "r":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_r(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "s":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._OpenSeaOrder_s(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -21326,6 +21287,127 @@ func (ec *executionContext) _RLEs(ctx context.Context, sel ast.SelectionSet, obj
 
 			if out.Values[i] == graphql.Null {
 				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var seaportOrderImplementors = []string{"SeaportOrder"}
+
+func (ec *executionContext) _SeaportOrder(ctx context.Context, sel ast.SelectionSet, obj *opensea.SeaportOrder) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, seaportOrderImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SeaportOrder")
+		case "maker":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SeaportOrder_maker(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "currentPrice":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SeaportOrder_currentPrice(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "listingTime":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SeaportOrder_listingTime(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "expirationTime":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SeaportOrder_expirationTime(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "side":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SeaportOrder_side(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "orderType":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._SeaportOrder_orderType(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -21777,6 +21859,467 @@ func (ec *executionContext) _WalletItemsEdge(ctx context.Context, sel ast.Select
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var wyvernOrderImplementors = []string{"WyvernOrder"}
+
+func (ec *executionContext) _WyvernOrder(ctx context.Context, sel ast.SelectionSet, obj *opensea.WyvernOrder) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, wyvernOrderImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("WyvernOrder")
+		case "exchange":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_exchange(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "listingTime":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_listingTime(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "expirationTime":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_expirationTime(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "maker":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_maker(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "currentPrice":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_currentPrice(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "makerRelayerFee":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_makerRelayerFee(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "makerProtocolFee":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_makerProtocolFee(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "feeRecipient":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_feeRecipient(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "feeMethod":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_feeMethod(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "side":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_side(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "saleKind":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_saleKind(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "target":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_target(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "howToCall":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_howToCall(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "calldata":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_calldata(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "replacementPattern":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_replacementPattern(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "staticTarget":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_staticTarget(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "staticExtradata":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_staticExtradata(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "extra":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_extra(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "salt":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_salt(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "v":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_v(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "r":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_r(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "s":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WyvernOrder_s(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -24750,13 +25293,6 @@ func (ec *executionContext) marshalONode2githubᚗcomᚋdopedaoᚋdopeᚑmonorep
 	return ec._Node(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOOpenSeaOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋindexerᚐOrder(ctx context.Context, sel ast.SelectionSet, v *indexer.Order) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._OpenSeaOrder(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalOOrderDirection2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋinternalᚋentᚐOrderDirection(ctx context.Context, v interface{}) (ent.OrderDirection, error) {
 	var res ent.OrderDirection
 	err := res.UnmarshalGQL(v)
@@ -24769,6 +25305,13 @@ func (ec *executionContext) marshalOOrderDirection2githubᚗcomᚋdopedaoᚋdope
 
 func (ec *executionContext) marshalORLEs2githubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋinternalᚋentᚋschemaᚐRLEs(ctx context.Context, sel ast.SelectionSet, v schema.RLEs) graphql.Marshaler {
 	return ec._RLEs(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOSeaportOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋjobsᚋopenseaᚐSeaportOrder(ctx context.Context, sel ast.SelectionSet, v *opensea.SeaportOrder) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._SeaportOrder(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOSearchEdge2ᚕᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋinternalᚋentᚐSearchEdge(ctx context.Context, sel ast.SelectionSet, v []*ent.SearchEdge) graphql.Marshaler {
@@ -25443,6 +25986,13 @@ func (ec *executionContext) unmarshalOWalletWhereInput2ᚖgithubᚗcomᚋdopedao
 	}
 	res, err := ec.unmarshalInputWalletWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOWyvernOrder2ᚖgithubᚗcomᚋdopedaoᚋdopeᚑmonorepoᚋpackagesᚋapiᚋjobsᚋopenseaᚐWyvernOrder(ctx context.Context, sel ast.SelectionSet, v *opensea.WyvernOrder) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._WyvernOrder(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

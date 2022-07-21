@@ -173,7 +173,8 @@ type Listing implements Node {
   active: Boolean!
   inputs: [Amount]!
   outputs: [Amount]!
-  order: OpenSeaOrder
+  wyvernOrder: WyvernOrder
+  seaportOrder: SeaportOrder
 }
 
 enum Source {
@@ -181,7 +182,8 @@ enum Source {
   SWAPMEET
 }
 
-type OpenSeaOrder {
+# OpenSea old-style order from old contract
+type WyvernOrder {
   exchange: Address!
   listingTime: Long!
   expirationTime: Long!
@@ -205,6 +207,17 @@ type OpenSeaOrder {
   r: Bytes!
   s: Bytes!
 }
+
+# OpenSea new-style order
+type SeaportOrder {
+  maker: Address!
+  currentPrice: String!
+  listingTime: Long!
+  expirationTime: Long!
+  side: String!
+  orderType: String!
+}
+
 
 enum AmountType {
   DOPE

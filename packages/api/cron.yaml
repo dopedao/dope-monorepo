@@ -1,0 +1,17 @@
+cron:
+- description: "Gear Claims"
+  schedule: every 24 hours
+  target: jobs
+  url: /gear-claims
+- description: "OpenSea Listings"
+  schedule: every 15 minutes
+  target: jobs
+  url: /opensea-listings
+- description: "Paper Balances"
+  schedule: every 24 hours
+  target: jobs
+  url: /paper-balances
+- description: "Paper Claims"
+  schedule: every 24 hours
+  target: jobs
+  url: /paper-claims

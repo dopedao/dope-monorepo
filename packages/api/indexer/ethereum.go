@@ -44,6 +44,8 @@ type Ethereum struct {
 	contracts []*Contract
 }
 
+// Reads information from Ethereum and Optimism blockchains
+// and attempts to persist information about DOPE, PAPER, HUSTLERS, and GEAR
 func NewEthereumIndexer(ctx context.Context, entClient *ent.Client, config EthConfig) *Ethereum {
 	ctx, log := logger.LogFor(ctx)
 

@@ -22,7 +22,18 @@ func (Listing) Fields() []ent.Field {
 		field.Enum("source").
 			Values("OPENSEA", "SWAPMEET").
 			Immutable(),
-		field.JSON("order", json.RawMessage{}).Optional(),
+		// Because we're stuck on Go 1.16 (using GCP App Engine Std)
+		// we can't use generics to unmarshal polymorphic json stored in a single column.
+		//
+		// TODO: Replace this with something more elegant?
+		// Do we really need to continue storing the old wyvern orders?
+		// They were mostly for the "one-click" hustler contract
+		// which doesn't work any longer :p
+		//
+		// Need to store multiple fields instead. yuck.
+		// https://bytemeta.vip/repo/ent/ent/issues/2491
+		field.JSON("wyvern_order", json.RawMessage{}).Optional(),
+		field.JSON("seaport_order", json.RawMessage{}).Optional(),
 	}
 }
 

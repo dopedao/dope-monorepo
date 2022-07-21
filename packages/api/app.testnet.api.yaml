@@ -1,7 +1,7 @@
 runtime: go116
 service: api-testnet
 
-main: ./cmd/web
+main: ./cmd/webServer
 
 env_variables:
   PG_CONNSTR: secret://projects/803405501117/secrets/pg-testnet-connstr/versions/1
