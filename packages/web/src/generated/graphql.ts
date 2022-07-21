@@ -1585,7 +1585,7 @@ export type HustlerQueryVariables = Exact<{
 }>;
 
 
-export type HustlerQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', edges?: Array<{ __typename?: 'HustlerEdge', node?: { __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, body?: { __typename?: 'BodyPart', id: string, rle: string } | null | undefined, hair?: { __typename?: 'BodyPart', id: string, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type HustlerQuery = { __typename?: 'Query', hustlers: { __typename?: 'HustlerConnection', totalCount: number, edges?: Array<{ __typename?: 'HustlerEdge', node?: { __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined, type: HustlerType, color?: string | null | undefined, background?: string | null | undefined, age: any, sex: HustlerSex, viewbox: Array<number>, order: Array<number>, svg?: string | null | undefined, neck?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, ring?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, accessory?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, body?: { __typename?: 'BodyPart', id: string, rle: string } | null | undefined, hair?: { __typename?: 'BodyPart', id: string, rle: string } | null | undefined, beard?: { __typename?: 'BodyPart', id: string, rle: string } | null | undefined, drug?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, hand?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, weapon?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, clothes?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, vehicle?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, waist?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined, foot?: { __typename?: 'Item', id: string, type: ItemType, name: string, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number, fullname: string, svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined, base?: { __typename?: 'Item', svg?: string | null | undefined, rles?: { __typename?: 'RLEs', male: string, female: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type HustlersWalletQueryVariables = Exact<{
   where?: InputMaybe<WalletWhereInput>;
@@ -1654,6 +1654,13 @@ export type WalletQueryVariables = Exact<{
 
 
 export type WalletQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string, title?: string | null | undefined, name?: string | null | undefined }>, items: Array<{ __typename?: 'WalletItems', id: string, balance: any, item: { __typename?: 'Item', id: string, name: string } }>, dopes: Array<{ __typename?: 'Dope', id: string, claimed: boolean, opened: boolean, score: number, rank: number, items: Array<{ __typename?: 'Item', id: string, fullname: string, type: ItemType, name: string, namePrefix?: string | null | undefined, nameSuffix?: string | null | undefined, suffix?: string | null | undefined, augmented?: boolean | null | undefined, tier: ItemTier, greatness: number, count: number }> }> } | null | undefined } | null | undefined> | null | undefined } };
+
+export type WalletCheckQueryVariables = Exact<{
+  where?: InputMaybe<WalletWhereInput>;
+}>;
+
+
+export type WalletCheckQuery = { __typename?: 'Query', wallets: { __typename?: 'WalletConnection', edges?: Array<{ __typename?: 'WalletEdge', node?: { __typename?: 'Wallet', id: string, paper: any, hustlers: Array<{ __typename?: 'Hustler', id: string }>, items: Array<{ __typename?: 'WalletItems', id: string }>, dopes: Array<{ __typename?: 'Dope', id: string }> } | null | undefined } | null | undefined> | null | undefined } };
 
 
 export const DrugDocument = `
@@ -2014,6 +2021,7 @@ export const useInfiniteDopesQuery = <
 export const HustlerDocument = `
     query Hustler($where: HustlerWhereInput) {
   hustlers(where: $where) {
+    totalCount
     edges {
       node {
         id
@@ -2762,6 +2770,53 @@ export const useInfiniteWalletQuery = <
     const query = useFetchData<WalletQuery, WalletQueryVariables>(WalletDocument)
     return useInfiniteQuery<WalletQuery, TError, TData>(
       variables === undefined ? ['Wallet.infinite'] : ['Wallet.infinite', variables],
+      (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
+      options
+    )};
+
+export const WalletCheckDocument = `
+    query WalletCheck($where: WalletWhereInput) {
+  wallets(where: $where) {
+    edges {
+      node {
+        id
+        paper
+        hustlers {
+          id
+        }
+        items {
+          id
+        }
+        dopes {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+export const useWalletCheckQuery = <
+      TData = WalletCheckQuery,
+      TError = unknown
+    >(
+      variables?: WalletCheckQueryVariables,
+      options?: UseQueryOptions<WalletCheckQuery, TError, TData>
+    ) =>
+    useQuery<WalletCheckQuery, TError, TData>(
+      variables === undefined ? ['WalletCheck'] : ['WalletCheck', variables],
+      useFetchData<WalletCheckQuery, WalletCheckQueryVariables>(WalletCheckDocument).bind(null, variables),
+      options
+    );
+export const useInfiniteWalletCheckQuery = <
+      TData = WalletCheckQuery,
+      TError = unknown
+    >(
+      variables?: WalletCheckQueryVariables,
+      options?: UseInfiniteQueryOptions<WalletCheckQuery, TError, TData>
+    ) =>{
+    const query = useFetchData<WalletCheckQuery, WalletCheckQueryVariables>(WalletCheckDocument)
+    return useInfiniteQuery<WalletCheckQuery, TError, TData>(
+      variables === undefined ? ['WalletCheck.infinite'] : ['WalletCheck.infinite', variables],
       (metaData) => query({...variables, ...(metaData.pageParam ?? {})}),
       options
     )};
