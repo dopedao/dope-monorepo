@@ -13,7 +13,6 @@ import { Animations, Types } from 'phaser';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
 import Toast from 'phaser3-rex-plugins/templates/ui/toast/Toast';
 
-
 export enum Direction {
   North = '_back',
   South = '_front',
@@ -52,7 +51,9 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
 
   private _chatMessageBoxes: Array<Toast> = [];
 
-  get shadow() { return this._shadow; }
+  get shadow() {
+    return this._shadow;
+  }
 
   get hoverText() {
     return this._hoverText;
@@ -159,24 +160,33 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     // console.log(this._shadow.pipeline);
     // this._shadow.pipeline.set1f("inHorizontalSkew", 2); // set the desired left/right skew factor
 
-    this._shadow = this.scene.add.ellipse(
-      this.x,
-      this.y,
-      (this.displayWidth / 2) * 0.76,
-      this.displayHeight * 0.2,
-      0x000000,
-      0.35,
-    ).setOrigin(0.5, -0.35).setVisible(this.visible);
+    this._shadow = this.scene.add
+      .ellipse(
+        this.x,
+        this.y,
+        (this.displayWidth / 2) * 0.76,
+        this.displayHeight * 0.2,
+        0x000000,
+        0.35,
+      )
+      .setOrigin(0.5, -0.35)
+      .setVisible(this.visible);
 
     // create main body
     const { Body, Bodies } = (Phaser.Physics.Matter as any).Matter;
-    const colliderBody = Bodies.rectangle(0, 0, (this.displayWidth / 2) * 0.46, this.displayHeight * 0.35, {
-      label: 'collider',
-      collisionFilter: {
-        group: -69,
-      },
-      chamfer: { radius: 7.2 },
-    } as MatterJS.BodyType);
+    const colliderBody = Bodies.rectangle(
+      0,
+      0,
+      (this.displayWidth / 2) * 0.46,
+      this.displayHeight * 0.35,
+      {
+        label: 'collider',
+        collisionFilter: {
+          group: -69,
+        },
+        chamfer: { radius: 7.2 },
+      } as MatterJS.BodyType,
+    );
 
     this._hitboxSensor = this.scene.matter.add.rectangle(
       this.x,
@@ -212,18 +222,24 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
       // if this hustler is of instance player
       const isPlayer = (this as any).controller !== undefined;
 
-      this._hoverText = (this.scene as GameScene).rexUI.add.BBCodeText(0, 0, `[stroke=black]${this.name}[/stroke]`, {
-        fontFamily: 'Dope',
-        fontSize: '30px',
-        color: isPlayer ? '#ffffff' : '#9fff9f',
-        // fixedWidth: this.displayWidth * 2,
-        // stroke: '#000000',
-        // strokeThickness: 5,
-      });
-      this._hoverText.setScale(this.scale / 4);
-      this._hoverText.alpha = 0.8;
-      this._hoverText.depth = this.depth;
-
+      this._hoverText = (this.scene as GameScene).rexUI.add.BBCodeText(
+        0,
+        0,
+        `[stroke=black]${this.name}[/stroke]`,
+        {
+          fontFamily: 'Dope',
+          fontSize: '30px',
+          color: isPlayer ? '#ffffff' : '#9fff9f',
+          // fixedWidth: this.displayWidth * 2,
+          // stroke: '#000000',
+          // strokeThickness: 5,
+        },
+      );
+      if (this._hoverText) {
+        this._hoverText.scale = (this.scale / 4);
+        this._hoverText.alpha = 0.8;
+        this._hoverText.depth = this.depth;
+      }
       (this.scene.plugins.get('rexOutlinePipeline') as any).add(this, {
         thickness: 2,
       });
@@ -276,19 +292,24 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     };
 
     const gameScene = this.scene as GameScene;
-    const chatMessage = this._chatMessageBoxes[this._chatMessageBoxes.push(
-      gameScene.rexUI.add.toast({
-        background: gameScene.rexUI.add.roundRectangle(0, 0, 2, 2, 3, 0xffffff, 0.4),
-        text: getBBcodeText(gameScene, 200, 0, 0, 10, '18px').setText(text).setScale(this.scale / 3.5),
-        space: {
-          left: 2,
-          right: 2,
-          top: 2,
-          bottom: 2,
-        },
-        duration: messageDuration,
-      }),
-    ) - 1];
+    const chatMessage =
+      this._chatMessageBoxes[
+        this._chatMessageBoxes.push(
+          gameScene.rexUI.add.toast({
+            background: gameScene.rexUI.add.roundRectangle(0, 0, 2, 2, 3, 0xffffff, 0.4),
+            text: getBBcodeText(gameScene, 200, 0, 0, 10, '18px')
+              .setText(text)
+              .setScale(this.scale / 3.5),
+            space: {
+              left: 2,
+              right: 2,
+              top: 2,
+              bottom: 2,
+            },
+            duration: messageDuration,
+          }),
+        ) - 1
+      ];
     // show message
     chatMessage.setDepth(this.depth);
     chatMessage.showMessage(text);
@@ -310,7 +331,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     const angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);
 
     // see. https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Unit_circle_angles_color.svg/2048px-Unit_circle_angles_color.svg.png
-    
+
     // north
     if (angle >= -(3 * Math.PI) / 4 && angle <= -Math.PI / 4) {
       this._lastDirection = Direction.North;
@@ -327,8 +348,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     else if (angle >= -Math.PI / 4 || angle <= Math.PI / 4) {
       this._lastDirection = Direction.East;
     }
-    
-    
+
     this.play(this.texture.key + this._lastDirection);
     this.stop();
 
@@ -391,7 +411,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     // make hovertext follow us
     this._hoverText?.setPosition(
       this.x - this._hoverText.displayWidth / 2,
-      this.y - (this.displayHeight / 1.3),
+      this.y - this.displayHeight / 1.3,
     );
 
     // update shadow position
@@ -409,7 +429,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
 
     for (let i = this._chatMessageBoxes.length - 1; i >= 0; i--) {
       const chatToast = this._chatMessageBoxes[i];
-      offsetHeight += (chatToast.displayHeight) + offsetSpacing;
+      offsetHeight += chatToast.displayHeight + offsetSpacing;
 
       let x = this.x;
       let y = this.y;
@@ -417,8 +437,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
       y -= this.displayHeight / 2;
       y -= offsetHeight;
 
-      if (this.hoverText)
-        y -= this.hoverText.displayHeight * 2;
+      if (this.hoverText) y -= this.hoverText.displayHeight * 2;
 
       chatToast.setPosition(x, y);
     }

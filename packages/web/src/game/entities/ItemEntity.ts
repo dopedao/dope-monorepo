@@ -1,12 +1,12 @@
-import EventHandler, { Events } from 'game/handlers/events/EventHandler';
-import Item from 'game/entities/player/inventory/Item';
-import Player from './player/Player';
-import UIScene from 'game/scenes/UI';
+import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
 import { getBBcodeText } from 'game/ui/rex/RexUtils';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
-import NetworkHandler from 'game/handlers/network/NetworkHandler';
-import { DataTypes, NetworkEvents, UniversalEventNames } from 'game/handlers/network/types';
+import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import GameScene from 'game/scenes/Game';
+import Item from 'game/entities/player/inventory/Item';
+import NetworkHandler from 'game/handlers/network/NetworkHandler';
+import Player from './player/Player';
+import UIScene from 'game/scenes/UI';
 
 // Item entity class for items on ground
 export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
@@ -62,11 +62,13 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
           // fixedWidth: this.displayWidth * 3,
           // stroke: '#000000',
           // strokeThickness: 5,
-        },
+        }
       );
-      this.hoverText.setScale(this.scale / 4);
-      this.hoverText.alpha = 0.8;
-      this.hoverText.depth = this.depth;
+      if (this.hoverText) {
+        this.hoverText.scale = (this.scale / 4);
+        this.hoverText.alpha = 0.8;
+        this.hoverText.depth = this.depth;
+      }
 
       (this.scene.plugins.get('rexOutlinePipeline') as any).add(this, {
         thickness: 2,
@@ -112,7 +114,7 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
     // make hover text follow us
     this.hoverText?.setPosition(
       this.x - this.hoverText.displayWidth / 2,
-      this.y - (this.displayHeight / 1.3),
+      this.y - this.displayHeight / 1.3,
     );
 
     if (this.hoverText && this.hoverText.scale !== this.scene.cameras.main.zoom / 3)

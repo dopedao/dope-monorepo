@@ -5,6 +5,7 @@
 		"web": "yarn workspace @dopewars/web",
 		"web:dev": "yarn workspace @dopewars/web dev",
 		"web:test": "yarn workspace @dopewars/web test",
+		"web:build": "yarn workspace @dopewars/web build",
 		"web:lint": "yarn workspace @dopewars/web lint",
 		"web:format": "yarn workspace @dopewars/web format",
 		"contracts": "yarn workspace @dopewars/contracts",
