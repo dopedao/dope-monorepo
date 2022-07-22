@@ -1,17 +1,17 @@
-# Deploys API to mainnet if attempting to merge to master. Will only trigger if
+# Deploys API to mainnet if attempting to merge to main. Will only trigger if
 # a change happened in the api directory, the PR was closed and successfully
-# merged to master. There is no `merged to specific branch` event, so we make
+# merged to main. There is no `merged to specific branch` event, so we make
 # these three checks to make up for it.
 name: API Mainnet
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'packages/api/**'
   pull_request:
     branches:
-      - master
+      - main
     types:
       - closed
     paths:
