@@ -56,7 +56,7 @@ const DesktopIconList = () => {
         />
         <DesktopIcon
           icon="paper-bill-desktop"
-          label="$PAPER Chart"
+          label="$PAPER Info"
           clickAction={() =>
             openBrowserTab(
               'https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483',
