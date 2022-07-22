@@ -10,6 +10,12 @@ export interface PlayerKeys {
     inventory: number;
 }
 
+// export enum KeyType {
+//     SETTINGS_KEY = "settings_key",
+//     PLAYER_KEYS = "player_keys",
+//     CHAT_KEY = "chat_key",
+// }
+
 export enum ControlsEvents {
     PLAYER_KEYS_UPDATED = 'PLAYER_KEYS_UPDATED',
     SETTINGS_KEY_UPDATED = 'SETTINGS_KEY_UPDATED',
@@ -79,6 +85,50 @@ export default class ControlsManager {
         this._settingsKey = settingsKey ? Number.parseInt(settingsKey) : Phaser.Input.Keyboard.KeyCodes.ESC;
         this._chatKey = chatKey ? Number.parseInt(chatKey) : Phaser.Input.Keyboard.KeyCodes.T;
     }
+
+    // onKey(key: number, event: ANY, input: Phaser.Input.Keyboard.KeyboardPlugin, callback: (e: Phaser.Input.Keyboard.Key) => void) {
+    //     // individual keys
+    //     if (key === this._settingsKey) {
+    //         let inputKey = input.addKey(this._settingsKey);
+    //         inputKey.on(Phaser.Input.Keyboard.Events.UP, callback);
+
+    //         this.emitter.on(ControlsEvents.SETTINGS_KEY_UPDATED, (key: number) => {
+    //             input.removeKey(inputKey);
+    //             inputKey = input.addKey(key);
+    //             inputKey.on(Phaser.Input.Keyboard.Events.UP, callback);
+    //         });
+
+    //         return;
+    //     } else if (key === this._chatKey) {
+    //         let inputKey = input.addKey(this._chatKey);
+    //         inputKey.on(Phaser.Input.Keyboard.Events.UP, callback);
+
+    //         this.emitter.on(ControlsEvents.CHAT_KEY_UPDATED, (key: number) => {
+    //             input.removeKey(inputKey);
+    //             inputKey = input.addKey(key);
+    //             inputKey.on(Phaser.Input.Keyboard.Events.UP, callback);
+    //         });
+
+    //         return;
+    //     }
+
+
+    //     // check player keys
+    //     for (const k of Object.keys(this._playerKeys)) {
+    //         if ((this._playerKeys as any)[k] === key) {
+    //             let inputKey = input.addKey(key);
+    //             inputKey.on(Phaser.Input.Keyboard.Events.UP, callback);
+
+    //             this.emitter.on(ControlsEvents.PLAYER_KEYS_UPDATED, (key: number) => {
+    //                 input.removeKey(inputKey);
+    //                 inputKey = input.addKey(key);
+    //                 inputKey.on(Phaser.Input.Keyboard.Events.UP, callback);
+    //             });
+
+    //             return;
+    //         }
+    //     }
+    // }
 
     setKey(key: number, value: number) {
         // individual keys

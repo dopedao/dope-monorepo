@@ -1,13 +1,13 @@
 import EventHandler, { Events } from "game/handlers/events/EventHandler";
 import { chakraToastStyle } from "game/scenes/UI";
+import { Howl } from "howler";
 
 export interface Song {
     name: string;
-    song: Phaser.Sound.WebAudioSound;
+    song: Howl;
 }
 
 export default class MusicManager {
-    private _soundManager: Phaser.Sound.WebAudioSoundManager;
     private _songs: Song[];
 
     private _upcomingSong?: Song;
@@ -15,10 +15,6 @@ export default class MusicManager {
     private _lastSong?: Song;
 
     public shuffleNext: boolean = false;
-
-    get soundManager() {
-        return this._soundManager;
-    }
 
     get upcomingSong() {
         return this._upcomingSong;
@@ -36,13 +32,12 @@ export default class MusicManager {
         return this._lastSong;
     }
 
-    constructor(soundManager: Phaser.Sound.WebAudioSoundManager, songs: Song[], shuffleNext: boolean = false) {
-        this._soundManager = soundManager;
+    constructor(songs: Song[], shuffleNext: boolean = false) {
         this._songs = songs;
         this.shuffleNext = shuffleNext;
     }
 
-    _randomSong(condition?: (song: Song) => boolean) {
+    private _randomSong(condition?: (song: Song) => boolean) {
         let randomSong = this._songs[Math.floor(Math.random() * Object.keys(this._songs).length)];
         while (condition && !condition(randomSong))
             randomSong = this._songs[Math.floor(Math.random() * Object.keys(this._songs).length)];
@@ -54,7 +49,7 @@ export default class MusicManager {
     shuffle(song?: Song | number, shuffleNext: boolean = this.shuffleNext, notification: boolean = true) {
         this._lastSong = this._currentSong;
         if (this.currentSong) {
-            this.currentSong.song.removeListener('complete');
+            this.currentSong.song.off('end');
             this.currentSong.song.stop();
             this._currentSong = undefined;
         }
@@ -85,20 +80,21 @@ export default class MusicManager {
         if (shuffleNext)
             this._upcomingSong = this._randomSong((s) => s !== this._currentSong);
 
-        this._currentSong.song.once('complete', () => {
+        this._currentSong.song.on('end', () => {
+            if (this.currentSong?.song.loop()) return;
             this.shuffle();
         });
     }
 
     stopPlaying() {
         if (this._currentSong) {
-            this.currentSong?.song.removeListener('complete');
+            this.currentSong?.song.off('end');
             this._currentSong.song.stop();
             this._currentSong = undefined;
         }
 
         this._songs.forEach(song => {
-            song.song.removeListener('complete');
+            song.song.off('end');
         });
     }
 
@@ -116,7 +112,7 @@ export default class MusicManager {
             return;
         }
 
-        this._songs[song].song.removeListener('complete');
+        this._songs[song].song.off('end');
         this._songs[song].song.stop();
         this._songs.splice(song, 1);
     }
@@ -128,6 +124,6 @@ export default class MusicManager {
 
     resume() {
         if (this._currentSong)
-            this._currentSong.song.resume();
+            this._currentSong.song.play();
     }
 } 

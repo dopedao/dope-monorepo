@@ -2664,6 +2664,7 @@ __metadata:
     gear-rarity: ^1.0.5
     graphql: ^15.5.3
     gray-matter: ^4.0.3
+    howler: ^2.2.3
     jest: ^27.2.5
     js-cookie: ^3.0.1
     keccak256: ^1.0.6
@@ -8264,6 +8265,13 @@ __metadata:
   dependencies:
     "@types/unist": "*"
   checksum: fff47998f4c11e21a7454b58673f70478740ecdafd95aaf50b70a3daa7da9cdc57315545bf9c039613732c40b7b0e9e49d11d03fe9a4304721cdc3b29a88141e
+  languageName: node
+  linkType: hard
+
+"@types/howler@npm:^2.2.7":
+  version: 2.2.7
+  resolution: "@types/howler@npm:2.2.7"
+  checksum: e9d6723f946a7526c8562436c06ad64d55f63a0573bfbf08c776e3785ab520a3138da84058f280b0fe7d8a819af77af3dd62d88f873a316d3723dc2ad575aa0d
   languageName: node
   linkType: hard
 
@@ -15422,9 +15430,11 @@ __metadata:
     "@sentry/react": ^6.17.4
     "@sentry/tracing": ^6.17.4
     "@typechain/ethers-v5": ^8.0.2
+    "@types/howler": ^2.2.7
     "@types/isomorphic-fetch": ^0.0.35
     "@types/mocha": ^8.2.2
     "@types/node": ^14.14.34
+    howler: ^2.2.3
     isomorphic-fetch: ^3.0.0
     lerna: ^3.22.1
     mocha: ^8.4.0
@@ -19734,6 +19744,13 @@ fsevents@~2.1.1:
   dependencies:
     lru-cache: ^6.0.0
   checksum: c3f87b3c2f7eb8c2748c8f49c0c2517c9a95f35d26f4bf54b2a8cba05d2e668f3753548b6ea366b18ec8dadb4e12066e19fa382a01496b0ffa0497eb23cbe461
+  languageName: node
+  linkType: hard
+
+"howler@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "howler@npm:2.2.3"
+  checksum: c04ce19411f4d86f8508d411a93aea943f128c2686b3df3c61383fd4ed8f5551232c4389aba3a8d4c8b0eeb34ae51df5a9c3ccd9ba48583ac53e9bf9fcbd1ecf
   languageName: node
   linkType: hard
 

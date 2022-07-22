@@ -51,7 +51,17 @@ export default class BringItemQuest extends ItemQuest {
   onStart() {
     super.onStart();
 
-    EventHandler.emitter().once(
+    EventHandler.emitter().on(
+      Events.PLAYER_CITIZEN_INTERACT_FINISH,
+      this._handleCitizenEvent,
+      this,
+    );
+  }
+
+  onComplete() {
+    super.onComplete();
+
+    EventHandler.emitter().off(
       Events.PLAYER_CITIZEN_INTERACT_FINISH,
       this._handleCitizenEvent,
       this,

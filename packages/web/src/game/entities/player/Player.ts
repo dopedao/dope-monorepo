@@ -216,13 +216,18 @@ export default class Player extends Hustler {
 
     const player = playerHitbox.gameObject as Player;
     
+    const definedDepth = (otherHitbox as any).depth ?? otherHitbox.gameObject?.depth;
     if (otherHitbox.position.y - playerHitbox.position.y < diff) {
-      const targetDepth = otherHitbox.gameObject?.depth ? otherHitbox.gameObject.depth + 1 : player._baseDepth + 10;
+      const targetDepth = definedDepth ? definedDepth + 1 : player._baseDepth + 10;
+      // prefer smaller depth when colliding with 2 objects
+      // if (player.depth !== player._baseDepth && targetDepth > player.depth) return;
+
       if (player.depth < targetDepth)
         player.setDepth(targetDepth);
     }
     else {
-      const targetDepth = otherHitbox.gameObject?.depth ? otherHitbox.gameObject.depth - 1 : player._baseDepth - 5;
+      const targetDepth = definedDepth ? definedDepth - 1 : player._baseDepth - 5;
+      
       if (player.depth > targetDepth)
         player.setDepth(targetDepth);
     }

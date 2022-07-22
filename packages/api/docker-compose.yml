@@ -1,0 +1,55 @@
+version: "3.8"
+services:
+   api:
+     build:
+       context: .
+       dockerfile: Dockerfile.compose
+     depends_on:
+       - "db"
+       - "redis"
+     network_mode: "host"
+     ports:
+       - "8080:8080"
+     volumes:
+       - ~/.config/gcloud/:/build/.config/gcloud/
+     environment:
+     # If you don't have this file run 'gcloud auth application default-login'
+       GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
+     command: go run ./cmd/web/main.go
+
+   game:
+     build:
+       context: .
+       dockerfile: Dockerfile.compose
+     depends_on:
+       - "db"
+     network_mode: "host"
+     ports:
+       - "8080:8080"
+     volumes:
+       - ~/.config/gcloud/:/build/.config/gcloud/
+     environment:
+     # If you don't have this file run 'gcloud auth application default-login'
+       GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
+     command: go run ./cmd/game/main.go
+
+   db:
+     image: postgres:14.1-alpine
+     environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+     network_mode: "host"
+     ports:
+        - '5432:5432'
+     volumes: 
+        - db:/var/lib/postgresql/data
+
+   redis:
+     image: redis:7.0.2
+     network_mode: "host"
+     ports:
+       - '6379:6379'
+
+volumes:
+  db:
+    driver: local

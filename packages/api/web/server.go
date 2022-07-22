@@ -8,15 +8,18 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/go-redis/redis/v8"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/graph"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/dopedao/dope-monorepo/packages/api/web/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/web/verify"
 	"github.com/dopedao/dope-monorepo/packages/api/web/wallet"
 )
 
@@ -52,6 +55,14 @@ func NewServer(ctx context.Context, static *storage.BucketHandle) (http.Handler,
 	// https://worldwidewebb.notion.site/Integration-Guide-101cbdbfefad415ead7b41369ce66858
 	r.HandleFunc("/collection/{id}.png", hustler.SpritesCompositeHandler(entClient, static))
 	r.HandleFunc("/address/{address}", wallet.HandleHustlers(entClient))
+
+	// Discord verification
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     envcfg.RedisAddress,
+		Password: envcfg.RedisPassword,
+		DB:       0,
+	})
+	r.HandleFunc("/verify", verify.HandleVerifyRequest(redisClient))
 
 	return cors.AllowAll().Handler(r), nil
 }

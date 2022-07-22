@@ -1,4 +1,3 @@
-import { s } from 'gear-rarity/dist/image-140bf8ec';
 import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipeline-plugin';
 import { LDtkMapPack, LdtkReader } from './LDtkParser';
 import PF, { DiagonalMovement } from 'pathfinding';
@@ -49,6 +48,53 @@ export default class MapHelper {
       const grid = new PF.Grid(
         this.map.collideLayer.layer.data.map(row => row.map(tile => tile.index)),
       );
+
+      // if map is locked, create collisions on its borders
+      if (this.mapReader.level.fieldInstances.find(f => f.__identifier === 'locked')?.__value === true) {
+        // top border
+        this.scene.matter.add.rectangle(
+          this.map.collideLayer.x + (this.map.collideLayer.displayWidth / 2), 
+          this.map.collideLayer.y + (this.map.collideLayer.layer.tileHeight / 2),
+          this.map.collideLayer.displayWidth,
+          this.map.collideLayer.layer.tileHeight,
+          {
+            isStatic: true,
+          }
+        );
+
+        // bottom border
+        this.scene.matter.add.rectangle(
+          this.map.collideLayer.x + (this.map.collideLayer.displayWidth / 2),
+          (this.map.collideLayer.y + this.map.collideLayer.displayHeight) - (this.map.collideLayer.layer.tileHeight / 2),
+          this.map.collideLayer.displayWidth,
+          this.map.collideLayer.layer.tileHeight,
+          {
+            isStatic: true,
+          }
+        );
+
+        // left border
+        this.scene.matter.add.rectangle(
+          this.map.collideLayer.x + (this.map.collideLayer.layer.tileWidth / 2),
+          this.map.collideLayer.y + (this.map.collideLayer.displayHeight / 2),
+          this.map.collideLayer.layer.tileWidth,
+          this.map.collideLayer.displayHeight,
+          {
+            isStatic: true,
+          }
+        );
+
+        // right border
+        this.scene.matter.add.rectangle(
+          (this.map.collideLayer.x + this.map.collideLayer.displayWidth) - (this.map.collideLayer.layer.tileWidth / 2),
+          this.map.collideLayer.y + (this.map.collideLayer.displayHeight / 2),
+          this.map.collideLayer.layer.tileWidth,
+          this.map.collideLayer.displayHeight,
+          {
+            isStatic: true,
+          }
+        );
+      }
 
       // "bolden" the pathfinding grid. will make up for the body of the hustlers.
       // keep track of the visisted neighbours to not end up in an infinite boldening loop.
@@ -151,27 +197,31 @@ export default class MapHelper {
 
     // create all of the entities
     this.map.entityLayers.forEach(l => l.entityInstances.forEach((entity, i) => {
-      const tileset = this.mapReader.tilesets.find(t => t.uid === entity.__tile.tilesetUid);
-      if (!tileset) return;
+      const tileset = this.mapReader.tilesets.find(t => t.uid === entity.__tile?.tilesetUid);
 
-      const frameId = `${entity.__identifier}_${entity.fieldInstances[0]?.__value ?? 'default'}`;
-      console.log('Try loading existing entity frame. Ignore warning message if there is');
-      let frame =
-        this.scene.textures.get(tileset.identifier.toLowerCase()).get(frameId).name !== frameId
-          ? this.scene.textures.get(tileset.identifier.toLowerCase()).add(
-              frameId,
-              0,
-              // x
-              entity.__tile.x,
-              // y
-              entity.__tile.y,
-              // width
-              entity.__tile.w,
-              // height
-              entity.__tile.h,
-            )
-          : // use existing frame
-            this.scene.textures.get(tileset.identifier.toLowerCase()).get(frameId);
+      let frameId: string;
+      let frame: Phaser.Textures.Frame;
+      if (tileset) {
+        frameId = `${entity.__identifier}_${entity.fieldInstances[0]?.__value ?? 'default'}`;
+        console.log('Try loading existing entity frame. Ignore warning message if there is');
+        frame =
+          this.scene.textures.get(tileset.identifier.toLowerCase()).get(frameId).name !== frameId
+            ? this.scene.textures.get(tileset.identifier.toLowerCase()).add(
+                frameId,
+                0,
+                // x
+                entity.__tile.x,
+                // y
+                entity.__tile.y,
+                // width
+                entity.__tile.w,
+                // height
+                entity.__tile.h,
+              )
+            : // use existing frame
+              this.scene.textures.get(tileset.identifier.toLowerCase()).get(frameId);
+      }
+      
 
       const pivotOffset = new Phaser.Math.Vector2(
         Math.abs(entity.__pivot[0] - 0.5) * entity.width,
@@ -189,43 +239,50 @@ export default class MapHelper {
           entity.px[1] +
           pivotOffset.y,
       );
+
+      const entityDepth = entity.fieldInstances.find(f => f.__identifier === 'Depth');
+      let definedDepth;
+      if (entityDepth) 
+        definedDepth = typeof entityDepth.__value === 'number' ? entityDepth.__value : parseInt(entityDepth.__value);
+      else if (definedDepth = this.mapReader.level.fieldInstances.find(f => f.__identifier.toLowerCase() === l.__identifier.toLowerCase()))
+        definedDepth = typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value);
+      else
+        definedDepth = (this.mapReader.level.layerInstances.length -
+          this.mapReader.level.layerInstances.indexOf(l)) *
+          5
+
+      if (!tileset) {
+        if (shouldBody) {
+          const body = this.scene.matter.add.rectangle(spritePos.x, spritePos.y, entity.width, entity.height, {
+            isStatic: true,
+            isSensor: true,
+          });
+          // (body as any).depth = definedDepth;
+        }
+        return;
+      }
+
       const entitySprite = shouldBody ? this.scene.matter.add.sprite(
         spritePos.x, spritePos.y,
         tileset.identifier.toLowerCase(),
-        frame.name,
+        frame!.name,
         {
           // TODO: have these options on ldtk?
           isStatic: true,
           isSensor: true,
         }
       ) : this.scene.add.sprite(
-        this.mapReader.level.worldX +
-          l.pxOffsetX +
-          entity.px[0] +
-          pivotOffset.x,
-        this.mapReader.level.worldY +
-          l.pxOffsetY +
-          entity.px[1] +
-          pivotOffset.y,
+        spritePos.x,
+        spritePos.y,
         tileset.identifier.toLowerCase(),
-        frame.name
+        frame!.name
       );
+
       this.map.entities.push(entitySprite);
 
       entitySprite
         .setName(entity.__identifier)
-        .setDepth(
-          (this.mapReader.level.layerInstances.length -
-            this.mapReader.level.layerInstances.indexOf(l)) *
-            5,
-        )
-      
-      const entityDepth = entity.fieldInstances.find(f => f.__identifier === 'Depth');
-      let definedDepth;
-      if (entityDepth) 
-        entitySprite.setDepth(typeof entityDepth.__value === 'number' ? entityDepth.__value : parseInt(entityDepth.__value));
-      else if (definedDepth = this.mapReader.level.fieldInstances.find(f => f.__identifier.toLowerCase() === l.__identifier.toLowerCase()))
-        entitySprite.setDepth(typeof definedDepth.__value === 'number' ? definedDepth.__value : parseInt(definedDepth.__value));
+        .setDepth(definedDepth);
       
       if (!l.__identifier.includes('Night')) entitySprite.setPipeline('Light2D');
 
@@ -236,8 +293,8 @@ export default class MapHelper {
         this.scene.lights.addLight(entitySprite.x, entitySprite.y, lightData.radius, lightData.color, lightData.intensity);
       }
 
-      if (this.scene.cache.json.exists(tileset.identifier.toLowerCase())) {
-        const aseprite: AsepriteAnimation = this.scene.cache.json.get(tileset.identifier.toLowerCase());
+      if (this.scene.cache.json.exists(tileset!.identifier.toLowerCase())) {
+        const aseprite: AsepriteAnimation = this.scene.cache.json.get(tileset!.identifier.toLowerCase());
         const frameTag = aseprite.meta.frameTags.find(tag => entity.__identifier.includes(tag.name));
         let frames = frameTag?.from !== undefined && frameTag?.to !== undefined ? Object.keys(aseprite.frames).slice(frameTag.from, frameTag.to + 1) : Object.keys(aseprite.frames);
 
@@ -246,9 +303,9 @@ export default class MapHelper {
           key: entity.__identifier,
           frames: frames.map(key => {
             const asepriteFrame = aseprite.frames[key];
-            const frame = this.scene.textures.get(tileset.identifier.toLowerCase()).add(frameId + '_' + key, 0, asepriteFrame.frame.x, asepriteFrame.frame.y, asepriteFrame.frame.w, asepriteFrame.frame.h);
+            const frame = this.scene.textures.get(tileset!.identifier.toLowerCase()).add(frameId + '_' + key, 0, asepriteFrame.frame.x, asepriteFrame.frame.y, asepriteFrame.frame.w, asepriteFrame.frame.h);
             return {
-              key: tileset.identifier.toLowerCase(),
+              key: tileset!.identifier.toLowerCase(),
               frame: frame.name,
               duration: asepriteFrame.duration,
             };
