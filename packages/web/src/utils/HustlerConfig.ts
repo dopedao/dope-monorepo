@@ -19,7 +19,7 @@ export const SKIN_TONE_COLORS = ['#FFD99C', '#E6A46E', '#CC8850', '#AE6C37', '#9
 export type ZoomWindow = [BigNumber, BigNumber, BigNumber, BigNumber];
 export const ZOOM_WINDOWS = [
   [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)] as ZoomWindow, // default
-  [BigNumber.from(110), BigNumber.from(20), BigNumber.from(100), BigNumber.from(100)] as ZoomWindow, // mugshot
+  [BigNumber.from(135), BigNumber.from(20), BigNumber.from(60), BigNumber.from(100)] as ZoomWindow, // mugshot
   [BigNumber.from(40), BigNumber.from(110), BigNumber.from(255), BigNumber.from(100)] as ZoomWindow, // vehicle
   // This view will crop certain vehicles like Lowrider,
   // but shows other at higher resolution. A decent tradeoff.
