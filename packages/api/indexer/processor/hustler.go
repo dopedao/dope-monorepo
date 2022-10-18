@@ -331,8 +331,22 @@ func (p *HustlerProcessor) ProcessTransferSingle(ctx context.Context, e bindings
 		}
 
 		if e.To != (common.Address{}) {
-			// TODO: reset age for non-og
-			if err := tx.Hustler.UpdateOneID(e.Id.String()).SetWalletID(e.To.Hex()).Exec(ctx); err != nil {
+			chain := tx.Hustler.
+				Create().
+				SetID(e.Id.String())
+
+			// Reset age for non-ogs on transfer
+			typ := hustler.TypeREGULAR
+			if e.Id.Cmp(big.NewInt(500)) == -1 {
+				typ = hustler.TypeORIGINAL_GANGSTA
+				chain = chain.SetAge(block.Time())
+			}
+
+			if err := chain.
+				SetType(typ).
+				OnConflictColumns(hustler.FieldID).
+				UpdateNewValues().
+				Exec(ctx); err != nil {
 				return fmt.Errorf("hustler: update hustler owner: %w", err)
 			}
 		}

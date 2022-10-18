@@ -14,6 +14,7 @@ The server exposes the following endpoints:
 `http://localhost:8080/verify`
 
 ### Game
+
 To run the game server + everything necessary:
 ```docker-compose up game```
 
