@@ -18,7 +18,7 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-func GearClaims(queue chan int) {
+func GearClaims() {
 	ctx := context.Background()
 	client := dbprovider.Ent()
 
@@ -65,6 +65,4 @@ func GearClaims(queue chan int) {
 
 	wg.Wait()
 	log.Default().Println("DONE: GearClaims")
-	// Pop this job off the queue
-	<-queue
 }

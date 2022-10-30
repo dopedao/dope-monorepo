@@ -19,7 +19,7 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-func PaperBalances(queue chan int) {
+func PaperBalances() {
 	ctx := context.Background()
 	client := dbprovider.Ent()
 	retryableHTTPClient := retryablehttp.NewClient()
@@ -33,6 +33,8 @@ func PaperBalances(queue chan int) {
 	if err != nil {
 		log.Fatalf("Creating Components bindings: %+v", err)
 	}
+
+	// Add all wallets with PAPER
 
 	wallets, err := client.Wallet.Query().All(ctx)
 	if err != nil {
@@ -60,6 +62,4 @@ func PaperBalances(queue chan int) {
 
 	wg.Wait()
 	log.Default().Println("DONE: PaperBalances")
-	// Pop this job off the queue
-	<-queue
 }

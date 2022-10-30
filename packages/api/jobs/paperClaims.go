@@ -17,7 +17,7 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-func PaperClaims(queue chan int) {
+func PaperClaims() {
 	ctx := context.Background()
 
 	retryableHTTPClient := retryablehttp.NewClient()
@@ -69,6 +69,4 @@ func PaperClaims(queue chan int) {
 
 	wg.Wait()
 	log.Default().Println("DONE: PaperClaims")
-	// Pop this job off the queue
-	<-queue
 }

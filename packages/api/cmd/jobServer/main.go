@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -69,13 +70,22 @@ func newServer(ctx context.Context) (http.Handler, error) {
 func handleJob(
 	router *mux.Router,
 	url string,
-	job func(chan int),
+	job func(),
 	queue chan int,
 ) {
 	router.HandleFunc(url, func(w http.ResponseWriter, r *http.Request) {
-		queue <- 1
-		go job(queue)
+		fmt.Printf("queue length %v", len(queue))
+		if len(queue) >= JOB_LIMIT {
+			w.WriteHeader(http.StatusProcessing)
+			_, _ = w.Write([]byte(`{"success":false, "message":"already running"}`))
+			return
+		}
+		queue <- 1 // Add job to queue
+		go func() {
+			job()
+			<-queue // Pop this job off the queue
+		}()
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"success":true}`))
+		_, _ = w.Write([]byte(`{"success":true, "message":"job queued"}`))
 	})
 }

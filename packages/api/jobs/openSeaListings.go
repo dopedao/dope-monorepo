@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func OpenSeaListings(queue chan int) {
+func OpenSeaListings() {
 	log := zerolog.New(os.Stderr)
 	ctx := context.Background()
 	var oscfg opensea.Config
@@ -27,6 +27,4 @@ func OpenSeaListings(queue chan int) {
 	job := opensea.NewJob(dbprovider.Ent(), oscfg)
 	job.Run(log.WithContext(ctx))
 	log.Info().Msg("DONE: OpenSeaListings")
-	// Pop this job off the queue
-	<-queue
 }
