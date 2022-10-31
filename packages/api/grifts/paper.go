@@ -8,7 +8,16 @@ import (
 )
 
 var _ = g.Namespace("paper", func() {
-	g.Desc("sync_balances", "Syncs PAPER Balances for all wallets")
+	g.Desc("seed_wallets", "Inserts Wallet records into the DB for each Ethereum address that has ever received PAPER")
+	g.Add("seed_wallets", func(c *g.Context) error {
+		err := jobs.SeedPaperWallets()
+		if err != nil {
+			fmt.Printf("%v", err)
+		}
+		return nil
+	})
+
+	g.Desc("sync_balances", "Syncs PAPER Balances for all wallets in DB")
 	g.Add("sync_balances", func(c *g.Context) error {
 		jobs.PaperBalances()
 		return nil
@@ -20,12 +29,4 @@ var _ = g.Namespace("paper", func() {
 		return nil
 	})
 
-	g.Desc("seed_wallets", "Inserts Wallet records into the DB for each Ethereum address that has ever received PAPER")
-	g.Add("seed_wallets", func(c *g.Context) error {
-		err := jobs.SeedPaperWallets()
-		if err != nil {
-			fmt.Printf("%v", err)
-		}
-		return nil
-	})
 })
