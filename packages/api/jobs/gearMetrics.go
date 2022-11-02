@@ -26,7 +26,7 @@ import (
 // 	item.TypeACCESSORY: 9,
 // }
 
-func GearMetrics(queue chan int) {
+func GearMetrics() {
 	ctx := context.Background()
 	client := dbprovider.Ent()
 
@@ -157,6 +157,4 @@ func GearMetrics(queue chan int) {
 		println("Updating dope:", dope.ID)
 	}
 	log.Default().Println("DONE: GearMetrics")
-	// Pop this job off the queue
-	<-queue
 }
