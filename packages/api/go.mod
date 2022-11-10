@@ -34,6 +34,7 @@ require (
 	cloud.google.com/go/bigquery v1.43.0
 	github.com/btcsuite/btcd v0.22.0-beta // indirect
 	github.com/go-redis/redis/v8 v8.11.5
+	github.com/k0kubun/pp/v3 v3.2.0
 	github.com/markbates/grift v1.5.0
 )
 
