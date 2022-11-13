@@ -185,19 +185,23 @@ func syncContract(ctx context.Context, c *Contract, e *Ethereum, numUpdates *int
 				// Event log not handled
 				continue
 			}
-
-			committers = append(committers, eventLogCommitter(ctx, c, l, committer))
+			commitFunc := eventLogCommitter(ctx, c, l, committer)
+			committers = append(committers, commitFunc)
 		}
 
 		_from = _to + 1
+		log.Debug().
+			Msgf("%v - Processed %v", c.Name, _to)
 
 		if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
+			log.Debug().Msgf("%v - Committing %v changes", c.Name, len(committers))
 			for _, c := range committers {
 				if err := c(tx); err != nil {
 					return err
 				}
 			}
 
+			log.Debug().Msgf("%v - Updating sync state %v", c.Name, _from)
 			if err := tx.SyncState.
 				Create().
 				SetID(c.Address.Hex()).
@@ -212,7 +216,7 @@ func syncContract(ctx context.Context, c *Contract, e *Ethereum, numUpdates *int
 
 			return nil
 		}); err != nil {
-			log.Err(err).Msgf("Indexing contract: %s.", c.Name)
+			log.Err(err).Msgf("%s - FAIL Indexing contract", c.Name)
 			break
 		}
 
