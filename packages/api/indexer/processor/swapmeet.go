@@ -192,7 +192,7 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings
 					SetWalletID(e.To.Hex()).
 					SetItemID(id.String()).
 					OnConflictColumns(walletitems.FieldID).
-					AddBalance(schema.BigInt{Int: e.Values[i]}).
+					UpdateNewValues().
 					Exec(ctx); err != nil {
 					return fmt.Errorf("swapmeet: upsert wallet items balance: %w", err)
 				}

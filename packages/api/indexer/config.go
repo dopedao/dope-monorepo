@@ -16,20 +16,20 @@ var Config = map[string]ConfigCollection{
 			RPC:      "https://eth-mainnet.alchemyapi.io/v2/Mq8Cx8urUvW9FNzv6NW87MYJQ9CnExlj",
 			Interval: time.Second * 5,
 			Contracts: []Contract{
-				// DOPE
 				{
+					Name:       "DOPE",
 					Address:    common.HexToAddress("0x8707276df042e89669d69a177d3da7dc78bd8723"),
 					StartBlock: 13136082,
 					Processor:  new(processor.DopeProcessor),
 				},
-				// PAPER
 				{
+					Name:       "PAPER",
 					Address:    common.HexToAddress("0x7ae1d57b58fa6411f32948314badd83583ee0e8c"),
 					StartBlock: 13162150,
 					Processor:  new(processor.PaperProcessor),
 				},
-				// Initiator
 				{
+					Name:       "HUSTLER Initiator",
 					Address:    common.HexToAddress("0x7aa8e897d712CFB9C7cb6B37634A1C4d21181c8B"),
 					StartBlock: 13650250,
 					Processor:  new(processor.InitiatorProcessor),
@@ -41,14 +41,14 @@ var Config = map[string]ConfigCollection{
 			RPC:      "https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG",
 			Interval: time.Second * 5,
 			Contracts: []Contract{
-				// SwapMeet
 				{
+					Name:       "SWAP MEET",
 					Address:    common.HexToAddress("0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110"),
 					StartBlock: 278375,
 					Processor:  new(processor.SwapMeetProcessor),
 				},
-				// Hustlers
 				{
+					Name:       "HUSTLERS",
 					Address:    common.HexToAddress("0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"),
 					StartBlock: 278746,
 					Processor:  new(processor.HustlerProcessor),

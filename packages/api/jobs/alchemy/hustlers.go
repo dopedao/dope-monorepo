@@ -24,11 +24,9 @@ func SyncHustlers() error {
 			len(tokens))
 		for j := 0; j < len(tokens); j++ {
 			currToken := tokens[j]
-			pp.Print(currToken.Metadata)
-
+			UpsertHustlerFromAlchemy(currToken)
 			// 🚨 TODO: PROCESS AND STORE INFO AS IN HUSTLER INDEXER TO DB
 			//          indexer/processor/hustler.go
-
 			// meta := processMetadata(token)
 			// bodyParts := processBodyParts(token)
 			// viewbox := processViewBox(token)
@@ -86,4 +84,9 @@ func GetHustlerMetaForOwner(owner OwnerAddress) []Nft {
 	// fmt.Printf("…meta %v\n", len(tokens))
 
 	return tokens
+}
+
+func UpsertHustlerFromAlchemy(t Nft) {
+	pp.Print(t.Metadata)
+
 }

@@ -24,6 +24,7 @@ import (
 const blockLimit = 500
 
 type Contract struct {
+	Name       string
 	Address    common.Address
 	StartBlock uint64
 	Processor  processor.Processor
@@ -56,6 +57,7 @@ func NewEthereumIndexer(ctx context.Context, entClient *ent.Client, config EthCo
 		log.Fatal().Msg("Dialing ethereum rpc.") //nolint:gocritic
 	}
 
+	log.Info().Msgf("Starting client for %v", c)
 	eth := ethclient.NewClient(c)
 
 	e := &Ethereum{
@@ -65,7 +67,9 @@ func NewEthereumIndexer(ctx context.Context, entClient *ent.Client, config EthCo
 	}
 
 	for _, c := range config.Contracts {
+		fmt.Println(c.Name)
 		c := c
+		log.Info().Msgf("Get SyncState for %v", c.Name)
 		s, err := entClient.SyncState.Get(ctx, c.Address.Hex())
 		if err != nil && !ent.IsNotFound(err) {
 			log.Fatal().Err(err).Msg("Fetching sync state.")
@@ -124,79 +128,12 @@ func (e *Ethereum) Sync(ctx context.Context) {
 
 			e.latest = latest
 			numUpdates := 0
-			for _, c := range e.contracts {
-				_from := c.StartBlock
-				for {
-					_to := Min(latest, _from+blockLimit)
-
-					if _from > _to {
-						// No new blocks
-						break
-					}
-
-					log.Info().Msgf("Syncing %s from %d to %d.", c.Address.Hex(), _from, _to)
-
-					logs, err := e.eth.FilterLogs(ctx, ethereum.FilterQuery{
-						FromBlock: new(big.Int).SetUint64(_from),
-						ToBlock:   new(big.Int).SetUint64(_to),
-						Addresses: []common.Address{c.Address},
-					})
-					if err != nil {
-						log.Fatal().Err(err).Msg("Filtering logs.")
-					}
-
-					var committers []func(*ent.Tx) error
-					for _, l := range logs {
-						committer, err := c.Processor.ProcessElement(c.Processor)(ctx, l)
-						if err != nil {
-							// Commented out so we don't crash the indexer on every mis-process
-							// log.Fatal().Err(err).Msgf("Processing element %s.", l.TxHash.Hex())
-							log.Err(err).Msgf(
-								"Contract %s error processing tx hash %s.", c.Address, l.TxHash.Hex())
-							break
-						}
-
-						if committer == nil {
-							// Event log not handled
-							continue
-						}
-
-						committers = append(committers, eventLogCommitter(ctx, c, l, committer))
-					}
-
-					_from = _to + 1
-
-					if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
-						for _, c := range committers {
-							if err := c(tx); err != nil {
-								return err
-							}
-						}
-
-						if err := tx.SyncState.
-							Create().
-							SetID(c.Address.Hex()).
-							SetStartBlock(_from).
-							OnConflictColumns(syncstate.FieldID).
-							UpdateStartBlock().
-							Exec(ctx); err != nil {
-							return fmt.Errorf("updating sync state: %w", err)
-						}
-
-						numUpdates += len(committers)
-
-						return nil
-					}); err != nil {
-						log.Err(err).Msgf("Syncing contract: %s.", c.Address.Hex())
-						break
-					}
-
-					if _to == latest {
-						c.StartBlock = _from
-						break
-					}
-				}
+			var wg sync.WaitGroup
+			for _, contract := range e.contracts {
+				go syncContract(ctx, contract, e, &numUpdates)
+				wg.Add(1)
 			}
+			wg.Wait()
 			e.Unlock()
 
 			if numUpdates > 0 {
@@ -208,6 +145,80 @@ func (e *Ethereum) Sync(ctx context.Context) {
 
 		case <-ctx.Done():
 			return
+		}
+	}
+}
+
+func syncContract(ctx context.Context, c *Contract, e *Ethereum, numUpdates *int) {
+	_from := c.StartBlock
+	for {
+		_to := Min(e.latest, _from+blockLimit)
+
+		if _from > _to {
+			// No new blocks
+			break
+		}
+
+		log.Info().Msgf("Indexing %s from %d to %d.", c.Name, _from, _to)
+
+		logs, err := e.eth.FilterLogs(ctx, ethereum.FilterQuery{
+			FromBlock: new(big.Int).SetUint64(_from),
+			ToBlock:   new(big.Int).SetUint64(_to),
+			Addresses: []common.Address{c.Address},
+		})
+		if err != nil {
+			log.Fatal().Err(err).Msg("Filtering logs.")
+		}
+
+		var committers []func(*ent.Tx) error
+		for _, l := range logs {
+			committer, err := c.Processor.ProcessElement(c.Processor)(ctx, l)
+			if err != nil {
+				// Commented out so we don't crash the indexer on every mis-process
+				// log.Fatal().Err(err).Msgf("Processing element %s.", l.TxHash.Hex())
+				log.Err(err).Msgf(
+					"Contract %s error processing tx hash %s.", c.Address, l.TxHash.Hex())
+				break
+			}
+
+			if committer == nil {
+				// Event log not handled
+				continue
+			}
+
+			committers = append(committers, eventLogCommitter(ctx, c, l, committer))
+		}
+
+		_from = _to + 1
+
+		if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
+			for _, c := range committers {
+				if err := c(tx); err != nil {
+					return err
+				}
+			}
+
+			if err := tx.SyncState.
+				Create().
+				SetID(c.Address.Hex()).
+				SetStartBlock(_from).
+				OnConflictColumns(syncstate.FieldID).
+				UpdateStartBlock().
+				Exec(ctx); err != nil {
+				return fmt.Errorf("updating sync state: %w", err)
+			}
+
+			*numUpdates += len(committers)
+
+			return nil
+		}); err != nil {
+			log.Err(err).Msgf("Indexing contract: %s.", c.Name)
+			break
+		}
+
+		if _to == e.latest {
+			c.StartBlock = _from
+			break
 		}
 	}
 }
