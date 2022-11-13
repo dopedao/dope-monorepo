@@ -137,7 +137,10 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.Hustle
 	}, nil
 }
 
-func (p *HustlerProcessor) ProcessMetadataUpdate(ctx context.Context, e bindings.HustlerMetadataUpdate) (func(tx *ent.Tx) error, error) {
+func (p *HustlerProcessor) ProcessMetadataUpdate(
+	ctx context.Context,
+	e bindings.HustlerMetadataUpdate,
+) (func(tx *ent.Tx) error, error) {
 	ctx, log := logger.LogFor(ctx)
 	meta, err := p.Contract.Metadata(nil, e.Id)
 	if err != nil {
@@ -295,7 +298,7 @@ func cleanJsonString(json string) string {
 
 func (p *HustlerProcessor) ProcessTransferBatch(ctx context.Context, e bindings.HustlerTransferBatch) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
-		if err := ensureWallet(ctx, tx, e.To); err != nil {
+		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
 			return fmt.Errorf("hustler: %w", err)
 		}
 
@@ -316,14 +319,24 @@ func (p *HustlerProcessor) ProcessTransferBatch(ctx context.Context, e bindings.
 	}, nil
 }
 
-func (p *HustlerProcessor) ProcessTransferSingle(ctx context.Context, e bindings.HustlerTransferSingle) (func(tx *ent.Tx) error, error) {
-	block, err := p.Eth.BlockByNumber(ctx, new(big.Int).SetUint64(e.Raw.BlockNumber))
-	if err != nil {
-		return nil, fmt.Errorf("ProcessTransferSingle updating hustler %s metadata: %w", e.Id.String(), err)
+func (p *HustlerProcessor) ProcessTransferSingle(
+	ctx context.Context,
+	e bindings.HustlerTransferSingle,
+) (func(tx *ent.Tx) error, error) {
+
+	block, blockErr := p.Eth.BlockByNumber(
+		ctx,
+		new(big.Int).SetUint64(e.Raw.BlockNumber))
+	if blockErr != nil {
+		fmtErr := fmt.Errorf(
+			"ProcessTransferSingle updating hustler %s metadata: %w",
+			e.Id.String(),
+			blockErr)
+		return nil, fmtErr
 	}
 
 	return func(tx *ent.Tx) error {
-		if err := ensureWallet(ctx, tx, e.To); err != nil {
+		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
 			return fmt.Errorf("hustler: %w", err)
 		}
 
@@ -497,10 +510,16 @@ type Slots struct {
 	Accessory *big.Int
 }
 
-func equipmentSlots(ctx context.Context, eth interface {
-	ethereum.ChainStateReader
-	ethereum.TransactionReader
-}, id string, address common.Address, blockNumber *big.Int) (*Slots, error) {
+func equipmentSlots(
+	ctx context.Context,
+	eth interface {
+		ethereum.ChainStateReader
+		ethereum.TransactionReader
+	},
+	id string,
+	address common.Address,
+	blockNumber *big.Int,
+) (*Slots, error) {
 	slots := &Slots{}
 
 	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(

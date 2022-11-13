@@ -168,7 +168,7 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMe
 
 func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings.SwapMeetTransferBatch) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
-		if err := ensureWallet(ctx, tx, e.To); err != nil {
+		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
 			return fmt.Errorf("swapmeet: %w", err)
 		}
 
@@ -234,7 +234,7 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings
 
 func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e bindings.SwapMeetTransferSingle) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
-		if err := ensureWallet(ctx, tx, e.To); err != nil {
+		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
 			return fmt.Errorf("swapmeet: %w", err)
 		}
 

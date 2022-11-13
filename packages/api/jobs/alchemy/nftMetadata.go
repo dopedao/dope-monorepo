@@ -1,8 +1,8 @@
+package alchemy
+
 // Structs that represent a NFT response from the Alchemy API
 // https://docs.alchemy.com/reference/getnftsforcollection
 // Enables us to unmarshal the JSON and do things with the data
-
-package alchemy
 
 type Relation struct {
 	Citizen      string `json:"citizen"`
@@ -18,6 +18,7 @@ type NftResponsePage struct {
 
 // Each individual NFT response
 type Nft struct {
+	OwnerAddress     string          // not included in JSON response
 	Contract         NftContract     `json:"contract"`
 	Id               NftId           `json:"id"`
 	Title            string          `json:"title"`
