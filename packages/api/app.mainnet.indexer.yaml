@@ -2,7 +2,7 @@
 runtime: go116
 service: indexer
 
-main: ./cmd/indexer
+main: ./cmd/indexServer
 
 instance_class: B2
 

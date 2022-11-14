@@ -157,7 +157,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 		return nil, fmt.Errorf("hustler: decoding metadata: %w", err)
 	}
 
-	safeStr := cleanJsonString(string(decoded))
+	safeStr := CleanJsonString(string(decoded))
 
 	var parsed Metadata
 	if err := json.Unmarshal([]byte(safeStr), &parsed); err != nil {
@@ -242,7 +242,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 		return nil, fmt.Errorf("Eth.ByBlockNumber ProcessMetadataUpdate updating hustler %s metadata: %w", e.Id.String(), err)
 	}
 
-	safeName := cleanJsonString(meta.Name)
+	safeName := CleanJsonString(meta.Name)
 
 	return func(tx *ent.Tx) error {
 		if err := tx.Hustler.Create().
@@ -292,7 +292,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 
 // Nasty Hustlers put bad unicode and null chars in things.
 // We have to clean it up or it breaks our system.
-func cleanJsonString(json string) string {
+func CleanJsonString(json string) string {
 	return strings.ReplaceAll(strings.ToValidUTF8(json, ""), "\x00", "")
 }
 
@@ -419,7 +419,7 @@ func refreshEquipment(ctx context.Context, eth interface {
 		return fmt.Errorf("decoding metadata: %w", err)
 	}
 
-	safeStr := cleanJsonString(string(decoded))
+	safeStr := CleanJsonString(string(decoded))
 
 	var parsed Metadata
 	if err := json.Unmarshal([]byte(safeStr), &parsed); err != nil {

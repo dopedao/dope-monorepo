@@ -1,30 +1,43 @@
+// Methods for syncing Hustlers
+
 package alchemy
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"log"
+	"strconv"
+	"strings"
 
-	"github.com/k0kubun/pp/v3"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/rs/zerolog/log"
 )
 
 // HUSTLERS
 var baseUrl = "https://opt-mainnet.g.alchemy.com/nft/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG"
 var contractAddress = "0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"
 
-func SyncHustlers() error {
+func SyncHustlers(ctx context.Context) error {
 	ownersWithTokenBalances := GetHustlerOwners()
 	numOwners := len(ownersWithTokenBalances)
 	for i := 0; i < numOwners; i++ {
-		tokens := GetHustlerMetaForOwner(ownersWithTokenBalances[i])
-		fmt.Printf("%0.3f%%\n",
-			float64(i)/float64(numOwners))
-		fmt.Printf("%v - %v tokens\n",
-			ownersWithTokenBalances[i].Address,
-			len(tokens))
+		owner := ownersWithTokenBalances[i]
+		log.Info().Msgf(
+			"%v - %v tokens\n",
+			owner.Address,
+			len(owner.TokenBalances))
+
+		tokens := GetHustlerMetaForOwner(owner)
+
+		log.Info().
+			Msgf(
+				"Hustler Sync Completion %0.3f%%\n",
+				float64(i)/float64(numOwners))
+
 		for j := 0; j < len(tokens); j++ {
 			currToken := tokens[j]
-			UpsertHustlerFromAlchemy(currToken)
+			UpsertHustlerFromAlchemy(ctx, currToken)
 			// 🚨 TODO: PROCESS AND STORE INFO AS IN HUSTLER INDEXER TO DB
 			//          indexer/processor/hustler.go
 			// meta := processMetadata(token)
@@ -35,6 +48,76 @@ func SyncHustlers() error {
 	return nil
 }
 
+func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
+	dbClient := dbprovider.Ent()
+
+	// pp.Print(t)
+	tokenId, err := hexStringToInteger(t.Id.TokenId)
+	if err != nil {
+		log.Error().Msgf("Error converting tokenId to int %v", err)
+		return
+	}
+	// Get some attributes required to save model
+	typ := hustler.TypeREGULAR
+	if 500 > tokenId {
+		typ = hustler.TypeORIGINAL_GANGSTA
+	}
+
+	sex := hustler.SexMALE
+	if valueForAttribute(t.Metadata.Attributes, "Sex") == "Female" {
+		sex = hustler.SexFEMALE
+	}
+	// Convert age attr string to uint
+	ageAttr := valueForAttribute(t.Metadata.Attributes, "Initiation")
+	age, err := strconv.ParseUint(fmt.Sprint(ageAttr), 10, 64)
+	if err != nil {
+		age = 0
+	}
+
+	log.Info().
+		Int64("tokenId", tokenId).
+		Str("name", t.Metadata.Name).
+		Msg("Saving Hustler")
+
+	err = dbClient.Hustler.Create().
+		SetID(fmt.Sprint(tokenId)).
+		SetAge(age).
+		SetSex(sex).
+		SetType(typ).
+		SetOrder(hustler.DefaultOrder).
+		SetViewbox(hustler.DefaultViewbox).
+		SetName(t.Metadata.Name).
+		SetSvg(t.Metadata.Image).
+		OnConflictColumns(hustler.FieldID).
+		UpdateNewValues().
+		Exec(ctx)
+
+	if err != nil {
+		log.Error().
+			Int64("tokenId", tokenId).
+			Err(err).
+			Interface("attributes", t.Metadata.Attributes).
+			Msg("Failed Saving Hustler")
+	}
+}
+
+func valueForAttribute(attrs []NftAttribute, searchKey string) interface{} {
+	for i := range attrs {
+		if attrs[i].TraitType == searchKey {
+			return attrs[i].Value
+		}
+	}
+	return nil
+}
+
+// Convert strings like 0x000000..1 to integers
+func hexStringToInteger(hexString string) (int64, error) {
+	// replace 0x or 0X with empty String
+	numStr := strings.Replace(hexString, "0x", "", -1)
+	numStr = strings.Replace(numStr, "0X", "", -1)
+	return strconv.ParseInt(numStr, 16, 64)
+}
+
 // https://docs.alchemy.com/reference/getownersforcollection
 func GetHustlerOwners() []OwnerAddress {
 	url := fmt.Sprintf(
@@ -42,51 +125,73 @@ func GetHustlerOwners() []OwnerAddress {
 		baseUrl,
 		contractAddress)
 
-	fmt.Println("GETTING OWNERS")
+	log.Info().Msg("GETTING OWNERS")
+
 	body := makeGetRequest(url)
 
 	// Decode it
 	var responsePage OwnerAddressResponsePage
-	err := json.Unmarshal(body, &responsePage)
-	if err != nil {
-		log.Fatal("Unmarshaling response: ", err)
+	if err := json.Unmarshal(body, &responsePage); err != nil {
+		log.Error().
+			Str("body", string(body)).
+			Msgf("Unmarshaling HustlerOwners: %v", err)
 	}
-	fmt.Printf("Found %v wallets\n", len(responsePage.Owners))
+
+	log.Info().Msgf("Found %v wallets\n", len(responsePage.Owners))
 	return responsePage.Owners
 }
 
 func GetHustlerMetaForOwner(owner OwnerAddress) []Nft {
+	var allTokens []Nft
 	url := fmt.Sprintf("%v/getNFTMetadataBatch", baseUrl)
+	// Endpoint only supports 100 tokens per request
+	tokenLimit := 100
+	tokenBalanceChunks := chunkTokenBalances(owner.TokenBalances, tokenLimit)
 
-	var tokenPayload TokenPayloadRequest
-	for i := 0; i < len(owner.TokenBalances); i++ {
-		tb := owner.TokenBalances[i]
-		p := TokenPayload{
-			ContractAddress: contractAddress,
-			TokenId:         tb.TokenId,
+	// Need to chunk requests in batches of `tokenLimit`
+	// or Alchemy API will reject it
+	for _, chunk := range tokenBalanceChunks {
+		var tokenPayload TokenPayloadRequest
+		for j := 0; j < len(chunk); j++ {
+			tb := owner.TokenBalances[j]
+			p := TokenPayload{
+				ContractAddress: contractAddress,
+				TokenId:         tb.TokenId,
+			}
+			tokenPayload.Tokens = append(tokenPayload.Tokens, p)
 		}
-		tokenPayload.Tokens = append(tokenPayload.Tokens, p)
-	}
-	jsonPayload, _ := json.Marshal(tokenPayload)
+		jsonPayload, _ := json.Marshal(tokenPayload)
 
-	body := makePostRequest(url, jsonPayload)
+		body := makePostRequest(url, jsonPayload)
 
-	// Decode it
-	var tokens []Nft
-	err := json.Unmarshal(body, &tokens)
-	if err != nil {
-		log.Fatal("Unmarshaling response: ", err)
+		// Decode it
+		var tokens []Nft
+		if err := json.Unmarshal(body, &tokens); err != nil {
+			log.Warn().
+				Str("body", string(body)).
+				Msgf("Unmarshaling NFTMetaBatch: %v", err)
+		}
+		allTokens = append(allTokens, tokens...)
 	}
+
 	// Add owner address to each token
-	for i := 0; i < len(tokens); i++ {
-		tokens[i].OwnerAddress = owner.Address
+	for i := 0; i < len(allTokens); i++ {
+		allTokens[i].OwnerAddress = owner.Address
 	}
-	// fmt.Printf("…meta %v\n", len(tokens))
-
-	return tokens
+	return allTokens
 }
 
-func UpsertHustlerFromAlchemy(t Nft) {
-	pp.Print(t.Metadata)
-
+// Split slices into chunks of predetermined size
+func chunkTokenBalances(slice []TokenBalance, chunkSize int) [][]TokenBalance {
+	var chunks [][]TokenBalance
+	for i := 0; i < len(slice); i += chunkSize {
+		end := i + chunkSize
+		// necessary check to avoid slicing beyond
+		// slice capacity
+		if end > len(slice) {
+			end = len(slice)
+		}
+		chunks = append(chunks, slice[i:end])
+	}
+	return chunks
 }
