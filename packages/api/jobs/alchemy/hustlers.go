@@ -78,8 +78,16 @@ func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
 		Int64("tokenId", tokenId).
 		Str("name", t.Metadata.Name).
 		Msg("Saving Hustler")
+	// Make sure Wallet exists
+	dbClient.Wallet.Create().
+		SetID(t.OwnerAddress).
+		OnConflict().
+		DoNothing().
+		Exec(ctx)
 
-	err = dbClient.Hustler.Create().
+	// Create Hustler
+	hustlerErr := dbClient.Hustler.Create().
+		SetWalletID(t.OwnerAddress).
 		SetID(fmt.Sprint(tokenId)).
 		SetAge(age).
 		SetSex(sex).
@@ -92,7 +100,7 @@ func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
 		UpdateNewValues().
 		Exec(ctx)
 
-	if err != nil {
+	if hustlerErr != nil {
 		log.Error().
 			Int64("tokenId", tokenId).
 			Err(err).
