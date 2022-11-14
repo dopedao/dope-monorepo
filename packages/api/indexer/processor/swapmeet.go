@@ -73,7 +73,7 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMe
 		//
 		// -- faces
 		_, log := logger.LogFor(ctx)
-		log.Warn().Msgf("failed getting TokenURI during ProcessSetRle %s metadata: %w", e.Id.String(), err)
+		log.Warn().Msgf("failed getting TokenURI during ProcessSetRle %s metadata: %v", e.Id.String(), err)
 		return func(tx *ent.Tx) error {
 			if err := tx.Item.Create().
 				SetID(e.Id.String()).
