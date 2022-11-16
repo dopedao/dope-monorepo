@@ -78,6 +78,7 @@ func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
 		Int64("tokenId", tokenId).
 		Str("name", t.Metadata.Name).
 		Msg("Saving Hustler")
+
 	// Make sure Wallet exists
 	dbClient.Wallet.Create().
 		SetID(t.OwnerAddress).

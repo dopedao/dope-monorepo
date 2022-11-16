@@ -4,12 +4,6 @@ package alchemy
 // https://docs.alchemy.com/reference/getnftsforcollection
 // Enables us to unmarshal the JSON and do things with the data
 
-type Relation struct {
-	Citizen      string `json:"citizen"`
-	Conversation string `json:"conversation"`
-	Text         uint   `json:"text"`
-}
-
 // What we get back from alchemy API
 type NftResponsePage struct {
 	Nfts        []Nft  `json:"nfts"`
