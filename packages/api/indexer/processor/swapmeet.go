@@ -208,7 +208,7 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings
 			}
 
 			for _, h := range wallet.Edges.Hustlers {
-				if err := refreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
+				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
 					return err
 				}
 			}
@@ -222,7 +222,7 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings
 			}
 
 			for _, h := range wallet.Edges.Hustlers {
-				if err := refreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
+				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
 					return err
 				}
 			}
@@ -270,7 +270,7 @@ func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e binding
 			}
 
 			for _, h := range wallet.Edges.Hustlers {
-				if err := refreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
+				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
 					return err
 				}
 			}
@@ -284,7 +284,7 @@ func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e binding
 			}
 
 			for _, h := range wallet.Edges.Hustlers {
-				if err := refreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
+				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
 					return err
 				}
 			}

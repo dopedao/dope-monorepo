@@ -357,7 +357,7 @@ func (p *HustlerProcessor) ProcessTransferSingle(
 				return fmt.Errorf("hustler: create hustler: %w", err)
 			}
 
-			if err := refreshEquipment(ctx, p.Eth, tx, e.Id.String(), hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
+			if err := RefreshEquipment(ctx, p.Eth, tx, e.Id.String(), hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
 				return err
 			}
 		}
@@ -389,11 +389,18 @@ func (p *HustlerProcessor) ProcessTransferSingle(
 	}, nil
 }
 
-func refreshEquipment(ctx context.Context, eth interface {
-	bind.ContractBackend
-	ethereum.ChainStateReader
-	ethereum.TransactionReader
-}, tx *ent.Tx, id string, address common.Address, blockNumber *big.Int) error {
+func RefreshEquipment(
+	ctx context.Context,
+	eth interface {
+		bind.ContractBackend
+		ethereum.ChainStateReader
+		ethereum.TransactionReader
+	},
+	tx *ent.Tx,
+	id string,
+	address common.Address,
+	blockNumber *big.Int,
+) error {
 	slots, err := equipmentSlots(ctx, eth, id, address, blockNumber)
 	if err != nil {
 		return err
