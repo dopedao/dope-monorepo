@@ -1,8 +1,9 @@
 dispatch:
-  - url: api.dopewars.gg/game/*
-    service: game
-  - url: api.dopewars.gg/authentication/*
-    service: game
+  # Commented out until we get MMO running and people using it
+  # - url: api.dopewars.gg/game/*
+  #   service: game
+  # - url: api.dopewars.gg/authentication/*
+  #   service: game
   - url: api.dopewars.gg/*
     service: default
   - url: testnet.api.dopewars.gg/*

@@ -8,6 +8,7 @@ dist
 /**/sha.h
 *.tgz
 .env
+.envrc
 .DS_Store
 *.tsbuildinfo
 *.log
