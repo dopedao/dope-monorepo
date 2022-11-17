@@ -27,7 +27,7 @@ const blockLimit = 500
 // Limit for number of ent transactions to run concurrently
 // If this is too high we run into deadlocks and the indexer crashes.
 // This can also happen when code inside each "tx" function is slow.
-const txLimit = 200
+const txLimit = 50
 
 type Contract struct {
 	Name       string
