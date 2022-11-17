@@ -40,10 +40,8 @@ func init() {
 
 	// Run migrations
 	ctx := context.Background()
-	fmt.Println("RUNNING MIGRATIONS")
-	runMigration(ctx)
-	fmt.Println("REFRESH MATERIAL VIEWS")
-	refreshMaterializedViews(ctx)
+	RunMigration(ctx)
+	RefreshMaterializedViews(ctx)
 }
 
 func Conn() *sql.Driver {

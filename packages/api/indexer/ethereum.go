@@ -189,7 +189,7 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 				log.Fatal().Err(err).Msgf("Processing element %s.", l.TxHash.Hex())
 				// log.Err(err).Msgf(
 				// 	"Contract %s error processing tx hash %s.", c.Address, l.TxHash.Hex())
-				break
+				// break
 			}
 
 			if committer == nil {
@@ -209,24 +209,28 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 		//
 		// Because of this design, each "committer" should be idempotent
 		// and ensure it uses an Ent upsert operation.
-		txChunks := chunkTx(committers, 25)
+		txChunks := chunkTx(committers, 50)
 
-		for _, committers := range txChunks {
+		log.Debug().Msgf("%v - %v Chunks with %v total transactions", contract.Name, len(txChunks), len(committers))
+		for _, committerChunk := range txChunks {
 			if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
 				log.Debug().Msgf(
 					"%v - block %v Committing %v changes",
 					contract.Name,
 					_from,
-					len(committers))
-				for _, c := range committers {
+					len(committerChunk))
+				for _, c := range committerChunk {
 					if err := c(tx); err != nil {
 						log.Fatal().Err(err).Msgf("%s - FAIL committing transactions", contract.Name)
 						return err
 					}
 				}
-
-				*numUpdates += len(committers)
-
+				log.Debug().Msgf(
+					"%v - block %v COMMITTED %v changes",
+					contract.Name,
+					_from,
+					len(committerChunk))
+				*numUpdates += len(committerChunk)
 				return nil
 			}); err != nil {
 				log.Err(err).Msgf("%s - FAIL Indexing contract", contract.Name)

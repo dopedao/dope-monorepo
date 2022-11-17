@@ -17,8 +17,12 @@ var _ = g.Namespace("paper", func() {
 		return nil
 	})
 
-	g.Desc("sync_balances", "Syncs PAPER Balances for all wallets in DB")
+	g.Desc("sync_balances", "Syncs PAPER Balances for all Wallets")
 	g.Add("sync_balances", func(c *g.Context) error {
+		err := jobs.SeedPaperWallets()
+		if err != nil {
+			fmt.Printf("%v", err)
+		}
 		jobs.PaperBalances()
 		return nil
 	})

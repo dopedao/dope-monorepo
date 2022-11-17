@@ -3,6 +3,7 @@ package dbprovider
 import (
 	"context"
 	"embed"
+	"fmt"
 
 	"entgo.io/ent/dialect/sql/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/migrate"
@@ -11,7 +12,8 @@ import (
 
 // Run the Ent auto migration tool
 // Docs: https://entgo.io/docs/migrate
-func runMigration(ctx context.Context) {
+func RunMigration(ctx context.Context) {
+	fmt.Println("RUNNING MIGRATIONS")
 	_, log := logger.LogFor(ctx)
 	log.Debug().Msg("Calling runMigration")
 
@@ -41,7 +43,8 @@ func runMigration(ctx context.Context) {
 var f embed.FS
 
 // Drop and recreate our Materialized views with SQL files.
-func refreshMaterializedViews(ctx context.Context) {
+func RefreshMaterializedViews(ctx context.Context) {
+	fmt.Println("REFRESH MATERIAL VIEWS")
 	_, log := logger.LogFor(ctx)
 	log.Debug().Msg("Loading SQL migrations for Materialized Views")
 
