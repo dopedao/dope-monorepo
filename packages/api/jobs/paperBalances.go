@@ -43,7 +43,7 @@ func SeedPaperWallets() error {
 	}
 	defer client.Close()
 
-	log.Default().Println("Running query…")
+	log.Default().Println("Running query to get all PAPER owners…")
 	q := client.Query(qStr)
 	it, err := q.Read(ctx)
 	if err != nil {

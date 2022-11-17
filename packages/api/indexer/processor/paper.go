@@ -79,12 +79,23 @@ func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e bindings.PaperTr
 	}, nil
 }
 
+var paperClaimIndexedWalletAddresses = map[string]bool{}
+
 func handlePaperMint(
 	ctx context.Context,
 	e bindings.PaperTransfer,
 	p *PaperProcessor,
 ) error {
 	log.Debug().Msgf("PAPER MINT from %s", e.From.Hex())
+
+	if paperClaimIndexedWalletAddresses[e.To.Hex()] {
+		fmt.Printf("SKIPPING %v\n", e.To.Hex())
+		return nil
+	} else {
+		// We check all DOPES for this address below,
+		// so we don't need to do it more than once
+		paperClaimIndexedWalletAddresses[e.To.Hex()] = true
+	}
 
 	// "Loot" is a throwback to the original Loot project.
 	// We didn't do lots of planning naming this stuff.
@@ -113,6 +124,7 @@ func handlePaperMint(
 
 		// This is slow because it has to make a contract call to get token ID
 		id, err := dope.TokenOfOwnerByIndex(nil, e.To, big.NewInt(int64(i)))
+
 		if err != nil {
 			return fmt.Errorf("PAPER token of owner by index: %w", err)
 		}

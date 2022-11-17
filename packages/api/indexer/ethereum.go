@@ -24,6 +24,11 @@ import (
 
 const blockLimit = 500
 
+// Limit for number of ent transactions to run concurrently
+// If this is too high we run into deadlocks and the indexer crashes.
+// This can also happen when code inside each "tx" function is slow.
+const txLimit = 200
+
 type Contract struct {
 	Name       string
 	Address    common.Address
@@ -209,7 +214,7 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 		//
 		// Because of this design, each "committer" should be idempotent
 		// and ensure it uses an Ent upsert operation.
-		txChunks := chunkTx(committers, 50)
+		txChunks := chunkTx(committers, txLimit)
 
 		log.Debug().Msgf("%v - %v Chunks with %v total transactions", contract.Name, len(txChunks), len(committers))
 		for _, committerChunk := range txChunks {
