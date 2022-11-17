@@ -29,7 +29,7 @@ var Config = map[string]ConfigCollection{
 					Processor:  new(processor.PaperProcessor),
 				},
 				{
-					Name:       "HUSTLER Initiator",
+					Name:       "INITIATOR",
 					Address:    common.HexToAddress("0x7aa8e897d712CFB9C7cb6B37634A1C4d21181c8B"),
 					StartBlock: 13650250,
 					Processor:  new(processor.InitiatorProcessor),

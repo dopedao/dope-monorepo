@@ -86,6 +86,9 @@ func (p *HustlerProcessor) Setup(address common.Address, eth interface {
 }
 
 func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.HustlerAddRles) (func(tx *ent.Tx) error, error) {
+	ctx, log := logger.LogFor(ctx)
+	log.Debug().Str("indexer", "HUSTLER").Str("indexer", "HUSTLER").Msgf("ProcessAddRles")
+
 	var builders []*ent.BodyPartCreate
 
 	var part bodypart.Type
@@ -142,6 +145,8 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 	e bindings.HustlerMetadataUpdate,
 ) (func(tx *ent.Tx) error, error) {
 	ctx, log := logger.LogFor(ctx)
+	log.Debug().Str("indexer", "HUSTLER").Msgf("ProcessMetadataUpdate %s", e.Id)
+
 	meta, err := p.Contract.Metadata(nil, e.Id)
 	if err != nil {
 		return nil, fmt.Errorf("hustler: getting metadata: %w", err)
@@ -279,7 +284,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 			OnConflictColumns(hustler.FieldID).
 			UpdateNewValues().
 			Exec(ctx); err != nil {
-			log.Debug().
+			log.Debug().Str("indexer", "HUSTLER").
 				Str("safeStr", safeStr).
 				Str("name", safeName).
 				Msg("Failed Saving Hustler")
@@ -296,7 +301,13 @@ func CleanJsonString(json string) string {
 	return strings.ReplaceAll(strings.ToValidUTF8(json, ""), "\x00", "")
 }
 
-func (p *HustlerProcessor) ProcessTransferBatch(ctx context.Context, e bindings.HustlerTransferBatch) (func(tx *ent.Tx) error, error) {
+func (p *HustlerProcessor) ProcessTransferBatch(
+	ctx context.Context,
+	e bindings.HustlerTransferBatch,
+) (func(tx *ent.Tx) error, error) {
+	ctx, log := logger.LogFor(ctx)
+	log.Debug().Str("indexer", "HUSTLER").Msgf("ProcessTransferBatch %v", e.Ids)
+
 	return func(tx *ent.Tx) error {
 		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
 			return fmt.Errorf("hustler: %w", err)
@@ -323,6 +334,8 @@ func (p *HustlerProcessor) ProcessTransferSingle(
 	ctx context.Context,
 	e bindings.HustlerTransferSingle,
 ) (func(tx *ent.Tx) error, error) {
+	ctx, log := logger.LogFor(ctx)
+	log.Debug().Str("indexer", "HUSTLER").Msgf("ProcessTransferSingle %s", e.Id.String())
 
 	block, blockErr := p.Eth.BlockByNumber(
 		ctx,
@@ -401,6 +414,8 @@ func RefreshEquipment(
 	address common.Address,
 	blockNumber *big.Int,
 ) error {
+	ctx, log := logger.LogFor(ctx)
+	log.Debug().Str("indexer", "HUSTLER").Msgf("RefreshEquipment for %s", id)
 	slots, err := equipmentSlots(ctx, eth, id, address, blockNumber)
 	if err != nil {
 		return err
