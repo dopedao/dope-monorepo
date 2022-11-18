@@ -160,7 +160,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 		log.Warn().
 			Str("indexer", "HUSTLER").
 			Str("hustler_id", e.Id.String()).
-			Msgf("Failed to get metadata from contract, Skipping…", e.Id)
+			Msg("Failed to get metadata from contract, Skipping…")
 		return nil, nil
 	}
 
