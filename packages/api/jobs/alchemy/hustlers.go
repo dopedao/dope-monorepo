@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"strconv"
 	"strings"
 
@@ -16,7 +17,7 @@ import (
 
 // HUSTLERS
 var baseUrl = "https://opt-mainnet.g.alchemy.com/nft/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG"
-var contractAddress = "0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"
+var hustlerContractAddr = "0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"
 
 func SyncHustlers(ctx context.Context) error {
 	ownersWithTokenBalances := GetHustlerOwners()
@@ -133,7 +134,7 @@ func GetHustlerOwners() []OwnerAddress {
 	url := fmt.Sprintf(
 		"%v/getOwnersForCollection?contractAddress=%v&withTokenBalances=true",
 		baseUrl,
-		contractAddress)
+		hustlerContractAddr)
 
 	log.Info().Msg("GETTING OWNERS")
 
@@ -165,7 +166,7 @@ func GetHustlerMetaForOwner(owner OwnerAddress) []Nft {
 		for j := 0; j < len(chunk); j++ {
 			tb := owner.TokenBalances[j]
 			p := TokenPayload{
-				ContractAddress: contractAddress,
+				ContractAddress: hustlerContractAddr,
 				TokenId:         tb.TokenId,
 			}
 			tokenPayload.Tokens = append(tokenPayload.Tokens, p)
@@ -189,6 +190,21 @@ func GetHustlerMetaForOwner(owner OwnerAddress) []Nft {
 		allTokens[i].OwnerAddress = owner.Address
 	}
 	return allTokens
+}
+
+// Gets meta for one token ID passed in.
+// Used elsewhere to get meta for a single token.
+// Here we use the getNFTMetadataBatch method instead.
+func GetHustlerMetaForTokenId(id big.Int) []byte {
+	url := fmt.Sprintf(
+		"%v/getNFTMetadata?contractAddress=%v&tokenId=%v",
+		baseUrl,
+		hustlerContractAddr,
+		id.String())
+
+	body := makeGetRequest(url)
+
+	return body
 }
 
 // Split slices into chunks of predetermined size

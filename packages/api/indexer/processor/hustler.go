@@ -145,7 +145,10 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 	e bindings.HustlerMetadataUpdate,
 ) (func(tx *ent.Tx) error, error) {
 	ctx, log := logger.LogFor(ctx)
-	log.Debug().Str("indexer", "HUSTLER").Msgf("ProcessMetadataUpdate %s", e.Id)
+	log.Debug().
+		Str("indexer", "HUSTLER").
+		Str("hustler_id", e.Id.String()).
+		Msgf("ProcessMetadataUpdate %s", e.Id)
 
 	meta, err := p.Contract.Metadata(nil, e.Id)
 	if err != nil {
@@ -154,7 +157,11 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 
 	metadata, err := p.Contract.TokenURI(nil, e.Id)
 	if err != nil {
-		return nil, fmt.Errorf("hustler: getting metadata item rle for id: %s: %w", e.Id, err)
+		log.Warn().
+			Str("indexer", "HUSTLER").
+			Str("hustler_id", e.Id.String()).
+			Msgf("Failed to get metadata from contract, Skipping…", e.Id)
+		return nil, nil
 	}
 
 	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
@@ -168,10 +175,13 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 	if err := json.Unmarshal([]byte(safeStr), &parsed); err != nil {
 		log.
 			Err(err).
+			Str("indexer", "HUSTLER").
+			Str("hustler_id", e.Id.String()).
 			Str("txn", e.Raw.TxHash.Hex()).
 			Str("json", string(safeStr)).
 			Msg("hustler: unmarshalling metadata")
-		return nil, nil
+		// No-op, we don't want to fail the entire block if we can't parse a single hustler.
+		return func(tx *ent.Tx) error { return nil }, nil
 	}
 
 	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(
@@ -431,9 +441,17 @@ func RefreshEquipment(
 		return fmt.Errorf("casting id to int: %s", id)
 	}
 
+	// This can fail because the TokenURI info is too large.
+	// If we don't catch it here it can crash the indexer.
+	// Better to skip it.
 	metadata, err := h.TokenURI(nil, big)
 	if err != nil {
-		return fmt.Errorf("getting metadata item rle for id: %s: %w", id, err)
+		log.
+			Err(err).
+			Str("indexer", "HUSTLER").
+			Str("hustler_id", id).
+			Msg("RefreshEquipment getting TokenURI")
+		return nil
 	}
 
 	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))

@@ -20,6 +20,9 @@ type Nft struct {
 	Metadata         NftMeta         `json:"metadata"`
 	TimeLastUpdated  string          `json:"timeLastUpdated"`
 	ContractMetaData NftContractMeta `json:"contractMetadata"`
+	TokenURI         struct {
+		Raw string `json:"raw"`
+	} `json:"tokenURI"`
 }
 
 type NftContract struct {
