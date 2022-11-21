@@ -50,7 +50,7 @@ const SocialLinks = () => {
         <DesktopIcon
           icon="tally"
           label="Tally"
-          clickAction={() => openBrowserTab('https://www.withtally.com/governance/dopeWars')}
+          clickAction={() => openBrowserTab('https://www.tally.xyz/gov/eip155:1:0xDBd38F7e739709fe5bFaE6cc8eF67C3820830E0C')}
         />
         <DesktopIcon
           icon="snapshot"
