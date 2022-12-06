@@ -9,6 +9,11 @@ env_variables:
   PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2
   NETWORK: mainnet
 
+instance_class: B2
+
+manual_scaling:
+  instances: 1
+
 # App Engine security settings are non-intuitive.
 # To prevent the general public from accessing our "job" endpoints
 # the most simple way is to specific `login:admin` on each
@@ -26,5 +31,8 @@ handlers:
     script: auto
     login: admin
   - url: /paper-claims
+    script: auto
+    login: admin
+  - url: /sync-hustlers
     script: auto
     login: admin

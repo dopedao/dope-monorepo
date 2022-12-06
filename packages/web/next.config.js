@@ -34,9 +34,14 @@ const nextConfig = {
         source: '/mint',
         destination: '/hustlers/quick-buy',
         permanent: false,
+      },
+      {
+        source: '/wiki',
+        destination: 'https://dope-wars.notion.site/Dope-Wiki-e237166bd7e6457babc964d1724befb2',
+        permanent: true,
       }
-    ]
-  }
+    ];
+  },
 };
 
 module.exports = nextConfig;

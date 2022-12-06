@@ -18,6 +18,7 @@ import (
 // HUSTLERS
 var baseUrl = "https://opt-mainnet.g.alchemy.com/nft/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG"
 var hustlerContractAddr = "0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"
+var dbClient = dbprovider.Ent()
 
 func SyncHustlers() {
 	ctx := context.Background()
@@ -51,8 +52,6 @@ func SyncHustlers() {
 }
 
 func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
-	dbClient := dbprovider.Ent()
-
 	// pp.Print(t)
 	tokenId, err := hexStringToInteger(t.Id.TokenId)
 	if err != nil {
