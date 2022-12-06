@@ -24,7 +24,7 @@ The supply of paper is currently fixed at 1.5 billion. In June 2022 [the DAO vot
 ### For more
 Including how to purchase your first DOPE NFT, how to get involved with the project, or what "the game" will be like
 
-👉 [Please see our Wiki and Players Guide](http://dopewars.gg/wiki)
+👉 [Please see our Wiki and Players Guide](/wiki)
 
 ----
 

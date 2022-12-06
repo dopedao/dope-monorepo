@@ -32,6 +32,8 @@
 		"@sentry/tracing": "^6.17.4",
 		"@types/isomorphic-fetch": "^0.0.35",
 		"howler": "^2.2.3",
-		"isomorphic-fetch": "^3.0.0"
-	}
+		"isomorphic-fetch": "^3.0.0",
+		"next": "12"
+	},
+	"packageManager": "yarn@3.3.0"
 }

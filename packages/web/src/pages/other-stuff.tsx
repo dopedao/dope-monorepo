@@ -25,7 +25,7 @@ const SocialLinks = () => {
         <DesktopIcon
           icon="file"
           label="Wiki + Players Guide"
-          clickAction={() => openBrowserTab('http://dopewars.gg/wiki')}
+          clickAction={() => openBrowserTab('/wiki')}
         />
         <DesktopIcon
           icon="twitter"
