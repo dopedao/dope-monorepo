@@ -46,7 +46,7 @@ const GearUnEquipFooter = (
       })
       .finally(() => setIsLoading(false)
     );
-  }, [hustler, type, hustlerId]);
+  }, [onProperNetwork, hustler, hustlerId, type]);
 
   return (
     <PanelFooter>

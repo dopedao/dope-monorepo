@@ -24,7 +24,7 @@ export default function Login(props: Props) {
 
     useEffect(() => {
         props.manager.events.on('loggedIn', () => setLoading(true));
-    }, []);
+    }, [props.manager.events]);
 
     const login = () => {
         if ((window.ethereum as any).chainId !== '0x1') {

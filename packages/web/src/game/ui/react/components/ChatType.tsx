@@ -46,7 +46,7 @@ export default function ChatType(props: Props) {
     // constantly check chatMessageBoxes size and if it's less than 3, set canSendMessage to true
     const interval = setInterval(() => setCanSendMessage((props.chatMessageBoxes?.length ?? 0) < 3));
     return () => clearInterval(interval);
-  }, []);
+  }, [props.chatMessageBoxes?.length, props.manager.events]);
 
   const handleInputKey = (e: KeyboardEvent) => {
     if (e.key === 'Enter' && canSendMessage) handleSubmit(inputText);

@@ -162,7 +162,7 @@ const DesktopWindow = ({
   useEffect(() => {
     if (fullScreen)
       fullScreenHook?.setIsFullScreen(fullScreen);
-  }, [])
+  }, [fullScreen, fullScreenHook])
 
   useEffect(() => {
     if (onResize) onResize();

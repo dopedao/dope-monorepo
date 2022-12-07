@@ -45,7 +45,7 @@ const QuickBuyHustler = () => {
   const [currentDopeIndex, setCurrentDopeIndex] = useState(0);
   const [showHustler, setShowHustler] = useState(true);
   const [paperPrice, setPaperPrice] = useState<BigNumber>();
-  
+
   const oneclick = useOneClickInitiator();
 
   useEffect(() => {
@@ -126,25 +126,26 @@ const QuickBuyHustler = () => {
   const QuickBuyFooter = () => (
     <Box display="flex" flexDirection="column" justifyContent="flex-start" gap="8px">
       <Link href={`/hustlers/${currentDope.id}/initiate?quickBuy`} passHref>
-        <Button 
+        <Button
           // autoFocus
-          variant="primary">Customize</Button>
+          variant="primary"
+        >
+          Customize
+        </Button>
       </Link>
     </Box>
   );
 
   return (
-    <AppWindow 
-      title="Welcome To The Streets" 
-      fullScreen 
-      background={bgColor}
-    >
-      <StackedResponsiveContainer css={css`
-        padding: 16px !important;
-        ${media.tablet`
+    <AppWindow title="Welcome To The Streets" fullScreen background={bgColor}>
+      <StackedResponsiveContainer
+        css={css`
+          padding: 16px !important;
+          ${media.tablet`
           padding: 64px !important;
         `}
-      `}>
+        `}
+      >
         {(isLoading || !currentDope) && <LoadingBlock maxRows={5} />}
         {!isLoading && currentDope && (
           <>
@@ -186,7 +187,7 @@ const QuickBuyHustler = () => {
                       display: flex;
                       align-items: center;
                       justify-content: center;
-                      height:100%;
+                      height: 100%;
                     `}
                   >
                     <DopeCard
@@ -208,18 +209,25 @@ const QuickBuyHustler = () => {
                 <h2>Get Hooked On DOPE</h2>
                 <hr className="onColor" />
                 <p>
-                <a href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a" target="wiki" className="underline">Hustlers</a> are the in-game characters of <a href="/about" className="underline" target="about">Dope Wars</a>.
+                  <Link
+                    href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a"
+                    passHref
+                  >
+                    <a target="wiki" className="underline">
+                      Hustlers
+                    </a>{' '}
+                    are the in-game characters of Dope Wars.
+                  </Link>
                 </p>
                 <p>
-                  Hustlers can own up to 10 different
-                  pieces of interchangeable NFT Gear, which will be useful in a series of games currently under development.
+                  Hustlers can own up to 10 different pieces of interchangeable NFT Gear, which will
+                  be useful in a series of games currently under development.
                 </p>
                 <p>
-                  Dope Gear comes directly from unclaimed floor-priced Dope NFT tokens, which sold out in September 2021.
+                  Dope Gear comes directly from unclaimed floor-priced Dope NFT tokens, which sold
+                  out in September 2021.
                 </p>
-                <p>
-                  Get a fully equipped Dope Wars setup now.
-                </p>
+                <p>Get a fully equipped Dope Wars setup now.</p>
                 <Box>
                   <Table
                     css={css`

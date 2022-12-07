@@ -56,7 +56,8 @@ export default function CreateDopeApp({ Component, pageProps, router }: AppProps
       <GlobalStyles />
       <ChakraProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
-          <Hydrate state={pageProps.dehydratedState}>
+          {/* Upgrading to Nextjs 12 threw this as error. Commenting out for now. */}
+          {/* <Hydrate state={pageProps.dehydratedState}> */}
             <Web3ReactProvider getLibrary={getLibrary}>
               <StarknetProvider>
                 <RollYourOwnProvider>
@@ -76,7 +77,7 @@ export default function CreateDopeApp({ Component, pageProps, router }: AppProps
               </StarknetProvider>
             </Web3ReactProvider>
             {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
-          </Hydrate>
+          {/* </Hydrate> */}
         </QueryClientProvider>
       </ChakraProvider>
     </>

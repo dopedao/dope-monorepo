@@ -42,7 +42,7 @@ const Controls = () => {
         return () => {
             document.removeEventListener('keydown', onKeyDown);
         }
-    }, [selectedKey]);
+    }, [controlsManager, selectedKey]);
 
     return (
         <div>

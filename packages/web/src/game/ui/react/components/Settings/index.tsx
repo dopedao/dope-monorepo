@@ -47,7 +47,7 @@ export default function Settings(props: Props) {
         return () => {
             document.removeEventListener('keyup', handleKeyDown);
         }
-    }, [openedPage]);
+    }, [openedPage, props.manager.events]);
 
     return (
         <ChakraProvider theme={theme}>

@@ -2,7 +2,7 @@ import React from 'react';
 
 interface FullScreenProps {
   isFullScreen: boolean;
-  setIsFullScreen: (fullScreen: boolean)=>void
+  setIsFullScreen: (fullScreen: boolean) => void;
 }
 
 export const FullScreenContext = React.createContext<FullScreenProps | undefined>(undefined);
@@ -13,10 +13,14 @@ export function useFullScreen() {
 
 interface FullScreenProviderProps {
   children: React.ReactNode;
-} 
+}
 
 export function FullScreenProvider({ children }: FullScreenProviderProps): JSX.Element {
   const [isFullScreen, setIsFullScreen] = React.useState(false);
 
-  return <FullScreenContext.Provider value={{isFullScreen, setIsFullScreen}} children={children}  />;
+  return (
+    <FullScreenContext.Provider value={{ isFullScreen, setIsFullScreen }}>
+      {children}
+    </FullScreenContext.Provider>
+  );
 }

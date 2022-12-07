@@ -60,7 +60,7 @@ const DopeTabs = ({ tabs }: DopeTabsProps) => {
 
       <TabPanels>
         {tabs.map(tab => (
-          <TabPanel>{tab.content}</TabPanel>
+          <TabPanel key={tab.number}>{tab.content}</TabPanel>
         ))}
       </TabPanels>
     </Tabs>

@@ -234,7 +234,7 @@ const toHex = (num: number) => {
   return '0x' + num.toString(16);
 };
 
-const useSwitchNetwork = async (
+const switchNetwork = async (
   account: string | null | undefined,
   nextChainId: 1 | 10 | 42 | 69,
   currentChainId: number | undefined,
@@ -288,7 +288,7 @@ export const useSwitchEthereum = (
   }
 
   return useMemo(
-    () => useSwitchNetwork(account, ethChainId, chainId),
+    () => switchNetwork(account, ethChainId, chainId),
     [account, chainId, ethChainId],
   );
 };
@@ -307,7 +307,7 @@ export const useSwitchOptimism = (
   }
 
   return useMemo(
-    () => useSwitchNetwork(account, optimismChainId, chainId),
+    () => switchNetwork(account, optimismChainId, chainId),
     [account, chainId, optimismChainId],
   );
 };

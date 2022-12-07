@@ -22,7 +22,7 @@ const usePaginatedPosts = (posts: PostType[]) => {
       setPaginatedPosts(posts.slice(0 + skip, MAX_POST_PER_PAGE + skip));
       setHasMore(MAX_POST_PER_PAGE + skip < posts.length);
     }
-  }, [router]);
+  }, [posts, router]);
 
   return { paginatedPosts, hasMore };
 };

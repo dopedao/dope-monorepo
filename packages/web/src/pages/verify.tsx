@@ -146,7 +146,7 @@ const Verify = () => {
           setIsVerified(true);
         }
       });
-  }, [data]);
+  }, [account, data, dopeCount, hasOgHustler, hustlerCount, paperBalance]);
 
 
   return (

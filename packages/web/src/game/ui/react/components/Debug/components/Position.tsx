@@ -11,7 +11,7 @@ const Position = (props: {object: any}) => {
             props.object.x = x;
         if (y)
             props.object.y = y;
-    }, [x, y]);
+    }, [props.object, x, y]);
 
     return (
         // <VStack>
