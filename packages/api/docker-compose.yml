@@ -7,15 +7,16 @@ services:
      depends_on:
        - "db"
        - "redis"
-     network_mode: "host"
-     ports:
-       - "8080:8080"
+     network_mode: host
      volumes:
-       - ~/.config/gcloud/:/build/.config/gcloud/
+       - type: bind
+         source: /home/${USER}/.config/gcloud/application_default_credentials.json
+         target: /build/.config/gcloud/application_default_credentials.json
      environment:
      # If you don't have this file run 'gcloud auth application default-login'
        GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
-     command: go run ./cmd/web/main.go
+       PORT: 7070
+     command: go run ./cmd/apiServer/main.go
 
    game:
      build:
@@ -23,32 +24,24 @@ services:
        dockerfile: Dockerfile.compose
      depends_on:
        - "db"
-     network_mode: "host"
-     ports:
-       - "8080:8080"
-     volumes:
-       - ~/.config/gcloud/:/build/.config/gcloud/
+     network_mode: host
      environment:
-     # If you don't have this file run 'gcloud auth application default-login'
-       GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
-     command: go run ./cmd/game/main.go
+       PORT: 6060
+     command: go run ./cmd/gameServer/main.go
 
    db:
      image: postgres:14.1-alpine
      environment:
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
-     network_mode: "host"
-     ports:
-        - '5432:5432'
+     network_mode: host
      volumes: 
         - db:/var/lib/postgresql/data
 
    redis:
      image: redis:7.0.2
-     network_mode: "host"
      ports:
-       - '6379:6379'
+       - "6379:6379"
 
 volumes:
   db:

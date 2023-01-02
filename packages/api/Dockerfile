@@ -28,7 +28,7 @@ COPY . .
 RUN go mod download
 
 # Build the GAME application
-RUN go build ./cmd/game/main.go
+RUN go build ./cmd/gameServer/main.go
 
 # Default port GCP wants
 EXPOSE 8080
