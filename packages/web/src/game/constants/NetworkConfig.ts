@@ -1,10 +1,14 @@
 const defaultNetworkConfig = {
-    wsUri: "wss://api.dopewars.gg/game/ws",
+    // local: ws://localhost:6060/game/ws 
+    wsUri: process.env.GAME_WS_URL ?? "wss://api.dopewars.gg/game/ws",
     reconnectInterval: 1000,
     maxReconnectAttempts: 10,
 
-    // Authentication
-    authUri: "https://api.dopewars.gg/authentication",
+    /*
+     * Authentication
+     * local: http://localhost:6060/authentication 
+    */
+    authUri: process.env.GAME_AUTH_URL ?? "https://api.dopewars.gg/authentication",
     authNoncePath: "/nonce",
     authLoginPath: "/login",
     authAuthenticatedPath: "/authenticated",

@@ -20,7 +20,9 @@ import (
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
+/* Global config vars */
 var Listen *string
+
 var OpenSeaApiKey string
 var Network string
 var DbotAuthSecret string
@@ -35,7 +37,6 @@ func init() {
 	// to avoid warning GCP was giving us about this issue.
 	// https://cloud.google.com/appengine/docs/flexible/custom-runtimes/configuring-your-app-with-app-yaml
 	port := EnvSecretOrDefault("PORT", "8080")
-	Listen = pflag.String("listen", port, "server listen port")
 	Network = EnvSecretOrDefault("NETWORK", "mainnet")
 	OpenSeaApiKey = EnvSecretOrDefault(
 		"OPENSEA",
@@ -46,6 +47,13 @@ func init() {
 	DbotRedirectUri = EnvSecretOrDefault("DBOT_REDIRECT_URI", "http://localhost:3000/verify")
 	RedisPassword = EnvSecretOrDefault("REDIS_PASSWORD", "")
 	RedisAddress = EnvSecretOrDefault("REDIS_ADDRESS", "localhost:6379")
+
+	/* Cli flags, usage: go run ... --listen 6060
+	 * Uses EnvSecretOrDefault from above if not specified
+	 */
+	Listen = pflag.String("listen", port, "server listen port")
+
+	pflag.Parse()
 }
 
 // Reads a value from environment variable.

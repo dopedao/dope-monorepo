@@ -3,7 +3,7 @@ services:
    api:
      build:
        context: .
-       dockerfile: Dockerfile.compose
+       dockerfile: Dockerfile.hotreload
      depends_on:
        - "db"
        - "redis"
@@ -12,23 +12,42 @@ services:
        - type: bind
          source: /home/${USER}/.config/gcloud/application_default_credentials.json
          target: /build/.config/gcloud/application_default_credentials.json
+       - ./web/:/build/web
+       - ./cmd/apiServer/:/build/cmd/apiServer
      environment:
      # If you don't have this file run 'gcloud auth application default-login'
        GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
        PORT: 7070
-     command: go run ./cmd/apiServer/main.go
+     command: CompileDaemon --build="go build ./cmd/apiServer/main.go" --command=./main
 
    game:
      build:
        context: .
-       dockerfile: Dockerfile.compose
+       dockerfile: Dockerfile.hotreload
      depends_on:
        - "db"
+     volumes:
+       - ./game/:/build/game/
+       - ./cmd/gameServer/:/build/cmd/gameServer/
      network_mode: host
      environment:
        PORT: 6060
-     command: go run ./cmd/gameServer/main.go
+     command: CompileDaemon --build="go build ./cmd/gameServer/main.go" --command=./main
 
+   indexer:
+     build:
+       context: .
+       dockerfile: Dockerfile.hotreload
+     depends_on:
+       - "db"
+     volumes:
+       - ./indexer/:/build/indexer/
+       - ./cmd/indexerEthereum/:/build/cmd/indexerEthereum/
+     network_mode: host
+     environment:
+       PORT: 5050
+     command: CompileDaemon --build="go build ./cmd/indexerEthereum/main.go" --command=./main
+  
    db:
      image: postgres:14.1-alpine
      environment:
