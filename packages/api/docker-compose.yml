@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-   api:
+   web:
      build:
        context: .
        dockerfile: Dockerfile.hotreload
@@ -10,14 +10,14 @@ services:
      network_mode: host
      volumes:
        - type: bind
-         source: /home/${USER}/.config/gcloud/application_default_credentials.json
+         source: ${GCLOUD_CRED_PATH}
          target: /build/.config/gcloud/application_default_credentials.json
        - ./web/:/build/web
        - ./cmd/apiServer/:/build/cmd/apiServer
      environment:
      # If you don't have this file run 'gcloud auth application default-login'
        GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
-       PORT: 7070
+       PORT: ${WEB_API_PORT}
      command: CompileDaemon --build="go build ./cmd/apiServer/main.go" --command=./main
 
    game:
@@ -31,7 +31,7 @@ services:
        - ./cmd/gameServer/:/build/cmd/gameServer/
      network_mode: host
      environment:
-       PORT: 6060
+       PORT: ${GAME_SERVER_PORT}
      command: CompileDaemon --build="go build ./cmd/gameServer/main.go" --command=./main
 
    indexer:
@@ -44,8 +44,6 @@ services:
        - ./indexer/:/build/indexer/
        - ./cmd/indexerEthereum/:/build/cmd/indexerEthereum/
      network_mode: host
-     environment:
-       PORT: 5050
      command: CompileDaemon --build="go build ./cmd/indexerEthereum/main.go" --command=./main
   
    db:

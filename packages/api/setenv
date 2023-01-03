@@ -1,2 +1,54 @@
 #!/bin/bash
-echo USER=$(whoami) > .env
+# A small script to create the .env file needed for docker-compose
+
+input_or_default() {
+    if [ -z "$1" ]; then
+        echo "$2"
+    fi
+
+    echo "$1"
+}
+
+user="$(whoami)"
+conf=
+
+# default/fallback values
+default_gcloud_cred_path="/home/$user/.config/gcloud/application_default_credentials.json"
+default_game_server_port=6060
+default_web_api_port=7070
+
+read -p "Enter the path to your gcloud credential path: " -r gcp_input
+if [ -z "$gcp_input" ]; then
+        gcloud_cred_path=$default_gcloud_cred_path
+elif [ ! -f "$gcp_input" ]; then
+        echo -e "File not found.\nExiting."
+        echo "Try installing the gcloud cli and the following command: gcloud auth application default-login"
+        exit 1
+fi
+conf+="GCLOUD_CRED_PATH=$gcloud_cred_path\n"
+clear
+
+read -p "Port for the game server (default: $default_game_server_port): " -r gsp_input
+game_server_port=$(input_or_default "$gsp_input" $default_game_server_port)
+conf+="GAME_SERVER_PORT=$game_server_port\n"
+clear
+
+read -p "Port for the web api (default: $default_web_api_port): " -r wap_input
+web_api_port=$(input_or_default "$wap_input" $default_web_api_port)
+conf+="WEB_API_PORT=$web_api_port"
+clear
+
+echo -e "Final config:\n$conf\n"
+read -p "Looks good? (y, N): " -r looks_good
+if [ "$looks_good" = "y" ]; then
+    if [ -f ".env" ]; then
+        echo "Backing up old .env file"
+        cp .env .env.backup-$((1 + RANDOM % 100))
+    fi
+
+    echo -e "$conf" > .env
+    echo "Done"
+else
+    echo "A-bort-ing"
+    exit 1
+fi
