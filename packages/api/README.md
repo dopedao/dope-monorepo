@@ -4,22 +4,22 @@ The Dope Wars api consists of a golang service that exposes a graphql endpoint. 
 
 ## Quick Start
 
-### Api
+`chmod +x ./setenv`
 
-To run the api + everything necessary:
-```docker-compose up api```
+`./setenv` press enter if you're happy with the default, confirm with `y` at the last prompt
 
-The server exposes the following endpoints:
-`http://localhost:8080/playground`
-`http://localhost:8080/verify`
+`docker-compose up` will start the necessary services:
+    - postgres
+    - redis
 
-### Game
+and these with hot-code-reloading:
 
-To run the game server + everything necessary:
-```docker-compose up game```
+    - indexer
+    - game server
+    - api server
 
-The server exposes the following endpoints:
-`http://localhost:8080/game`
+Make sure to also edit packages/web/src/game/constants/NetworkConfig.ts
+so that your frontend actually uses your local backend
 
 ## Architecture
 
