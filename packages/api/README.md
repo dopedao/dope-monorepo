@@ -8,15 +8,11 @@ The Dope Wars api consists of a golang service that exposes a graphql endpoint. 
 
 `./setenv` press enter if you're happy with the default, confirm with `y` at the last prompt
 
-`docker-compose up` will start the necessary services:
-    - postgres
-    - redis
+`docker-compose up db game web` will start the necessary services for the game with hot-code-reloading
 
-and these with hot-code-reloading:
+Afte the db starts up make sure to install grift (go install github.com/markbates/grift@latest) and run `grift gear:sync_claims` inside of the folder `grifts/`
 
-    - indexer
-    - game server
-    - api server
+Then run `docker-compose up indexer` and it should work now
 
 Make sure to also edit packages/web/src/game/constants/NetworkConfig.ts
 so that your frontend actually uses your local backend
