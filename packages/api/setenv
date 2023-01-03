@@ -39,8 +39,12 @@ conf+="WEB_API_PORT=$web_api_port"
 clear
 
 echo -e "Final config:\n$conf\n"
-read -p "Looks good? (y, N): " -r looks_good
-if [ "$looks_good" = "y" ]; then
+read -p "Looks good? (y, N): " -n 1 -r looks_good
+if [ "$looks_good" = "n" ] || [ "$looks_good" = "N" ]; then
+    echo
+    echo "A-bort-ing"
+    exit 1
+else
     if [ -f ".env" ]; then
         echo "Backing up old .env file"
         cp .env .env.backup-$((1 + RANDOM % 100))
@@ -48,7 +52,4 @@ if [ "$looks_good" = "y" ]; then
 
     echo -e "$conf" > .env
     echo "Done"
-else
-    echo "A-bort-ing"
-    exit 1
 fi
