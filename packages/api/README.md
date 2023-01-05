@@ -4,18 +4,86 @@ The Dope Wars api consists of a golang service that exposes a graphql endpoint. 
 
 ## Quick Start
 
-`chmod +x ./setenv`
 
-`./setenv` press enter if you're happy with the default, confirm with `y` at the last prompt
+## Env
 
-`docker-compose up db game web` will start the necessary services for the game with hot-code-reloading
+Make sure you have the following file:  `~/.config/gcloud/application_default_credentials.json`
 
-Afte the db starts up make sure to install grift (go install github.com/markbates/grift@latest) and run `grift gear:sync_claims` inside of the folder `grifts/`
+If you don't have it do the following:
 
-Then run `docker-compose up indexer` and it should work now
+- install the gcloud cli
 
-Make sure to also edit packages/web/src/game/constants/NetworkConfig.ts
-so that your frontend actually uses your local backend
+- run `gcloud auth application default-login`
+
+**MAC/LINUX**
+
+- run "chmod +x ./setenv"
+- run setenv "./setenv"
+- add the complete path of application_default_credentials.json (or press enter for default)
+- press enter to accept default ports
+- press "y" at the last prompt after validating the output to save them (your old .env will be backed up)
+- refer to "WINDOWS MANUAL SET UP" if the inputs are not correct or empty
+
+**WINDOWS MANUAL SET UP**
+
+- create a ".env" file in repo/packages/api
+- add the following variables with the correct path and ports :
+
+```
+GCLOUD_CRED_PATH=PATH\TO\YOUR\gcloud\application_default_credentials.json
+
+GAME_SERVER_PORT=6060
+
+WEB_API_PORT=7070
+```
+
+**Frontend**
+
+Set the URLs in `packages\web\src\game\constants\NetworkConfig.ts` as follows:
+
+```js
+wsUri: process.env.GAME_WS_URL ?? "ws://localhost:6060/game/ws",
+
+authUri: process.env.GAME_AUTH_URL ?? "http://localhost:6060/authentication",
+```
+
+
+## FRONTEND
+
+> Make sure you are at the projects root
+
+- install dependencies : `yarn`
+- run `yarn web:dev` to start the webserver
+- go to http://localhost:3000
+
+## GAME SERVER
+
+- run `docker-compose up db game web` in repo/packages/api
+- go to http://localhost:3000/game
+
+## TOOLS
+
+- start container with interactive shell : `docker-compose run [service-name] sh`
+    > Example: `docker-compose run game sh`
+
+- access a running container with sh : `docker exec -it [container-hash] /bin/sh`
+    > Example: `docker exec -it a782349aad34d /bin/bash`
+
+    > You can get the hash from `docker ps`
+
+
+## TROUBLE SHOOTING
+	
+### COMPILE DAEMON
+- Whenever you apply (or try) a fix make sure to rebuild the image with `--build`
+    > Example: `docker-compose up --build game`
+
+- possible compileDaemon fix for docker not finding the exec:
+
+	`go install -mod=mod` instead of `go get` in `packages/api/Dockerfile.hotreload`
+	> Linked issue: https://github.com/githubnemo/CompileDaemon/issues/45#issuecomment-1218054581
+
+
 
 ## Architecture
 
