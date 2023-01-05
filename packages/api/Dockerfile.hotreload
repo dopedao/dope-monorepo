@@ -13,4 +13,5 @@ WORKDIR /build
 COPY . .
 
 RUN go mod download
+
 RUN go get github.com/githubnemo/CompileDaemon

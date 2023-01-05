@@ -7,7 +7,10 @@ services:
      depends_on:
        - "db"
        - "redis"
-     network_mode: host
+     ports:
+       - ${WEB_API_PORT}:${WEB_API_PORT}
+     networks:
+      - dopenet
      volumes:
        - type: bind
          source: ${GCLOUD_CRED_PATH}
@@ -18,6 +21,7 @@ services:
      # If you don't have this file run 'gcloud auth application default-login'
        GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
        PORT: ${WEB_API_PORT}
+       PG_HOST: db:5432
      command: CompileDaemon --build="go build ./cmd/apiServer/main.go" --command=./main
 
    game:
@@ -29,9 +33,13 @@ services:
      volumes:
        - ./game/:/build/game/
        - ./cmd/gameServer/:/build/cmd/gameServer/
-     network_mode: host
+     ports:
+       - ${GAME_SERVER_PORT}:${GAME_SERVER_PORT}
+     networks:
+      - dopenet
      environment:
        PORT: ${GAME_SERVER_PORT}
+       PG_HOST: db:5432
      command: CompileDaemon --build="go build ./cmd/gameServer/main.go" --command=./main
 
    indexer:
@@ -43,7 +51,10 @@ services:
      volumes:
        - ./indexer/:/build/indexer/
        - ./cmd/indexerEthereum/:/build/cmd/indexerEthereum/
-     network_mode: host
+     networks:
+      - dopenet
+     environment:
+       PG_HOST: db:5432
      command: CompileDaemon --build="go build ./cmd/indexerEthereum/main.go" --command=./main
   
    db:
@@ -51,15 +62,19 @@ services:
      environment:
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
-     network_mode: host
+     networks:
+      - dopenet
      volumes: 
         - db:/var/lib/postgresql/data
 
    redis:
      image: redis:7.0.2
-     ports:
-       - "6379:6379"
+     networks:
+      - dopenet
 
 volumes:
   db:
     driver: local
+
+networks:
+  dopenet: {}
