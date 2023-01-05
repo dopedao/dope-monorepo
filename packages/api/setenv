@@ -19,11 +19,12 @@ default_web_api_port=7070
 
 read -p "Enter the path to your gcloud credential path: " -r gcp_input
 if [ -z "$gcp_input" ]; then
-        gcloud_cred_path=$default_gcloud_cred_path
-elif [ ! -f "$gcp_input" ]; then
-        echo -e "File not found.\nExiting."
-        echo "Try installing the gcloud cli and the following command: gcloud auth application default-login"
-        exit 1
+        gcloud_cred_path=$(input_or_default "$gcp_input" "$default_gcloud_cred_path")
+    if [ ! -f "$gcloud_cred_path" ]; then
+            echo -e "File not found.\nExiting."
+            echo "Try installing the gcloud cli and run the following command: gcloud auth application default-login"
+            exit 1
+    fi
 fi
 conf+="GCLOUD_CRED_PATH=$gcloud_cred_path\n"
 clear
