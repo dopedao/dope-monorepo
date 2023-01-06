@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"os"
 
 	"entgo.io/ent/dialect/sql/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/migrate"
@@ -13,6 +14,11 @@ import (
 // Run the Ent auto migration tool
 // Docs: https://entgo.io/docs/migrate
 func RunMigration(ctx context.Context) {
+	if isTestEnvironment() {
+		fmt.Println("TEST ENV - Skipping migrations in test environment.")
+		return
+	}
+
 	fmt.Println("RUNNING MIGRATIONS")
 	_, log := logger.LogFor(ctx)
 	log.Debug().Msg("Calling runMigration")
@@ -44,6 +50,11 @@ var f embed.FS
 
 // Drop and recreate our Materialized views with SQL files.
 func RefreshMaterializedViews(ctx context.Context) {
+	if isTestEnvironment() {
+		fmt.Println("TEST ENV - Skipping material view refresh.")
+		return
+	}
+
 	fmt.Println("REFRESH MATERIAL VIEWS")
 	_, log := logger.LogFor(ctx)
 	log.Debug().Msg("Loading SQL migrations for Materialized Views")
@@ -54,4 +65,9 @@ func RefreshMaterializedViews(ctx context.Context) {
 	if err != nil {
 		logger.LogFatalOnErr(err, "FATAL refreshMaterializedViews")
 	}
+}
+
+func isTestEnvironment() bool {
+	appEnv := os.Getenv("APP_ENV")
+	return appEnv == "test"
 }

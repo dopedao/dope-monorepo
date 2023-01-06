@@ -24,6 +24,7 @@
 #          ETH_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMY_API_KEY }}
 
 name: CI
+
 on:
   push:
     branches:
@@ -31,6 +32,10 @@ on:
   pull_request:
     branches:
       - main
+
+env:
+  APP_ENV: test
+
 jobs:
   web:
     runs-on: ubuntu-latest
