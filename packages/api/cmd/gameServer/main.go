@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/dopedao/dope-monorepo/packages/api/game"
+	api "github.com/dopedao/dope-monorepo/packages/api/game/api"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/rs/zerolog"
@@ -22,8 +22,10 @@ import (
 func main() {
 	log := zerolog.New(os.Stderr)
 
-	srv, err := game.NewServer(
-		log.WithContext(context.Background()),
+	loggerCtx := log.WithContext(context.Background())
+
+	srv, err := api.NewServer(
+		loggerCtx,
 		envcfg.Network)
 	logger.LogFatalOnErr(err, "Creating Game Server")
 

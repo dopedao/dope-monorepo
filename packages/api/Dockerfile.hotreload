@@ -1,4 +1,4 @@
-FROM golang:1.16
+FROM golang:1.18
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
@@ -6,7 +6,7 @@ ENV GO111MODULE=on \
     GOARCH=amd64
 
 RUN apt-get update && \
-    apt-get install -y wget build-essential pkg-config --no-install-recommends
+    apt-get install -y wget build-essential pkg-config git --no-install-recommends
 
 WORKDIR /build
 
@@ -14,7 +14,7 @@ COPY . .
 
 RUN go mod download
 
-RUN go get github.com/githubnemo/CompileDaemon
+RUN go install github.com/githubnemo/CompileDaemon@latest
 
 # CompileDaemon gets installed here
 ENV PATH="${PATH}:/go/bin/linux_amd64"
