@@ -3,8 +3,11 @@ package middleware
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 
+	firebase "firebase.google.com/go"
+	"firebase.google.com/go/auth"
 	"github.com/gorilla/sessions"
 	"github.com/jiulongw/siwe-go"
 )
@@ -70,6 +73,48 @@ func SetWallet(ctx context.Context, wallet string) error {
 		return err
 	}
 
+	return nil
+}
+
+func FirebaseInit(ctx context.Context, wallet string) (string, error) {
+
+	app, err := firebase.NewApp(context.Background(), nil)
+	if err != nil {
+		return "", fmt.Errorf("error initializing app: %v\n", err)
+	}
+
+	client, err := app.Auth(context.TODO())
+	if err != nil {
+		return "", err
+	}
+
+	claims := map[string]interface{}{
+		"wallet": wallet,
+	}
+
+	token, err := client.CustomTokenWithClaims(context.TODO(), wallet, claims)
+	if err != nil {
+		return "", err
+	}
+
+	FirebaseVerify(ctx, wallet, client)
+
+	return token, nil
+}
+
+func FirebaseVerify(ctx context.Context, wallet string, client *auth.Client) error {
+	// Verify the authenticity of the custom token using the Firebase Auth client
+	token, err := client.VerifyIDToken(ctx, wallet)
+	if err != nil {
+		return fmt.Errorf("error verifying custom token: %v", err)
+	}
+
+	// Check that the UID in the custom token corresponds to the expected user
+	if token.UID != wallet {
+		return fmt.Errorf("error: unexpected UID in custom token, got %s, want %s", token.UID, wallet)
+	}
+
+	// Authentication successful
 	return nil
 }
 

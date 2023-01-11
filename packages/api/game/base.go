@@ -20,7 +20,7 @@ import (
 
 const TICKRATE = time.Second / 5
 const MINUTES_DAY = 24 * 60
-const BOT_COUNT = 0
+const BOT_COUNT = 23
 
 func NewGame() *Game {
 	game := Game{

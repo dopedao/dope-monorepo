@@ -3,6 +3,7 @@ module github.com/dopedao/dope-monorepo/packages/api
 go 1.16
 
 require (
+	//firebase.google.com/go/v4 v4.8.0
 	cloud.google.com/go/secretmanager v1.8.0
 	cloud.google.com/go/storage v1.27.0
 	entgo.io/contrib v0.2.0
@@ -32,6 +33,7 @@ require (
 
 require (
 	cloud.google.com/go/bigquery v1.43.0
+	firebase.google.com/go v3.13.0+incompatible
 	github.com/btcsuite/btcd v0.22.0-beta // indirect
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/markbates/grift v1.5.0

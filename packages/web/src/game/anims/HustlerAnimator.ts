@@ -7,11 +7,13 @@ export default class HustlerAnimator {
     this.hustler = hustler;
   }
 
-  update() {
+  update() 
+  {
     if (!this.hustler.active)
       return;
 
-    if (this.hustler.moveDirection === Direction.None) {
+    if (this.hustler.moveDirection === Direction.None) 
+    {
       const standFrame = this.hustler.texture.key + '_stand' + (this.hustler.lastDirection !== Direction.None ? this.hustler.lastDirection : Direction.East);
       // reset to the first frame of the anim
       if (this.hustler.frame.name !== standFrame)
