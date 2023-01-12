@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
-	"sync"
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/game/dopemap"
@@ -38,7 +37,7 @@ type Game struct {
 	Time   float32
 	Ticker *time.Ticker
 
-	Mutex sync.Mutex
+	//Mutex sync.Mutex
 
 	SpawnPosition schema.Position
 
