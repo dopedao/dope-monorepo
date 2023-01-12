@@ -31,6 +31,9 @@ services:
     depends_on:
       - 'db'
     volumes:
+      - type: bind
+        source: ${GOOGLE_APP_CRED}
+        target: /build/.config/gcloud/application_default_credentials.json
       - ./game/:/build/game/
       - ./cmd/gameServer/:/build/cmd/gameServer/
     ports:
@@ -38,6 +41,7 @@ services:
     networks:
       - dopenet
     environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
       PORT: ${GAME_SERVER_PORT}
       PG_HOST: db:5432
     command: CompileDaemon --build="go build ./cmd/gameServer/main.go" --command=./main

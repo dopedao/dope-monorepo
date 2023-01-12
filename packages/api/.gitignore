@@ -1,3 +1,4 @@
 pgdata
 tmp
 .grifter
+.env

@@ -8,6 +8,9 @@ import (
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
+
+	//"google.golang.org/api/option"
+
 	"github.com/gorilla/sessions"
 	"github.com/jiulongw/siwe-go"
 )
@@ -78,9 +81,16 @@ func SetWallet(ctx context.Context, wallet string) error {
 
 func FirebaseInit(ctx context.Context, wallet string) (string, error) {
 
-	app, err := firebase.NewApp(context.Background(), nil)
+	// path := "C:/Users/tmarot-m/AppData/Roaming/gcloud/application_default_credentials.json"
+	// _, err := os.Stat(path)
+	// if err != nil {
+	// 	return "", fmt.Errorf("error initializing app: %v\nCredentials file not found in path: %s", err, path)
+	// }
+
+	//opt := option.WithCredentialsFile(path)
+	app, err := firebase.NewApp(context.Background(), nil) //, opt)
 	if err != nil {
-		return "", fmt.Errorf("error initializing app: %v\n", err)
+		return "", fmt.Errorf("error initializing app: %v", err)
 	}
 
 	client, err := app.Auth(context.TODO())
@@ -102,12 +112,33 @@ func FirebaseInit(ctx context.Context, wallet string) (string, error) {
 	return token, nil
 }
 
+// func FirebaseCreateUser(client *auth.Client, wallet string) error {
+// 	// Create a new user with ETH UID
+// 	user, err := client.CreateUser(context.TODO(), &auth.UserToCreate{
+// 		Email: wallet,
+// 		UID:   wallet,
+// 		EmailVerified: false,
+// 	})
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	fmt.Printf("Successfully created user with Ethereum address: %v\n", user.UID)
+// 	return nil
+// }
+
 func FirebaseVerify(ctx context.Context, wallet string, client *auth.Client) error {
 	// Verify the authenticity of the custom token using the Firebase Auth client
 	token, err := client.VerifyIDToken(ctx, wallet)
 	if err != nil {
 		return fmt.Errorf("error verifying custom token: %v", err)
 	}
+
+	// if token.UID != wallet {
+	// 	if err := FirebaseCreateUser(client, wallet); err != nil {
+	// 		return fmt.Errorf("error creating user: %v", err)
+	// 	}
+	// }
 
 	// Check that the UID in the custom token corresponds to the expected user
 	if token.UID != wallet {

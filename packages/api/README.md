@@ -121,6 +121,7 @@ The `gcloud` command line tool is useful to do a number of things in deploying t
 # Mac OS X commands
 brew install --cask google-cloud-sdk
 export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-service-account-creds.json"
+$env:GOOGLE_APPLICATION_CREDENTIALS="C:\Users\username\Downloads\service-account-file.json" on windows
 gcloud auth login
 gcloud config set account <your-account>
 gcloud config set project dopewars-live
