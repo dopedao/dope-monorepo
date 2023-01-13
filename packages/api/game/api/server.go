@@ -1,9 +1,12 @@
-package game
+package api
 
 import (
 	"context"
 	"net/http"
 
+	"github.com/dopedao/dope-monorepo/packages/api/game"
+	"github.com/dopedao/dope-monorepo/packages/api/game/api/health"
+	ws "github.com/dopedao/dope-monorepo/packages/api/game/api/ws"
 	"github.com/dopedao/dope-monorepo/packages/api/game/authentication"
 	"github.com/dopedao/dope-monorepo/packages/api/indexer"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
@@ -12,18 +15,12 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/rs/cors"
 )
 
 var (
-	wsUpgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin:     func(r *http.Request) bool { return true },
-	}
-	gameState = NewGame()
+	gameState = game.NewGame()
 )
 
 func NewServer(ctx context.Context, network string) (http.Handler, error) {
@@ -38,31 +35,10 @@ func NewServer(ctx context.Context, network string) (http.Handler, error) {
 	go gameState.Start(ctx, dbprovider.Ent())
 
 	// Health check
-	r.HandleFunc("/game/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
-		_, _ = w.Write([]byte(`{"success":true}`))
-	})
+	r.HandleFunc("/game/health", health.Handle())
 
 	// Websocket endpoint
-	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
-		// check if authenticated
-		if !middleware.IsAuthenticated(r.Context()) {
-			http.Error(w, "not authenticated", http.StatusUnauthorized)
-			return
-		}
-
-		wsConn, err := wsUpgrader.Upgrade(w, r, nil)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		// close the connection when the function returns
-		defer wsConn.Close()
-
-		// handle messages
-		gameState.Handle(r.Context(), dbprovider.Ent(), wsConn)
-	})
+	r.HandleFunc("/game/ws", ws.HandleConnection(gameState))
 
 	// Get Eth client for authentication endpoint
 	retryableHTTPClient := retryablehttp.NewClient()
@@ -77,7 +53,7 @@ func NewServer(ctx context.Context, network string) (http.Handler, error) {
 	// Game authentication
 	authRouter := r.PathPrefix("/authentication").Subrouter()
 	authCors := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://dopewars.gg", "http://localhost:3000"},
+		AllowedOrigins:   []string{"https://dopewars.gg", "http://localhost:3001"},
 		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
 	})
