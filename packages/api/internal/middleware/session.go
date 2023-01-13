@@ -11,6 +11,7 @@ import (
 
 	//"google.golang.org/api/option"
 
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/gorilla/sessions"
 	"github.com/jiulongw/siwe-go"
 )
@@ -81,6 +82,9 @@ func SetWallet(ctx context.Context, wallet string) error {
 
 func FirebaseInit(ctx context.Context, wallet string) (string, error) {
 
+	_, log := logger.LogFor(ctx)
+	log.Debug().Msg("FIREBASE INIT")
+
 	// path := "C:/Users/tmarot-m/AppData/Roaming/gcloud/application_default_credentials.json"
 	// _, err := os.Stat(path)
 	// if err != nil {
@@ -98,11 +102,16 @@ func FirebaseInit(ctx context.Context, wallet string) (string, error) {
 		return "", err
 	}
 
-	claims := map[string]interface{}{
-		"wallet": wallet,
-	}
+	// an other way to deal with Custom Token
+	// claims := map[string]interface{}{
+	// 	"wallet": wallet,
+	// }
+	// token, err := client.CustomTokenWithClaims(context.TODO(), wallet, claims)
+	// if err != nil {
+	// 	return "", err
+	// }
 
-	token, err := client.CustomTokenWithClaims(context.TODO(), wallet, claims)
+	token, err := client.CustomToken(context.TODO(), wallet)
 	if err != nil {
 		return "", err
 	}
@@ -112,40 +121,40 @@ func FirebaseInit(ctx context.Context, wallet string) (string, error) {
 	return token, nil
 }
 
-// func FirebaseCreateUser(client *auth.Client, wallet string) error {
-// 	// Create a new user with ETH UID
-// 	user, err := client.CreateUser(context.TODO(), &auth.UserToCreate{
-// 		Email: wallet,
-// 		UID:   wallet,
-// 		EmailVerified: false,
-// 	})
-// 	if err != nil {
-// 		return err
-// 	}
+func FirebaseCreateUser(ctx context.Context, client *auth.Client, wallet string) error {
 
-// 	fmt.Printf("Successfully created user with Ethereum address: %v\n", user.UID)
-// 	return nil
-// }
+	_, log := logger.LogFor(ctx)
+	log.Debug().Msg("CREATING USER")
 
-func FirebaseVerify(ctx context.Context, wallet string, client *auth.Client) error {
-	// Verify the authenticity of the custom token using the Firebase Auth client
-	token, err := client.VerifyIDToken(ctx, wallet)
+	// Create a new user with ETH UID
+	params := (&auth.UserToCreate{}).UID(wallet)
+	user, err := client.CreateUser(context.TODO(), params)
 	if err != nil {
-		return fmt.Errorf("error verifying custom token: %v", err)
+		return err
 	}
 
-	// if token.UID != wallet {
-	// 	if err := FirebaseCreateUser(client, wallet); err != nil {
-	// 		return fmt.Errorf("error creating user: %v", err)
-	// 	}
-	// }
+	fmt.Printf("Successfully created user with Ethereum address: %v\n", user.UID)
+	return nil
+}
+
+func FirebaseVerify(ctx context.Context, wallet string, client *auth.Client) error {
+
+	_, log := logger.LogFor(ctx)
+	log.Debug().Msg("FIREBASE VERIFY")
+
+	token, err := client.VerifyIDToken(ctx, wallet)
+	if err != nil {
+		FirebaseCreateUser(ctx, client, wallet)
+	}
 
 	// Check that the UID in the custom token corresponds to the expected user
 	if token.UID != wallet {
+		log.Debug().Msg("UID DOES NOT CORRESPOND")
 		return fmt.Errorf("error: unexpected UID in custom token, got %s, want %s", token.UID, wallet)
 	}
 
 	// Authentication successful
+	log.Debug().Msg("SUCCESSFUL AUTH")
 	return nil
 }
 
