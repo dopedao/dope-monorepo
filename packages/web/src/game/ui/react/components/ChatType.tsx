@@ -111,10 +111,10 @@ export default function ChatType(props: Props) {
                     opacity: '0.8'
                   }}>
                     <Text style={{
-                      color: message.color,
+                      color: "white",
                       width: '80%',
                     }}>
-                      {message.author}: {message.message}
+                      {message.author}: <span style={{color: message.color}}>{message.message}</span>
                     </Text>
                     <Spacer />
                     <Text style={{
