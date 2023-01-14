@@ -144,7 +144,9 @@ func FirebaseVerify(ctx context.Context, wallet string, client *auth.Client) err
 
 	token, err := client.VerifyIDToken(ctx, wallet)
 	if err != nil {
+		log.Debug().Msg(fmt.Sprintf("Verify Error %v", err))
 		FirebaseCreateUser(ctx, client, wallet)
+		return nil
 	}
 
 	// Check that the UID in the custom token corresponds to the expected user
