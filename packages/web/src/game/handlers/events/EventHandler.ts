@@ -1,8 +1,3 @@
-import Citizen from 'game/entities/citizen/Citizen';
-import Hustler from 'game/entities/Hustler';
-import Item from 'game/entities/player/inventory/Item';
-import Quest from 'game/entities/player/quests/Quest';
-
 export enum Events {
   SHOW_NOTIFICAION = 'show_notification',
 
@@ -22,6 +17,8 @@ export enum Events {
   PLAYER_QUEST_COMPLETE = 'player_complete_quest',
 
   CHAT_MESSAGE = 'chat_message',
+  CHAT_COMMAND_RESULT = "chat_command_result",
+
   ITEM_ENTITY_DESTROYED = 'item_entity_destroyed',
 }
 

@@ -612,8 +612,7 @@ export default class GameScene extends Scene {
       (data: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => {
         // check if sent by player otherwise look through hustlers (other players)
         const hustler = this._player.getData('id') === data.author ? this._player : this._hustlers.find(h => h.getData('id') === data.author);
-        
-        hustler?.say(data.message, data.timestamp, true);
+        hustler?.say(data.message, data.color, data.timestamp, true);
       },
     );
     networkHandler.on(

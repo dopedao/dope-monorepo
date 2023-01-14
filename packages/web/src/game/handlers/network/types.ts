@@ -3,6 +3,8 @@ enum UniversalEventNames {
   PLAYER_LEAVE = 'player_leave',
   PLAYER_MOVE = 'player_move',
   PLAYER_CHAT_MESSAGE = 'player_chat_message',
+  PLAYER_CHAT_COMMAND ="player_chat_command",
+  PLAYER_CHAT_COMMAND_RESULT ="player_chat_command_result",
   PLAYER_UPDATE_MAP = 'player_update_map',
   PLAYER_PICKUP_ITEMENTITY = 'player_pickup_itementity',
   // updates the state of a citizen to the players perspective
@@ -25,6 +27,7 @@ enum NetworkEvents {
   SERVER_PLAYER_LEAVE = 'server_player_leave',
   SERVER_PLAYER_MOVE = 'server_player_move',
   SERVER_PLAYER_CHAT_MESSAGE = 'server_player_chat_message',
+  SERVER_PLAYER_CHAT_COMMAND_RESULT = "server_player_chat_command_result",
   SERVER_PLAYER_UPDATE_MAP = 'server_player_update_map',
   SERVER_PLAYER_PICKUP_ITEMENTITY = 'server_player_pickup_itementity',
   SERVER_PLAYER_ADD_QUEST = 'server_player_add_quest',
@@ -34,6 +37,7 @@ enum NetworkEvents {
   CLIENT_PLAYER_LEAVE = 'client_player_leave',
   CLIENT_PLAYER_MOVE = 'client_player_move',
   CLIENT_PLAYER_CHAT_MESSAGE = 'client_player_chat_message',
+  CLIENT_PLAYER_CHAT_COMMAND = "client_player_chat_command",
   CLIENT_PLAYER_UPDATE_MAP = 'client_player_update_map',
   CLIENT_PLAYER_PICKUP_ITEMENTITY = 'client_player_pickup_itementity',
   CLIENT_PLAYER_UPDATE_CITIZEN_STATE = 'client_player_update_citizen_state',
@@ -73,6 +77,12 @@ interface DataTypes {
     author: string;
     // timestamp
     timestamp: number;
+    // color
+    color: string;
+  };
+  [NetworkEvents.SERVER_PLAYER_CHAT_COMMAND_RESULT]: {
+    message: string;
+    status: string;
   };
   [NetworkEvents.SERVER_PLAYER_JOIN]: {
     id: string;
@@ -121,6 +131,12 @@ interface DataTypes {
   [NetworkEvents.CLIENT_PLAYER_CHAT_MESSAGE]: {
     message: string;
   };
+
+  [NetworkEvents.CLIENT_PLAYER_CHAT_COMMAND]: {
+    name: string;
+    args: string[];
+  };
+
   [NetworkEvents.CLIENT_PLAYER_UPDATE_MAP]: {
     current_map: string;
     x: number;

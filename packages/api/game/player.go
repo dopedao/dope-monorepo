@@ -29,6 +29,8 @@ type Player struct {
 	position     dopemap.Position
 	lastPosition dopemap.Position
 
+	Chatcolor string
+
 	items  []Item
 	quests []Quest
 
@@ -101,11 +103,13 @@ type Relation struct {
 
 func NewPlayer(conn *websocket.Conn, game *Game, hustlerId string, name string, currentMap string, x float32, y float32) *Player {
 	p := &Player{
-		conn:         conn,
-		game:         game,
-		Id:           uuid.New(),
-		hustlerId:    hustlerId,
-		name:         name,
+		conn:      conn,
+		game:      game,
+		Id:        uuid.New(),
+		hustlerId: hustlerId,
+		name:      name,
+		Chatcolor: "white",
+
 		currentMap:   currentMap,
 		position:     dopemap.Position{X: x, Y: y},
 		lastPosition: dopemap.Position{X: x, Y: y},
@@ -217,6 +221,8 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 			handlePlayerPickupItemEntity(p, msg.Data, ctx, &log, client)
 		case events.PLAYER_UPDATE_CITIZEN_STATE:
 			handlePlayerUpdateCitizenState(p, msg.Data, ctx, &log, client)
+		case events.PLAYER_CHAT_COMMAND:
+			handlePlayerCommand(p, msg.Data, &log)
 		case events.PLAYER_LEAVE:
 			return // see defer
 		}
@@ -315,6 +321,7 @@ func handlePlayerChatMessage(p *Player, msg json.RawMessage, log *zerolog.Logger
 		Message:   data.Message,
 		Author:    p.Id.String(),
 		Timestamp: utils.NowInUnixMillis(),
+		Color:     p.Chatcolor,
 	})
 
 	if err != nil {

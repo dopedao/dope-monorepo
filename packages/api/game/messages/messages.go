@@ -16,12 +16,24 @@ type ErrorMessageData struct {
 
 type ChatMessageData struct {
 	Message string `json:"message"`
+	Color   string `json:"color"`
+}
+
+type ChatCommandData struct {
+	Name string   `json:"name"`
+	Args []string `json:"args"`
+}
+
+type ChatCommandClientData struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
 }
 
 type ChatMessageClientData struct {
 	Message   string `json:"message"`
 	Author    string `json:"author"`
 	Timestamp int64  `json:"timestamp"`
+	Color     string `json:"color"`
 }
 
 type BroadcastMessage struct {

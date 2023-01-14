@@ -11,5 +11,7 @@ const (
 	PLAYER_ADD_QUEST            = "player_add_quest"
 	PLAYER_ADD_ITEM             = "player_add_item"
 	PLAYER_HANDSHAKE            = "player_handshake"
+	PLAYER_CHAT_COMMAND         = "player_chat_command"
+	PLAYER_CHAT_COMMAND_RESULT  = "player_chat_command_result"
 	TICK                        = "tick"
 )

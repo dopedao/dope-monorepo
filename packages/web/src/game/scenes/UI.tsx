@@ -218,6 +218,7 @@ export default class UIScene extends Scene {
     this._handleInteractions();
     this._handleQuests();
     this._handleMisc();
+    this._handleCommandResult();
   }
 
   private _handleNetworkEvents() {
@@ -255,6 +256,17 @@ export default class UIScene extends Scene {
         status: 'error',
       })
     });
+
+  }
+
+  private _handleCommandResult() {
+    NetworkHandler.getInstance().on(NetworkEvents.SERVER_PLAYER_CHAT_COMMAND_RESULT, (data: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_COMMAND_RESULT]) => {
+      this.toast({
+        ...chakraToastStyle,
+        title: data.message,
+        status: data.status as any
+    })
+  })
   }
 
   toggleInputs(enable?: boolean, mouse?: boolean) {
@@ -312,11 +324,28 @@ export default class UIScene extends Scene {
         text = text.trim();
 
         if (text.length > 0) {
-          // TODO: kinda heavy. maybe just push to end of array and reverse it?
-          this.precedentMessages.unshift(text);
-          NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_CHAT_MESSAGE, {
-            message: text,
-          });
+          
+          // if it starts with / it's a command
+          // and gets handled differently
+          if (text[0] == '/') {
+            const split = text.split(" ")
+            const name = split[0].slice(1)
+            const args = split.slice(1)
+
+            const cmd = {
+              name: name,
+              args: args
+            }
+
+            NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_CHAT_COMMAND, cmd)
+
+          } else {
+            // TODO: kinda heavy. maybe just push to end of array and reverse it?
+            this.precedentMessages.unshift(text);
+            NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_CHAT_MESSAGE, {
+              message: text,
+            });
+          }
         }
       });
     };
@@ -407,12 +436,13 @@ export default class UIScene extends Scene {
       this.toast(toast);
     });
 
-    EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string, timestamp?: number, addToChat?: boolean) => {      
+    EventHandler.emitter().on(Events.CHAT_MESSAGE, (hustler: Hustler, text: string, timestamp?: number, color?: string, addToChat?: boolean) => {      
       if (addToChat) {
         const messageData: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE] = {
           author: hustler.name,
           message: text,
           timestamp: timestamp ?? Date.now(),
+          color: color ?? "white",
         };
         // add to store
         this.messagesStore.push(messageData);
