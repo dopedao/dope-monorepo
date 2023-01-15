@@ -1,6 +1,7 @@
 package authentication
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -21,10 +22,6 @@ const MAX_BLOCK_AGE = 60 * 5
 type LoginBody struct {
 	Message   string `json:"message"`
 	Signature string `json:"signature"`
-}
-
-type LoginResponse struct {
-	JWTtoken string `json:"jwt_token"`
 }
 
 // Validates signed payload with latest block number
@@ -87,40 +84,28 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 			return
 		}
 
-		// sc := middleware.SessionFor(r.Context())
-		// session, err := sc.Get(middleware.Key)
-		// if err != nil {
-		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-		// 	return
-		// }
-
-		// if siweMessage.ExpirationTime != nil {
-		// 	session.Options.MaxAge = int(time.Until(*siweMessage.ExpirationTime).Seconds())
-		// } else {
-		// 	session.Options.MaxAge = 0
-		// }
-
-		// middleware.SetWallet(r.Context(), siweMessage.Address.String())
-		// middleware.SetSiwe(r.Context(), body.Message)
-		// if err := session.Save(r, w); err != nil {
-		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-		// 	return
-		// }
-
 		address := siweMessage.Address.String()
-		token, err := middleware.FirebaseInit(r.Context(), address)
+
+		client, err := middleware.FirebaseInit(context.TODO())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		if err := json.NewEncoder(w).Encode(LoginResponse{
-			JWTtoken: token,
-		}); err != nil {
+		token, err := middleware.FirebaseAuth(context.TODO(), client, address)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		// Saving the JWT token in the user session
+		if err := middleware.SetWallet(r.Context(), token); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "plain/text")
+		w.Write([]byte(token))
 	}
 }
 
