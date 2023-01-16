@@ -1,7 +1,6 @@
 package authentication
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -87,17 +86,17 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 
 		address := siweMessage.Address.String()
 
-		client, err := middleware.FirebaseInit(context.TODO())
+		client, err := middleware.FirebaseInit(r.Context())
 		if err != nil {
-			_, log := logger.LogFor(context.TODO())
+			_, log := logger.LogFor(r.Context())
 			log.Debug().Msg("firebaseInit FAILURE")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		token, err := middleware.FirebaseAuth(context.TODO(), client, address)
+		token, err := middleware.FirebaseAuth(r.Context(), client, address)
 		if err != nil {
-			_, log := logger.LogFor(context.TODO())
+			_, log := logger.LogFor(r.Context())
 			log.Debug().Msg("firebaseAuth FAILURE")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -105,6 +104,7 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 
 		// Saving the JWT token in the user session
 		if err := middleware.SetWallet(r.Context(), token); err != nil {
+			//if err := middleware.SetWallet(r.Context(), address); err != nil {
 			_, log := logger.LogFor(r.Context())
 			log.Debug().Msg("SetWallet FAILURE")
 			http.Error(w, err.Error(), http.StatusInternalServerError)

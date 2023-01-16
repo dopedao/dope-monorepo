@@ -67,13 +67,27 @@ func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 	}
 
 	if session.Values["wallet"] == nil {
-		log.Debug().Msg("wallet = nil")
+		log.Debug().Msg("SESSION COOKIE IS NIL")
 		return false
 	}
 
-	log.Debug().Msg(fmt.Sprintf("wallet = %v\n ", session.Values["wallet"].(string)))
+	// Retrieve the session cookie from the session
+	sessionCookie, ok := session.Values["wallet"]
+	if !ok {
+		log.Debug().Msg("session cookie not found in session")
+		return false
+	}
 
-	if err := FirebaseVerify(ctx, client, session.Values["wallet"].(string)); err != nil {
+	// Convert sessionCookie from interface{} to string
+	sessionCookieStr, ok := sessionCookie.(string)
+	if !ok {
+		log.Debug().Msg("session cookie is not a string")
+		return false
+	}
+
+	log.Debug().Msg(fmt.Sprintf("sessionCookie = %v\n ", sessionCookieStr))
+
+	if err := FirebaseVerify(ctx, client, sessionCookieStr); err != nil {
 		log.Debug().Msg("verify error")
 		return false
 	}
