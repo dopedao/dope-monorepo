@@ -29,7 +29,7 @@ var (
 func NewServer(ctx context.Context, network string) (http.Handler, error) {
 	_, log := logger.LogFor(ctx)
 
-	log.Debug().Msg("Starting Game Server")
+	log.Debug().Msg("Starting Game Server [NEW SERVER]")
 
 	r := mux.NewRouter()
 	r.Use(middleware.Session(middleware.Store))
@@ -46,7 +46,7 @@ func NewServer(ctx context.Context, network string) (http.Handler, error) {
 	// Websocket endpoint
 	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
 
-		_, log := logger.LogFor(ctx)
+		log.Debug().Msg("BEFORE GET CLIENT")
 
 		client, err := middleware.FirebaseInit(ctx)
 		if err != nil {
@@ -54,6 +54,8 @@ func NewServer(ctx context.Context, network string) (http.Handler, error) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		log.Debug().Msg("BEFORE IS AUTH")
 
 		// check if authenticated
 		if !middleware.IsAuthenticated(r.Context(), client) {

@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -88,18 +89,24 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 
 		client, err := middleware.FirebaseInit(context.TODO())
 		if err != nil {
+			_, log := logger.LogFor(context.TODO())
+			log.Debug().Msg("firebaseInit FAILURE")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		token, err := middleware.FirebaseAuth(context.TODO(), client, address)
 		if err != nil {
+			_, log := logger.LogFor(context.TODO())
+			log.Debug().Msg("firebaseAuth FAILURE")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		// Saving the JWT token in the user session
 		if err := middleware.SetWallet(r.Context(), token); err != nil {
+			_, log := logger.LogFor(r.Context())
+			log.Debug().Msg("SetWallet FAILURE")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
