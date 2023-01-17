@@ -1,10 +1,14 @@
 package middleware
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
@@ -17,6 +21,10 @@ import (
 )
 
 const Key = "session"
+
+const firebaseSigninURL string = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key="
+
+var apikey string = os.Getenv("GOOGLE_API_KEY")
 
 type sessionContextKey struct{}
 
@@ -66,10 +74,10 @@ func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 		return false
 	}
 
-	if session.Values["wallet"] == nil {
-		log.Debug().Msg("SESSION COOKIE IS NIL")
-		return false
-	}
+	// if session.Values["wallet"] == nil {
+	// 	log.Debug().Msg("SESSION COOKIE IS NIL")
+	// 	return false
+	// }
 
 	// Retrieve the session cookie from the session
 	sessionCookie, ok := session.Values["wallet"]
@@ -141,7 +149,60 @@ func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (stri
 
 	log.Debug().Msg(fmt.Sprintf("token = %v", token))
 
-	return token, nil
+	if apikey == "" {
+		return "", fmt.Errorf("no api key provided")
+	}
+
+	url := fmt.Sprintf("%v%v", firebaseSigninURL, apikey)
+
+	log.Debug().Msg(fmt.Sprintf("signin URL %v\n", url))
+
+	jsonBody := struct {
+		Token             string `json:"token"`
+		ReturnSecureToken bool   `json:"returnSecureToken"`
+	}{token, true}
+
+	data, err := json.Marshal(jsonBody)
+	if err != nil {
+		return "", err
+	}
+
+	body := bytes.NewBuffer(data)
+
+	req, err := http.NewRequest(http.MethodPost, url, body)
+	if err != nil {
+		return "", err
+	}
+
+	httpClient := &http.Client{}
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	defer resp.Body.Close()
+
+	data, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("failed to sign in user [%v] [%v]", resp.StatusCode, string(data))
+	}
+
+	signInResp := struct {
+		IdToken   string `json:"idToken"`
+		ExpiresIn string `json:"expiresIn"`
+	}{}
+
+	if err := json.Unmarshal(data, &signInResp); err != nil {
+		return "", err
+	}
+
+	log.Debug().Msg(fmt.Sprintf("token = %v", signInResp.IdToken))
+
+	return signInResp.IdToken, nil
 }
 
 // FirebaseInit returns a firebase auth client or an error if it fails.

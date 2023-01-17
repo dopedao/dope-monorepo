@@ -41,6 +41,7 @@ services:
     networks:
       - dopenet
     environment:
+      GOOGLE_API_KEY: ${GC_API_KEY}
       GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
       PORT: ${GAME_SERVER_PORT}
       PG_HOST: db:5432
