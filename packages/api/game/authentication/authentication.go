@@ -1,6 +1,7 @@
 package authentication
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -123,9 +124,27 @@ func AuthenticatedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	client, err := middleware.FirebaseInit(context.TODO())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	token, err := client.VerifyIDTokenAndCheckRevoked(r.Context(), wallet)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	addr, ok := token.Claims["wallet"]
+	if !ok {
+		http.Error(w, "no wallet address found", http.StatusUnauthorized)
+		return
+	}
+
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte(wallet))
+	w.Write([]byte(addr.(string)))
+	//w.Write([]byte(wallet))
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {

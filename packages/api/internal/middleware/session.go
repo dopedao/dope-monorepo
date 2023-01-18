@@ -65,7 +65,7 @@ func SessionFor(ctx context.Context) SessionContext {
 func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 	_, log := logger.LogFor(ctx)
 
-	log.Debug().Msg("IS AUTH FUNCTION")
+	log.Debug().Msg("authentication starts")
 
 	sc := SessionFor(ctx)
 	session, err := sc.Get(Key)
@@ -73,11 +73,6 @@ func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 		log.Debug().Msg("session error")
 		return false
 	}
-
-	// if session.Values["wallet"] == nil {
-	// 	log.Debug().Msg("SESSION COOKIE IS NIL")
-	// 	return false
-	// }
 
 	// Retrieve the session cookie from the session
 	sessionCookie, ok := session.Values["wallet"]
@@ -96,7 +91,7 @@ func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 	log.Debug().Msg(fmt.Sprintf("sessionCookie = %v\n ", sessionCookieStr))
 
 	if err := FirebaseVerify(ctx, client, sessionCookieStr); err != nil {
-		log.Debug().Msg("verify error")
+		log.Debug().Msg("VERIFY FAILURE")
 		return false
 	}
 
@@ -127,7 +122,7 @@ func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (stri
 
 	if _, err := client.GetUser(ctx, wallet); err != nil {
 		// User not found create a new user here with ETH UID
-		log.Debug().Msg("CREATING FIREBASE USER")
+		log.Debug().Msg("creates new firebase user")
 
 		params := (&auth.UserToCreate{}).UID(wallet)
 		user, err := client.CreateUser(context.TODO(), params)
@@ -208,7 +203,7 @@ func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (stri
 // FirebaseInit returns a firebase auth client or an error if it fails.
 func FirebaseInit(ctx context.Context) (*auth.Client, error) {
 	_, log := logger.LogFor(ctx)
-	log.Debug().Msg("FIREBASE INIT")
+	log.Debug().Msg("initialization of firebase")
 
 	app, err := firebase.NewApp(context.Background(), nil)
 	if err != nil {
@@ -222,7 +217,7 @@ func FirebaseInit(ctx context.Context) (*auth.Client, error) {
 func FirebaseVerify(ctx context.Context, client *auth.Client, sessionCookie string) error {
 
 	_, log := logger.LogFor(ctx)
-	log.Debug().Msg("FIREBASE VERIFY")
+	log.Debug().Msg("verification")
 
 	//if _, err := client.VerifySessionCookieAndCheckRevoked(ctx, sessionCookie); err != nil {
 	if _, err := client.VerifyIDTokenAndCheckRevoked(ctx, sessionCookie); err != nil {
@@ -231,7 +226,7 @@ func FirebaseVerify(ctx context.Context, client *auth.Client, sessionCookie stri
 	}
 
 	// Authentication successful
-	log.Debug().Msg("SUCCESSFUL AUTH")
+	log.Debug().Msg("auth successful")
 	return nil
 }
 
