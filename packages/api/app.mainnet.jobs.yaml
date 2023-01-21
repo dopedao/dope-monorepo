@@ -1,5 +1,5 @@
 # Job server for Cloud Scheduler runs
-runtime: go116
+runtime: go118
 service: jobs
 
 main: ./cmd/jobServer
