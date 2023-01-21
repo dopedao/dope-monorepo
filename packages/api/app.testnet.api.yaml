@@ -1,4 +1,4 @@
-runtime: go116
+runtime: go118
 service: api-testnet
 
 main: ./cmd/webServer

@@ -1,5 +1,5 @@
 # API server to handle back-end duties for dopewars.gg
-runtime: go116
+runtime: go118
 
 main: ./cmd/apiServer
 
