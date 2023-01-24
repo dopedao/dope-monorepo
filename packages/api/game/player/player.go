@@ -1,4 +1,4 @@
-package game
+package player
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/game/dopemap"
 	events "github.com/dopedao/dope-monorepo/packages/api/game/events"
+	item "github.com/dopedao/dope-monorepo/packages/api/game/item"
 	messages "github.com/dopedao/dope-monorepo/packages/api/game/messages"
 	utils "github.com/dopedao/dope-monorepo/packages/api/game/utils"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
@@ -18,29 +19,36 @@ import (
 )
 
 type Player struct {
-	conn *websocket.Conn
-	game *Game
-
+	Conn         *websocket.Conn
 	Id           uuid.UUID
-	hustlerId    string
-	name         string
-	currentMap   string
-	direction    string
-	position     dopemap.Position
-	lastPosition dopemap.Position
+	HustlerId    string
+	Name         string
+	CurrentMap   string
+	Direction    string
+	Position     dopemap.Position
+	LastPosition dopemap.Position
+
+	GameItems []*item.ItemEntity
 
 	Chatcolor string
 
-	items  []Item
-	quests []Quest
+	Items  []item.Item
+	Quests []Quest
 
 	// messages sent to player
 	Send chan messages.BaseMessage
+
+	// messages broadcasted to the game server
+	Unregister chan *Player
+	Broadcast  chan messages.BroadcastMessage
 }
 
-type BroadcastMessage struct {
-	Message   messages.BaseMessage
-	Condition func(p *Player) bool
+// The parsed chat message that gets sent out
+type ChatMessageClientData struct {
+	Message   string `json:"message"`
+	Author    string `json:"author"`
+	Timestamp int64  `json:"timestamp"`
+	Color     string `json:"color"`
 }
 
 type CitizenUpdateStateData struct {
@@ -52,12 +60,14 @@ type CitizenUpdateStateData struct {
 	Text uint `json:"text"`
 }
 
+// received from client
 type PlayerUpdateMapData struct {
 	CurrentMap string  `json:"current_map"`
 	X          float32 `json:"x"`
 	Y          float32 `json:"y"`
 }
 
+// gets sent out to every other player
 type PlayerUpdateMapClientData struct {
 	Id         string  `json:"id"`
 	CurrentMap string  `json:"current_map"`
@@ -83,6 +93,7 @@ type PlayerData struct {
 	Y          float32 `json:"y"`
 }
 
+// received from client, updates current pos
 type PlayerMoveData struct {
 	Id        string  `json:"id"`
 	X         float32 `json:"x"`
@@ -101,47 +112,56 @@ type Relation struct {
 	Text         uint   `json:"text"`
 }
 
-func NewPlayer(conn *websocket.Conn, game *Game, hustlerId string, name string, currentMap string, x float32, y float32) *Player {
+// Chatmessage we receive from clients
+type ChatMessageData struct {
+	Message string `json:"message"`
+	Color   string `json:"color"`
+}
+
+func NewPlayer(conn *websocket.Conn, broadcast chan messages.BroadcastMessage, unregister chan *Player, hustlerId string, name string, currentMap string, x float32, y float32, items []*item.ItemEntity) *Player {
 	p := &Player{
-		conn:      conn,
-		game:      game,
+		Conn:      conn,
 		Id:        uuid.New(),
-		hustlerId: hustlerId,
-		name:      name,
+		HustlerId: hustlerId,
+		Name:      name,
 		Chatcolor: "white",
 
-		currentMap:   currentMap,
-		position:     dopemap.Position{X: x, Y: y},
-		lastPosition: dopemap.Position{X: x, Y: y},
+		GameItems: items,
+
+		CurrentMap:   currentMap,
+		Position:     dopemap.Position{X: x, Y: y},
+		LastPosition: dopemap.Position{X: x, Y: y},
 
 		// CHANNEL HAS TO BE BUFFERED
-		Send: make(chan messages.BaseMessage, 256),
+		Send:       make(chan messages.BaseMessage, 256),
+		Broadcast:  broadcast,
+		Unregister: unregister,
 	}
 
 	return p
 }
 
 func (p *Player) Move(x float32, y float32, direction string) {
-	p.lastPosition.X = p.position.X
-	p.lastPosition.Y = p.position.Y
+	p.LastPosition.X = p.Position.X
+	p.LastPosition.Y = p.Position.Y
 
-	p.position.X = x
-	p.position.Y = y
-	p.direction = direction
+	p.Position.X = x
+	p.Position.Y = y
+	p.Direction = direction
 }
 
-func (p *Player) AddItem(ctx context.Context, client *ent.Client, item Item, pickup bool) error {
-	if p.hustlerId == "" {
+func (p *Player) AddItem(ctx context.Context, client *ent.Client, gameItem item.Item, pickup bool) error {
+	if p.HustlerId == "" {
 		return errors.New("player must have a hustler to pickup items")
 	}
-	if _, err := client.GameHustlerItem.Create().SetItem(item.item).SetHustlerID(p.hustlerId).Save(ctx); err != nil {
+	if _, err := client.GameHustlerItem.Create().SetItem(gameItem.Item).SetHustlerID(p.HustlerId).Save(ctx); err != nil {
 		return err
 	}
 
-	p.items = append(p.items, item)
+	p.Items = append(p.Items, gameItem)
 
 	data, err := json.Marshal(PlayerAddItemClientData{
-		Item:   item.item,
+		Item:   gameItem.Item,
 		Pickup: pickup,
 	})
 	if err != nil {
@@ -157,14 +177,14 @@ func (p *Player) AddItem(ctx context.Context, client *ent.Client, item Item, pic
 }
 
 func (p *Player) AddQuest(ctx context.Context, client *ent.Client, quest Quest) error {
-	if p.hustlerId == "" {
+	if p.HustlerId == "" {
 		return errors.New("player must have a hustler to have quests")
 	}
-	if _, err := client.GameHustlerQuest.Create().SetQuest(quest.Quest).SetHustlerID(p.hustlerId).Save(ctx); err != nil {
+	if _, err := client.GameHustlerQuest.Create().SetQuest(quest.Quest).SetHustlerID(p.HustlerId).Save(ctx); err != nil {
 		return err
 	}
 
-	p.quests = append(p.quests, quest)
+	p.Quests = append(p.Quests, quest)
 
 	data, err := json.Marshal(PlayerAddQuestClientData{
 		Quest: quest.Quest,
@@ -184,15 +204,15 @@ func (p *Player) AddQuest(ctx context.Context, client *ent.Client, quest Quest) 
 func (p *Player) Serialize() PlayerData {
 	return PlayerData{
 		Id:         p.Id.String(),
-		HustlerId:  p.hustlerId,
-		Name:       p.name,
-		CurrentMap: p.currentMap,
-		X:          p.position.X,
-		Y:          p.position.Y,
+		HustlerId:  p.HustlerId,
+		Name:       p.Name,
+		CurrentMap: p.CurrentMap,
+		X:          p.Position.X,
+		Y:          p.Position.Y,
 	}
 }
 
-func (p *Player) readPump(ctx context.Context, client *ent.Client) {
+func (p *Player) ReadPump(ctx context.Context, client *ent.Client) {
 	_, log := logger.LogFor(ctx)
 
 	// this will take care of closing the channel
@@ -202,7 +222,7 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 
 	for {
 		var msg messages.BaseMessage
-		err := p.conn.ReadJSON(&msg)
+		err := p.Conn.ReadJSON(&msg)
 
 		if err != nil {
 			break
@@ -229,7 +249,7 @@ func (p *Player) readPump(ctx context.Context, client *ent.Client) {
 	}
 }
 
-func (p *Player) writePump(ctx context.Context) {
+func (p *Player) WritePump(ctx context.Context) {
 	for {
 		select {
 		case msg, ok := <-p.Send:
@@ -238,7 +258,7 @@ func (p *Player) writePump(ctx context.Context) {
 				return
 			}
 
-			p.conn.WriteJSON(msg)
+			p.Conn.WriteJSON(msg)
 		}
 	}
 }
@@ -255,12 +275,12 @@ func handlePlayerMove(p *Player, msg json.RawMessage) {
 }
 
 func handlePlayerLeave(p *Player) {
-	data, _ := json.Marshal(IdData{
+	data, _ := json.Marshal(item.IdData{
 		Id: p.Id.String(),
 	})
 
-	p.game.Unregister <- p
-	p.game.Broadcast <- BroadcastMessage{
+	p.Unregister <- p
+	p.Broadcast <- messages.BroadcastMessage{
 		Message: messages.BaseMessage{
 			Event: events.PLAYER_LEAVE,
 			Data:  data,
@@ -277,11 +297,11 @@ func handlePlayerUpdateMap(p *Player, msg json.RawMessage, log *zerolog.Logger) 
 		return
 	}
 
-	p.currentMap = data.CurrentMap
-	p.lastPosition.X = p.position.X
-	p.lastPosition.Y = p.position.Y
-	p.position.X = data.X
-	p.position.Y = data.Y
+	p.CurrentMap = data.CurrentMap
+	p.LastPosition.X = p.Position.X
+	p.LastPosition.Y = p.Position.Y
+	p.Position.X = data.X
+	p.Position.Y = data.Y
 
 	broadcastedData, err := json.Marshal(PlayerUpdateMapClientData{
 		Id:         p.Id.String(),
@@ -294,21 +314,27 @@ func handlePlayerUpdateMap(p *Player, msg json.RawMessage, log *zerolog.Logger) 
 		return
 	}
 
-	p.game.Broadcast <- BroadcastMessage{
+	p.Broadcast <- messages.BroadcastMessage{
 		Message: messages.BaseMessage{
 			Event: events.PLAYER_UPDATE_MAP,
 			Data:  broadcastedData,
 		},
-		Condition: func(otherPlayer *Player) bool {
-			return p != otherPlayer
+		Condition: func(otherPlayer interface{}) bool {
+			ptr, ok := otherPlayer.(*Player)
+			if !ok {
+				log.Error().Msg("Could not cast interface to Player type")
+				return false
+			}
+
+			return p != ptr
 		},
 	}
 
-	log.Info().Msgf("player %s | %s changed map: %s", p.Id, p.name, data.CurrentMap)
+	log.Info().Msgf("player %s | %s changed map: %s", p.Id, p.Name, data.CurrentMap)
 }
 
 func handlePlayerChatMessage(p *Player, msg json.RawMessage, log *zerolog.Logger) {
-	var data messages.ChatMessageData
+	var data ChatMessageData
 	json.Unmarshal(msg, &data)
 
 	// if message length is 0, no need
@@ -317,7 +343,7 @@ func handlePlayerChatMessage(p *Player, msg json.RawMessage, log *zerolog.Logger
 		return
 	}
 
-	broadcastedData, err := json.Marshal(messages.ChatMessageClientData{
+	broadcastedData, err := json.Marshal(ChatMessageClientData{
 		Message:   data.Message,
 		Author:    p.Id.String(),
 		Timestamp: utils.NowInUnixMillis(),
@@ -329,23 +355,23 @@ func handlePlayerChatMessage(p *Player, msg json.RawMessage, log *zerolog.Logger
 		return
 	}
 
-	p.game.Broadcast <- BroadcastMessage{
+	p.Broadcast <- messages.BroadcastMessage{
 		Message: messages.BaseMessage{
 			Event: events.PLAYER_CHAT_MESSAGE,
 			Data:  broadcastedData,
 		},
 	}
 
-	log.Info().Msgf("player %s | %s sent chat message: %s", p.Id, p.name, data.Message)
+	log.Info().Msgf("player %s | %s sent chat message: %s", p.Id, p.Name, data.Message)
 }
 
 func handlePlayerPickupItemEntity(p *Player, msg json.RawMessage, ctx context.Context, log *zerolog.Logger, client *ent.Client) {
-	if p.hustlerId == "" {
+	if p.HustlerId == "" {
 		p.Send <- messages.GenerateErrorMessage(500, "must have a hustler to pickup items")
 		return
 	}
 
-	var data IdData
+	var data item.IdData
 	json.Unmarshal(msg, &data)
 
 	// search for item entity and remove it + broadcast its removal to all players
@@ -355,26 +381,26 @@ func handlePlayerPickupItemEntity(p *Player, msg json.RawMessage, ctx context.Co
 		return
 	}
 
-	itemEntity := p.game.ItemEntityByUUID(parsedId)
+	itemEntity := item.GetItemEntityByUUID(p.GameItems, parsedId)
 	if itemEntity == nil {
 		p.Send <- messages.GenerateErrorMessage(500, "could not find item entity")
 		return
 	}
 
-	if !p.game.RemoveItemEntity(itemEntity) {
+	if !RemoveItemEntity(&p.GameItems, itemEntity, p.Broadcast) {
 		p.Send <- messages.GenerateErrorMessage(500, "could not pickup item entity")
 		return
 	}
 
-	if p.AddItem(ctx, client, itemEntity.item, true) != nil {
+	if p.AddItem(ctx, client, itemEntity.Item, true) != nil {
 		p.Send <- messages.GenerateErrorMessage(500, "could not add item to inventory")
 	}
 
-	log.Info().Msgf("player %s | %s picked up item entity: %s", p.Id, p.name, data.Id)
+	log.Info().Msgf("player %s | %s picked up item entity: %s", p.Id, p.Name, data.Id)
 }
 
 func handlePlayerUpdateCitizenState(p *Player, msg json.RawMessage, ctx context.Context, log *zerolog.Logger, client *ent.Client) {
-	if p.hustlerId == "" {
+	if p.HustlerId == "" {
 		p.Send <- messages.GenerateErrorMessage(500, "must have a hustler to update citizen state")
 		return
 	}
@@ -388,7 +414,7 @@ func handlePlayerUpdateCitizenState(p *Player, msg json.RawMessage, ctx context.
 	// TODO: update citizen state in db player data
 	// check citizen in registry with corresponding id, conversation and text index
 	// for item/quest to add
-	relation, err := client.GameHustlerRelation.Get(ctx, fmt.Sprintf("%s:%s", p.hustlerId, data.Citizen))
+	relation, err := client.GameHustlerRelation.Get(ctx, fmt.Sprintf("%s:%s", p.HustlerId, data.Citizen))
 	if err != nil {
 		// only proceed if error is of type not found, we'll create a new relation entry
 		if _, ok := err.(*ent.NotFoundError); !ok {
@@ -397,9 +423,9 @@ func handlePlayerUpdateCitizenState(p *Player, msg json.RawMessage, ctx context.
 		}
 
 		if _, err := client.GameHustlerRelation.Create().
-			SetID(fmt.Sprintf("%s:%s", p.hustlerId, data.Citizen)).
+			SetID(fmt.Sprintf("%s:%s", p.HustlerId, data.Citizen)).
 			SetCitizen(data.Citizen).
-			SetHustlerID(p.hustlerId).
+			SetHustlerID(p.HustlerId).
 			SetConversation(data.Conversation).
 			SetText(data.Text).
 			Save(ctx); err != nil {
@@ -415,5 +441,34 @@ func handlePlayerUpdateCitizenState(p *Player, msg json.RawMessage, ctx context.
 		p.Send <- messages.GenerateErrorMessage(500, "could not update relation state")
 		return
 	}
-	log.Info().Msgf("player %s | %s updated citizen state: %s", p.Id, p.name, data.Citizen)
+	log.Info().Msgf("player %s | %s updated citizen state: %s", p.Id, p.Name, data.Citizen)
+}
+
+// should really be in the items package but no idea how to break up item <> player-channel
+func RemoveItemEntity(itemEntities *[]*item.ItemEntity, itemEntity *item.ItemEntity, broadcastChan chan messages.BroadcastMessage) bool {
+	removed := false
+
+	for i := 0; i < len(*itemEntities); i++ {
+		if *(*itemEntities)[i] == *itemEntity {
+			*itemEntities = append((*itemEntities)[:i], (*itemEntities)[i+1:]...)
+			removed = true
+
+			data, err := json.Marshal(item.IdData{Id: itemEntity.Id.String()})
+			if err != nil {
+				// TODO: print error message
+				break
+			}
+
+			broadcastChan <- messages.BroadcastMessage{
+				Message: messages.BaseMessage{
+					Event: events.PLAYER_PICKUP_ITEMENTITY,
+					Data:  data,
+				},
+			}
+
+			break
+		}
+	}
+
+	return removed
 }

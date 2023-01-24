@@ -1,4 +1,4 @@
-package game
+package player
 
 import (
 	"encoding/json"
@@ -6,9 +6,15 @@ import (
 
 	events "github.com/dopedao/dope-monorepo/packages/api/game/events"
 	messages "github.com/dopedao/dope-monorepo/packages/api/game/messages"
-	status "github.com/dopedao/dope-monorepo/packages/api/game/status"
+	"github.com/dopedao/dope-monorepo/packages/api/game/utils"
 	"github.com/rs/zerolog"
 )
+
+// Chatcommand we receive from client
+type ChatCommandData struct {
+	Name string   `json:"name"`
+	Args []string `json:"args"`
+}
 
 const (
 	SETCOLOR = "setcolor"
@@ -19,7 +25,7 @@ var (
 )
 
 func handlePlayerCommand(p *Player, msg json.RawMessage, log *zerolog.Logger) {
-	var command messages.ChatCommandData
+	var command ChatCommandData
 	if err := json.Unmarshal(msg, &command); err != nil {
 		messages.GenerateErrorMessage(500, "could not marshal command data")
 		return
@@ -30,36 +36,48 @@ func handlePlayerCommand(p *Player, msg json.RawMessage, log *zerolog.Logger) {
 		handleSetcolor(command.Args, p, log)
 	default:
 		log.Info().Msgf("player %s | tried running an unknown command: %s", p.Id, command.Name)
-		var errorToast = messages.ChatCommandClientData{
-			Status:  status.ERROR,
+		var errorToast = messages.Toast{
+			Status:  messages.ERROR,
 			Message: command.Name + " is not a valid command.",
 		}
 
 		errorToastJson, err := json.Marshal(errorToast)
 		if err != nil {
-			messages.GenerateErrorMessage(500, "could not marshal invalid command error")
+			p.Send <- messages.GenerateErrorMessage(500, "could not marshal invalid command error")
+			return
 		}
 
-		p.game.Broadcast <- BroadcastMessage{
+		p.Broadcast <- messages.BroadcastMessage{
 			Message: messages.BaseMessage{
 				Event: events.PLAYER_CHAT_COMMAND_RESULT,
 				Data:  errorToastJson,
 			},
-			Condition: func(other *Player) bool {
-				return p == other
+			Condition: func(other interface{}) bool {
+				ptr, ok := other.(*Player)
+				if !ok {
+					log.Error().Msg("Could not cast interface to Player type")
+					return false
+				}
+
+				return p == ptr
 			},
 		}
 	}
 }
 
 func handleSetcolor(args []string, p *Player, log *zerolog.Logger) {
+	//do nothing when no args
+	if len(args) <= 0 {
+		return
+	}
+
 	colorArg := args[0]
 
-	if !contains(allowedColors[:], colorArg) {
+	if !utils.Contains(allowedColors[:], colorArg) {
 		log.Info().Msgf("player %s | tried using a forbidden color: %s", p.Id, colorArg)
 		// Toast inputs we show the client ingame
-		invalidArgErr := messages.ChatCommandClientData{
-			Status:  status.ERROR,
+		invalidArgErr := messages.Toast{
+			Status:  messages.ERROR,
 			Message: colorArg + " is not a valid color! Allowed colors are: [" + strings.Join(allowedColors[:], ", ") + "]",
 		}
 
@@ -69,14 +87,20 @@ func handleSetcolor(args []string, p *Player, log *zerolog.Logger) {
 			return
 		}
 
-		p.game.Broadcast <- BroadcastMessage{
+		p.Broadcast <- messages.BroadcastMessage{
 			Message: messages.BaseMessage{
 				Event: events.PLAYER_CHAT_COMMAND_RESULT,
 				Data:  invalidArgErrJson,
 			},
-			// show toast only player that issued the command
-			Condition: func(other *Player) bool {
-				return p == other
+			// show toast only to the player that issued the command
+			Condition: func(other interface{}) bool {
+				ptr, ok := other.(*Player)
+				if !ok {
+					log.Error().Msg("Could not cast interface to Player type")
+					return false
+				}
+
+				return p == ptr
 			},
 		}
 		return
@@ -87,8 +111,8 @@ func handleSetcolor(args []string, p *Player, log *zerolog.Logger) {
 	log.Info().Msgf("player %s | updated color from %s to %s", p.Id, p.Chatcolor, colorArg)
 	p.Chatcolor = colorArg
 
-	clientData := messages.ChatCommandClientData{
-		Status:  status.SUCCESS,
+	clientData := messages.Toast{
+		Status:  messages.SUCCESS,
 		Message: "Chatcolor changed to: " + p.Chatcolor,
 	}
 
@@ -98,23 +122,19 @@ func handleSetcolor(args []string, p *Player, log *zerolog.Logger) {
 		return
 	}
 
-	p.game.Broadcast <- BroadcastMessage{
+	p.Broadcast <- messages.BroadcastMessage{
 		Message: messages.BaseMessage{
 			Event: events.PLAYER_CHAT_COMMAND_RESULT,
 			Data:  clientDataJson,
 		},
-		Condition: func(other *Player) bool {
-			return p == other
+		Condition: func(other interface{}) bool {
+			ptr, ok := other.(*Player)
+			if !ok {
+				log.Error().Msg("Could not cast interface to Player type")
+				return false
+			}
+
+			return p == ptr
 		},
 	}
-}
-
-func contains(haystack []string, needle string) bool {
-	for i := range haystack {
-		if haystack[i] == needle {
-			return true
-		}
-	}
-
-	return false
 }
