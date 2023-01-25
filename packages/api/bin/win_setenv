@@ -41,7 +41,7 @@ if [ -z "$gfp_input" ]; then
         firebase_cred_path=$(input_or_default "$gfp_input" "$default_firebase_path")
     if [ ! -f "$firebase_cred_path" ]; then
             echo -e "File not found.\nExiting."
-            echo "Try installing the gcloud cli and run the following command: gcloud auth application default-login"
+            echo "You need to generate a firebase private key"
             exit 1
     fi
 fi

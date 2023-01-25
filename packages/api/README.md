@@ -17,10 +17,15 @@ If you don't have it do the following:
 - install the gcloud cli
 - run `gcloud auth application default-login`
 
+Generate a Firebase Admin SDK private key ([https://console.firebase.google.com/]->Project settings->ServiceAccounts)
+and find your gCloud API key [https://console.cloud.google.com/apis/credentials]
+
 ### MAC/LINUX
 
 - run `./bin/setenv`
 - add the complete path of application_default_credentials.json (or press enter for default)
+- add the firebase private key path
+- add the gCloud API key
 - press enter to accept default ports
 - press `y` at the last prompt after validating the output to save them (your old .env will be backed up)
 - refer to "WINDOWS MANUAL SET UP" if the inputs are not correct or empty
@@ -32,6 +37,10 @@ If you don't have it do the following:
 
 ```
 GCLOUD_CRED_PATH=PATH\TO\YOUR\gcloud\application_default_credentials.json
+
+GOOGLE_APP_CRED=PATH\TO\firebaseprivatekey.json
+
+GC_API_KEY = APIKEY
 
 GAME_SERVER_PORT=6060
 

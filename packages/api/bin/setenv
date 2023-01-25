@@ -29,6 +29,23 @@ fi
 conf+="GCLOUD_CRED_PATH=$gcloud_cred_path\n"
 clear
 
+read -p "Enter the path to your firebase credential: " -r gfp_input
+if [ -z "$gfp_input" ]; then
+        firebase_cred_path=$(input_or_default "$gfp_input" "$default_firebase_path")
+    if [ ! -f "$firebase_cred_path" ]; then
+            echo -e "File not found.\nExiting."
+            echo "You need to generate a firebase private key"
+            exit 1
+    fi
+fi
+conf+="GOOGLE_APP_CRED=$firebase_cred_path\n"
+clear
+
+read -p "Enter your google cloud api key: " -r gkp_input
+gc_api_key=$(input_or_default "$gkp_input" $default_api_key)
+conf+="GC_API_KEY=$gc_api_key\n"
+clear
+
 read -p "Port for the game server (default: $default_game_server_port): " -r gsp_input
 game_server_port=$(input_or_default "$gsp_input" $default_game_server_port)
 conf+="GAME_SERVER_PORT=$game_server_port\n"
