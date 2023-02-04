@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math/big"
 	"os"
+	"reflect"
 	"regexp"
 
 	"github.com/dopedao/dope-monorepo/packages/api/indexer/processor"
@@ -16,9 +17,9 @@ import (
 )
 
 type Slots struct {
-	Weapon    *big.Int
-	Clothes   *big.Int
 	Vehicle   *big.Int
+	Clothes   *big.Int
+	Weapon    *big.Int
 	Waist     *big.Int
 	Foot      *big.Int
 	Hand      *big.Int
@@ -29,12 +30,15 @@ type Slots struct {
 }
 
 const (
-	MaleBody         uint8  = 0
-	FemaleBody       uint8  = 1
-	MaleHair         uint8  = 2
-	FemaleHair       uint8  = 3
-	Beard            uint8  = 4
-	OldestHustlerAge uint64 = 1637443660
+	MaleBody   uint8 = 0
+	FemaleBody uint8 = 1
+	MaleHair   uint8 = 2
+	FemaleHair uint8 = 3
+	Beard      uint8 = 4
+
+	SHADOW_DRUGS        = "00362f3729062b"
+	BODY_DEFAULT_MALE   = "00092736190700011a021b04000600011a011b021c011b03000600011a011b031c03000600011c0140011c011a014003000600011a021c011a011c03000700011c021b011c03000700011a021c04000700021a05000400041a031c03000200021a091c01000100011a0c1c0100011a0c1c0100011a0c1c011a021c011a021c011a031c011a011c011a011c011a011c031a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a091c011a021c021a071c0100011c0100011c0100021a011c0300021a021c01000300021a011c0300021a011c02000300021a011c0300021a011c02000300021a011c0300021a011c02000300021a011c0300021a011c02000300021a011c0300021a011c02000300021a011c0300021a011c02000300021a011c0300021a011c02000300011a021c0300011a021c02000300021a0400021a03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300021a0400011a021c02000300011b021c0300021a021c0100"
+	BODY_DEFAULT_FEMALE = "000b26361a0600011a021b03000500011a011b021c011b02000500011a011b031c02000500011c011d011c011a011d02000500011a021c011a011c02000600011c011e021c02000600011a021c03000600021a04000600011a011c04000400021a041c02000300011a071c01000200011a091c0200011a041c011a041c0100011a011c0100011a021c011a021c011a011c0100011c0200011a011c011f011a011c011f0100011c0100011c0300021a011c021a0100011c0100011c0300011a031c0200011c0100011c0300011a031c0200011c0100011c0300011a011c011a011c0200011c0100011c0300011a031c0200011c0100011c0200021a041c0100011c011a011c0100021a071c011a011c0100021a051c0100011c011a0200021a021c011a031c01000400011a011c0200011a011c02000400011a011c0200011a011c02000400011a011c0200011a011c02000400011a011c0200011a011c02000400011a011c0200011a011c02000400011a011c0200011a011c02000400011a011c0200011a011c02000400021c0200021c02000400011a0300011a03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400021a0200021c011a0100"
 )
 
 var (
@@ -45,7 +49,6 @@ var (
 	maskSlot      = big.NewInt(0)
 	viewboxSlot   = big.NewInt(1)
 	bodySlot      = big.NewInt(2)
-	orderSlot     = big.NewInt(3)
 	weaponSlot    = big.NewInt(5)
 	clothesSlot   = big.NewInt(6)
 	vehicleSlot   = big.NewInt(7)
@@ -58,31 +61,33 @@ var (
 	accessorySlot = big.NewInt(14)
 )
 
-const (
-	SHADOW_DRUGS = "00362f3729062b"
-
-	BODY_DEFAULT_MALE   = "00092736190700011a021b04000600011a011b021c011b03000600011a011b031c03000600011c0140011c011a014003000600011a021c011a011c03000700011c021b011c03000700011a021c04000700021a05000400041a031c03000200021a091c01000100011a0c1c0100011a0c1c0100011a0c1c011a021c011a021c011a031c011a011c011a011c011a011c031a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a071c011a011c011a011c0100021a091c011a021c021a071c0100011c0100011c0100021a011c0300021a021c01000300021a011c0300021a011c02000300021a011c0300021a011c02000300021a011c0300021a011c02000300021a011c0300021a011c02000300021a011c0300021a011c02000300021a011c0300021a011c02000300021a011c0300021a011c02000300011a021c0300011a021c02000300021a0400021a03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300011a011c0400011a011c03000300021a0400011a021c02000300011b021c0300021a021c0100"
-	BODY_DEFAULT_FEMALE = "000b26361a0600011a021b03000500011a011b021c011b02000500011a011b031c02000500011c011d011c011a011d02000500011a021c011a011c02000600011c011e021c02000600011a021c03000600021a04000600011a011c04000400021a041c02000300011a071c01000200011a091c0200011a041c011a041c0100011a011c0100011a021c011a021c011a011c0100011c0200011a011c011f011a011c011f0100011c0100011c0300021a011c021a0100011c0100011c0300011a031c0200011c0100011c0300011a031c0200011c0100011c0300011a011c011a011c0200011c0100011c0300011a031c0200011c0100011c0200021a041c0100011c011a011c0100021a071c011a011c0100021a051c0100011c011a0200021a021c011a031c01000400011a011c0200011a011c02000400011a011c0200011a011c02000400011a011c0200011a011c02000400011a011c0200011a011c02000400011a011c0200011a011c02000400011a011c0200011a011c02000400011a011c0200011a011c02000400021c0200021c02000400011a0300011a03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400011c0300011c03000400021a0200021c011a0100"
-)
-
 func main() {
 	eth, _ := ethclient.Dial("https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG")
 
-	hustlerId := big.NewInt(0)
+	hustlerId := big.NewInt(2471)
 
-	h, _ := bindings.NewHustlerCaller(hustlerAddr, eth)
-	c, _ := bindings.NewComponentsCaller(componentsAddr, eth)
-	s, _ := bindings.NewSwapMeetCaller(swapmeetAddr, eth)
+	h, err := bindings.NewHustlerCaller(hustlerAddr, eth)
+	if err != nil {
+		fmt.Printf("Couldn't get hustler contract: %v", err)
+	}
+
+	c, err := bindings.NewComponentsCaller(componentsAddr, eth)
+	if err != nil {
+		fmt.Printf("Couldn't get components contract: %v", err)
+	}
+
+	s, err := bindings.NewSwapMeetCaller(swapmeetAddr, eth)
+	if err != nil {
+		fmt.Printf("Couldn't get swapmeet contract: %v", err)
+	}
 
 	hustlerMeta, err := h.Metadata(nil, hustlerId)
 	if err != nil {
-		fmt.Printf("hustler: %v", err)
+		fmt.Printf("Couldnt get hustler meta: %v", err)
 	}
 
 	foreground := hex.EncodeToString(hustlerMeta.Color[:])
-	fmt.Printf("Foreground: %s\n", foreground)
 	background := hex.EncodeToString(hustlerMeta.Background[:])
-	fmt.Printf("Background: %s\n", background)
 
 	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(
 		// types
@@ -95,17 +100,115 @@ func main() {
 		},
 	))
 
-	currentBlock, _ := eth.BlockNumber(context.Background())
+	currentBlock, err := eth.BlockNumber(context.Background())
+	if err != nil {
+		fmt.Printf("Couldn't get latest block: %v", err)
+	}
 
-	viewbox, _ := eth.StorageAt(
+	viewbox, err := eth.StorageAt(
 		context.Background(),
 		hustlerAddr,
 		common.BytesToHash(
 			new(big.Int).Add(metadataKey, viewboxSlot).Bytes(),
 		),
 		new(big.Int).SetUint64(currentBlock))
+	if err != nil {
+		fmt.Printf("Couldn't get viewbox: %v", err)
+	}
 
-	fmt.Println("Viewbox: ", viewbox)
+	bodyParts, err := eth.StorageAt(
+		context.Background(),
+		hustlerAddr,
+		common.BytesToHash(
+			new(big.Int).Add(metadataKey, bodySlot).Bytes(),
+		),
+		new(big.Int).SetUint64(currentBlock))
+	if err != nil {
+		fmt.Printf("Couldn't get bodyParts: %v", err)
+	}
+
+	var gender uint8 = 0
+	if new(big.Int).SetBytes(bodyParts[31:32]).Uint64() == 1 {
+		gender = 1
+	}
+
+	// only OGs have a title
+	var title string = ""
+	if hustlerId.Cmp(big.NewInt(500)) == -1 {
+		ogTitle, err := c.Title(nil, hustlerId)
+		if err == nil {
+			title = ogTitle
+		} else {
+			fmt.Printf("Couldn't get title: %v", err)
+		}
+	}
+
+	//hustler part data that will get rendered
+	parts := []string{}
+	partNames := []string{}
+	var hasBody bool
+
+	slots, err := equipmentSlots(context.Background(), eth, hustlerId.String(), hustlerAddr, big.NewInt(int64(currentBlock)))
+	if err != nil {
+		fmt.Printf("Couldn't get slots: %v", err)
+	}
+
+	if slots.Vehicle != nil {
+		rawVehicle, err := s.TokenRle(nil, slots.Vehicle, gender)
+		if err != nil {
+			fmt.Printf("Couldn't get vehicle from contract: %v", err)
+		}
+		vehicle := common.Bytes2Hex(rawVehicle)
+		parts = append(parts, vehicle)
+	}
+
+	//shadow, ?, body, hair, beard
+	hustlerPartsRaw, err := h.HustlerParts(nil, hustlerId)
+	if err != nil {
+		fmt.Printf("Couldn't get hustlerparts from contract: %v", err)
+	}
+	if len(hustlerPartsRaw) > 0 {
+		for i, bp := range hustlerPartsRaw {
+			if len(bp) > 0 {
+				//some hustlers dont have a body for some reason and then everything breaks
+				if i == 2 {
+					hasBody = true
+				}
+
+				bpstr := common.Bytes2Hex(bp)
+				parts = append(parts, bpstr)
+			}
+		}
+	}
+
+	if !hasBody {
+		if gender == 0 {
+			parts = append(parts, BODY_DEFAULT_MALE)
+		} else {
+			parts = append(parts, BODY_DEFAULT_FEMALE)
+		}
+	}
+
+	v := reflect.Indirect(reflect.ValueOf(slots))
+
+	//skip vehicle for correct order
+	for i := 1; i < v.NumField(); i++ {
+		fieldName := v.Type().Field(i).Name
+		field := v.Field(i).Interface()
+
+		if field.(*big.Int) != nil {
+			rawPart, err := s.TokenRle(nil, field.(*big.Int), gender)
+
+			if err != nil {
+				fmt.Printf("Couldn't get %s from contract", fieldName)
+				continue
+			}
+			partNames = append(partNames, fieldName)
+
+			part := common.Bytes2Hex(rawPart)
+			parts = append(parts, part)
+		}
+	}
 
 	viewBox := [4]*big.Int{
 		new(big.Int).SetBytes(viewbox[31:32]),
@@ -114,151 +217,29 @@ func main() {
 		new(big.Int).SetBytes(viewbox[28:29]),
 	}
 
-	bodyParts, _ := eth.StorageAt(
-		context.Background(),
-		hustlerAddr,
-		common.BytesToHash(
-			new(big.Int).Add(metadataKey, bodySlot).Bytes(),
-		),
-		new(big.Int).SetUint64(currentBlock))
-
-	fmt.Println("Bodyparts: ", bodyParts)
-
-	var gender uint8 = 0
-	if new(big.Int).SetBytes(bodyParts[31:32]).Uint64() == 1 {
-		gender = 1
-	}
-
-	var title string = ""
-	if hustlerId.Cmp(big.NewInt(500)) == -1 {
-		ogTitle, err := c.Title(nil, hustlerId)
-		if err == nil {
-			title = ogTitle
-		}
-	}
-
-	slots, _ := equipmentSlots(context.Background(), eth, hustlerId.String(), hustlerAddr, big.NewInt(int64(currentBlock)))
-	parts := []string{}
-
-	if slots.Vehicle != nil {
-		carRaw, err := s.TokenRle(nil, slots.Vehicle, gender)
-		if carRaw != nil && err == nil {
-			car := common.Bytes2Hex(carRaw)
-			parts = append(parts, car)
-		}
-	}
-
-	bodyRaw, err := h.BodyRle(nil, 0, hustlerId)
-	fmt.Println("Body: ", bodyRaw)
-	if bodyRaw != nil && err == nil {
-		body := common.Bytes2Hex(bodyRaw)
-		parts = append(parts, body)
-	}
-
-	if slots.Clothes != nil {
-		clothesRaw, err := s.TokenRle(nil, slots.Clothes, gender)
-		if clothesRaw != nil && err == nil {
-			clothes := common.Bytes2Hex(clothesRaw)
-			parts = append(parts, clothes)
-		}
-	}
-
-	if slots.Accessory != nil {
-		accessoriesRaw, err := s.TokenRle(nil, slots.Accessory, gender)
-		if err == nil {
-			accessories := common.Bytes2Hex(accessoriesRaw)
-			parts = append(parts, accessories)
-		}
-	}
-
-	if slots.Foot != nil {
-		footRaw, err := s.TokenRle(nil, slots.Foot, gender)
-		if footRaw != nil && err == nil {
-			foot := common.Bytes2Hex(footRaw)
-			parts = append(parts, foot)
-		}
-	}
-
-	if slots.Waist != nil {
-		waistRaw, err := s.TokenRle(nil, slots.Waist, gender)
-		if waistRaw != nil && err == nil {
-			waist := common.Bytes2Hex(waistRaw)
-			parts = append(parts, waist)
-		}
-	}
-
-	if slots.Weapon != nil {
-		weaponRaw, err := s.TokenRle(nil, slots.Weapon, gender)
-		if weaponRaw != nil && err == nil {
-			weapon := common.Bytes2Hex(weaponRaw)
-			parts = append(parts, weapon)
-		}
-	}
-
-	if slots.Ring != nil {
-		ringRaw, err := s.TokenRle(nil, slots.Ring, gender)
-		if ringRaw != nil && err == nil {
-			ring := common.Bytes2Hex(ringRaw)
-			parts = append(parts, ring)
-		}
-	}
-
-	if slots.Neck != nil {
-		neckRaw, err := s.TokenRle(nil, slots.Neck, gender)
-		if neckRaw != nil && err == nil {
-			neck := common.Bytes2Hex(neckRaw)
-			parts = append(parts, neck)
-		}
-
-	}
-
-	if slots.Hand != nil {
-		handRaw, err := s.TokenRle(nil, slots.Hand, gender)
-		if handRaw != nil && err == nil {
-			hand := common.Bytes2Hex(handRaw)
-			parts = append(parts, hand)
-		}
-	}
-
-	if slots.Drug != nil {
-		drugRaw, err := s.TokenRle(nil, slots.Drug, gender)
-		if drugRaw != nil && err == nil {
-			drug := common.Bytes2Hex(drugRaw)
-			parts = append(parts, drug)
-			parts = append(parts, SHADOW_DRUGS)
-		}
-	}
-
-	fmt.Println("Title: ", title)
-	fmt.Println("Name: ", hustlerMeta.Name)
-
+	//zoomed in image
 	resolution := 64
 	if slots.Vehicle != nil {
+		//fullsize
 		resolution = 160
 	}
 
-	hustlerPartsRaw, _ := h.HustlerParts(nil, hustlerId)
-	fmt.Println("Hustlerparts: ", hustlerPartsRaw)
+	cleanTitle := cleanString(title)
+	cleanName := cleanString(hustlerMeta.Name)
 
-	if len(hustlerPartsRaw) > 0 {
-		for _, bp := range hustlerPartsRaw {
-			if len(bp) > 0 {
-				bpstr := common.Bytes2Hex(bp)
-				parts = append(parts, bpstr)
-			}
-		}
-	} else {
-		if len(bodyRaw) == 0 {
-			if gender == 0 {
-				parts = append(parts, BODY_DEFAULT_MALE)
-			} else {
-				parts = append(parts, BODY_DEFAULT_FEMALE)
-			}
-		}
-	}
+	fmt.Printf("Rendering hustler#%s\nName: %s\nTitle: %s\nForeground: %s\nBackground: %s\nSex: %d\nParts: %v\nResolution: %d\nViewBox: %v",
+		hustlerId.String(),
+		cleanName,
+		cleanTitle,
+		foreground,
+		background,
+		gender,
+		partNames,
+		resolution,
+		viewBox,
+	)
 
-	fmt.Println("Parts: ", parts)
-	svg := processor.BuildSVG(parts, background, foreground, cleanString(title), cleanString(hustlerMeta.Name), viewBox, resolution)
+	svg := processor.BuildSVG(parts, background, foreground, cleanTitle, cleanName, viewBox, resolution)
 	os.WriteFile("test.svg", []byte(svg), 0777)
 }
 
