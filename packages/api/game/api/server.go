@@ -4,6 +4,12 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/gorilla/mux"
+	"github.com/hashicorp/go-retryablehttp"
+	"github.com/rs/cors"
+
 	"github.com/dopedao/dope-monorepo/packages/api/game"
 	"github.com/dopedao/dope-monorepo/packages/api/game/api/health"
 	ws "github.com/dopedao/dope-monorepo/packages/api/game/api/ws"
@@ -12,11 +18,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/rpc"
-	"github.com/gorilla/mux"
-	"github.com/hashicorp/go-retryablehttp"
-	"github.com/rs/cors"
 )
 
 var (
@@ -38,34 +39,7 @@ func NewServer(ctx context.Context, network string) (http.Handler, error) {
 	r.HandleFunc("/game/health", health.Handle())
 
 	// Websocket endpoint
-	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {
-
-		client, err := middleware.FirebaseInit(ctx)
-		if err != nil {
-			log.Debug().Msg("FirebaseInit error server.go")
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		// check if authenticated
-		if !middleware.IsAuthenticated(r.Context(), client) {
-			log.Debug().Msg("not authenticated")
-			http.Error(w, "not authenticated", http.StatusUnauthorized)
-			return
-		}
-
-		wsConn, err := wsUpgrader.Upgrade(w, r, nil)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		// close the connection when the function returns
-		defer wsConn.Close()
-
-		// handle messages
-		gameState.Handle(r.Context(), dbprovider.Ent(), wsConn)
-	})
+	r.HandleFunc("/game/ws", ws.HandleConnection(gameState))
 
 	// Get Eth client for authentication endpoint
 	retryableHTTPClient := retryablehttp.NewClient()
