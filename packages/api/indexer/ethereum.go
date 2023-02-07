@@ -13,6 +13,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/event"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/syncstate"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
+	svgrender "github.com/dopedao/dope-monorepo/packages/api/internal/svg-render"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -62,6 +63,10 @@ func NewEthereumIndexer(ctx context.Context, entClient *ent.Client, config EthCo
 	c, err := rpc.DialHTTPWithClient(config.RPC, retryableHTTPClient.StandardClient())
 	if err != nil {
 		log.Fatal().Msg("Dialing ethereum rpc.") //nolint:gocritic
+	}
+
+	if err := svgrender.InitRenderer(); err != nil {
+		log.Fatal().Msg("initializing svg-renderer")
 	}
 
 	log.Info().Msgf("Starting client for %v", c)

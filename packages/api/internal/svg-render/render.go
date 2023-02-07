@@ -1,4 +1,4 @@
-package processor
+package svgrender
 
 import (
 	"fmt"
@@ -26,38 +26,53 @@ type Rect struct {
 	colorIndex int64
 }
 
-//mstore(b value, b len, direction * offset)
-func translate(direction int, b string, offset string) string {
-	bInt, _ := strconv.ParseInt(b, 16, 64)
-	offsetInt, _ := strconv.ParseInt(offset, 16, 64)
-
-	return fmt.Sprintf("%x", bInt+(bInt*offsetInt))
-}
-
-func decodeImage(image string, offset string) DecodedImage {
+func decodeImage(image string, offset string) (DecodedImage, error) {
 	regex := regexp.MustCompile("^0x")
 	data := regex.ReplaceAllString(image, "")
 
 	if offset != "" {
-		a, _ := strconv.ParseInt(data[:10], 16, 64)
+		a, err := strconv.ParseInt(data[:10], 16, 64)
+		if err != nil {
+			return DecodedImage{}, fmt.Errorf("applying offset: %v", a)
+		}
 
-		b, _ := strconv.ParseInt(offset, 16, 64)
+		b, err := strconv.ParseInt(offset, 16, 64)
+		if err != nil {
+			return DecodedImage{}, fmt.Errorf("applying offset: %v", a)
+		}
 
 		ab := a + b
 
 		c := fmt.Sprintf("%010x", ab)
-		fmt.Println(c)
 		d := data[10:]
 
 		data = c + d
 	}
 
-	paletteIndex, _ := strconv.ParseInt(data[:2], 16, 64)
+	paletteIndex, err := strconv.ParseInt(data[:2], 16, 64)
+	if err != nil {
+		return DecodedImage{}, fmt.Errorf("getting paletteIndex: %v", err)
+	}
 
-	top, _ := strconv.ParseInt(data[2:4], 16, 64)
-	right, _ := strconv.ParseInt(data[4:6], 16, 64)
-	bottom, _ := strconv.ParseInt(data[6:8], 16, 64)
-	left, _ := strconv.ParseInt(data[8:10], 16, 64)
+	top, err := strconv.ParseInt(data[2:4], 16, 64)
+	if err != nil {
+		return DecodedImage{}, fmt.Errorf("getting top coord: %v", err)
+	}
+
+	right, err := strconv.ParseInt(data[4:6], 16, 64)
+	if err != nil {
+		return DecodedImage{}, fmt.Errorf("getting right coord: %v", err)
+	}
+
+	bottom, err := strconv.ParseInt(data[6:8], 16, 64)
+	if err != nil {
+		return DecodedImage{}, fmt.Errorf("getting bottom coord: %v", err)
+	}
+
+	left, err := strconv.ParseInt(data[8:10], 16, 64)
+	if err != nil {
+		return DecodedImage{}, fmt.Errorf("getting left coord: %v", err)
+	}
 
 	bounds := ImageBounds{
 		top:    top,
@@ -72,7 +87,10 @@ func decodeImage(image string, offset string) DecodedImage {
 	parsedRects := make([]Rect, len(matchingRects))
 
 	for i, r := range matchingRects {
-		len, _ := strconv.ParseInt(r[:2], 16, 64)
+		len, err := strconv.ParseInt(r[:2], 16, 64)
+		if err != nil {
+			return DecodedImage{}, fmt.Errorf("getting rect len: %v", err)
+		}
 		colorIndex, _ := strconv.ParseInt(r[2:4], 16, 64)
 
 		parsedRects[i] = Rect{
@@ -85,10 +103,66 @@ func decodeImage(image string, offset string) DecodedImage {
 		paletteIndex: paletteIndex,
 		bounds:       bounds,
 		rects:        parsedRects,
-	}
+	}, nil
 }
 
-func buildIconSvg(parts []string) string {
+func BuildSVG(parts []string, bgColor string,
+	textColor string, title string, subtitle string, zoomWindow [4]*big.Int, resolution int) (string, error) {
+	step := 320 / resolution
+
+	w := big.NewInt(320).String()
+	if zoomWindow[2].Cmp(big.NewInt(0)) == 1 {
+		w = zoomWindow[2].String()
+	}
+
+	h := big.NewInt(320).String()
+	if zoomWindow[3].Cmp(big.NewInt(0)) == 1 {
+		h = zoomWindow[3].String()
+	}
+
+	svgWithoutEndTag := strings.Builder{}
+	head := fmt.Sprintf(`<svg width="320" height="320" viewBox="%s %s %s %s" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><style xmlns="http://www.w3.org/2000/svg">.base { fill: #%s; font-family: Dope; font-size: 14px; }</style><rect width="320px" height="320px" fill="#%s" /><text xmlns="http://www.w3.org/2000/svg" x="160" y="25" with="320" text-anchor="middle" class="base">%s</text><text xmlns="http://www.w3.org/2000/svg" x="160" y="303" with="320" text-anchor="middle" class="base">%s</text>`, zoomWindow[0].String(), zoomWindow[1].String(), w, h, textColor, bgColor, title, subtitle)
+	svgWithoutEndTag.WriteString(head)
+
+	for i, p := range parts {
+		offset := ""
+		if resolution == 160 && i != 0 {
+			offset = "00331D331D"
+		}
+
+		decodeImage, err := decodeImage(p, offset)
+		if err != nil {
+			return "", fmt.Errorf("decoding part %v", p)
+		}
+
+		currentX := decodeImage.bounds.left
+		currentY := decodeImage.bounds.top
+
+		for _, r := range decodeImage.rects {
+			color := palettes[decodeImage.paletteIndex][r.colorIndex]
+			if color != "" {
+				color = color[2:]
+			}
+
+			if r.colorIndex != 0 {
+				svgWithoutEndTag.WriteString(fmt.Sprintf(`<rect width="%d" height="%d" x="%d" y="%d" fill="#%s" />`, (r.length * int64(step)), step, (currentX * int64(step)), (currentY * int64(step)), color))
+			}
+
+			currentX += r.length
+			if currentX == decodeImage.bounds.right {
+				currentX = decodeImage.bounds.left
+				currentY++
+			}
+		}
+	}
+	svgWithoutEndTag.WriteString("</svg>")
+	svg := svgWithoutEndTag.String()
+
+	return svg, nil
+}
+
+/* Unused for now
+func buildIconSvg(parts []string) (string, error) {
 	resolution := 320
 	step := 320 / resolution
 
@@ -102,7 +176,11 @@ func buildIconSvg(parts []string) string {
 			offset = "00331D331D"
 		}
 
-		decodedImage := decodeImage(p, offset)
+		decodedImage, err := decodeImage(p, offset)
+		if err != nil {
+			return "", fmt.Errorf("decoding Image: %v", err)
+		}
+
 		svgRects := make([]string, len(decodedImage.rects))
 
 		currentX := decodedImage.bounds.left
@@ -127,63 +205,9 @@ func buildIconSvg(parts []string) string {
 	}
 	svgWithoutEndTag.WriteString("</svg>")
 
-	return svgWithoutEndTag.String()
+	return svgWithoutEndTag.String(), nil
 }
-
-type ZoomWindow [4]*big.Int
-
-func BuildSVG(parts []string, bgColor string,
-	textColor string, title string, subtitle string, zoomWindow ZoomWindow, resolution int) string {
-	step := 320 / resolution
-
-	val := big.NewInt(320).String()
-	if zoomWindow[2].Cmp(big.NewInt(0)) == 1 {
-		val = zoomWindow[2].String()
-	}
-
-	val1 := big.NewInt(320).String()
-	if zoomWindow[3].Cmp(big.NewInt(0)) == 1 {
-		val1 = zoomWindow[3].String()
-	}
-
-	svgWithoutEndTag := strings.Builder{}
-	head := fmt.Sprintf(`<svg width="320" height="320" viewBox="%s %s %s %s" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><style xmlns="http://www.w3.org/2000/svg">.base { fill: #%s; font-family: Dope; font-size: 14px; }</style><rect width="320px" height="320px" fill="#%s" /><text xmlns="http://www.w3.org/2000/svg" x="160" y="25" with="320" text-anchor="middle" class="base">%s</text><text xmlns="http://www.w3.org/2000/svg" x="160" y="303" with="320" text-anchor="middle" class="base">%s</text>`, zoomWindow[0].String(), zoomWindow[1].String(), val, val1, textColor, bgColor, title, subtitle)
-	svgWithoutEndTag.WriteString(head)
-
-	for i, p := range parts {
-		offset := ""
-		if resolution == 160 && i != 0 {
-			offset = "00331D331D"
-		}
-
-		decodeImage := decodeImage(p, offset)
-		svgRects := make([]string, len(decodeImage.rects))
-
-		currentX := decodeImage.bounds.left
-		currentY := decodeImage.bounds.top
-
-		for _, r := range decodeImage.rects {
-			color := palettes[decodeImage.paletteIndex][r.colorIndex]
-			if color != "" {
-				color = color[2:]
-			}
-
-			if r.colorIndex != 0 {
-				svgRects = append(svgRects, fmt.Sprintf(`<rect width="%d" height="%d" x="%d" y="%d" fill="#%s" />`, (r.length*int64(step)), step, (currentX*int64(step)), (currentY*int64(step)), color))
-			}
-
-			currentX += r.length
-			if currentX == decodeImage.bounds.right {
-				currentX = decodeImage.bounds.left
-				currentY++
-			}
-			svgWithoutEndTag.WriteString(strings.Join(svgRects, ""))
-		}
-	}
-	svgWithoutEndTag.WriteString("</svg>")
-
-	return svgWithoutEndTag.String()
-}
+*/
 
 var palettes = [][]string{
 	{
