@@ -280,8 +280,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
 
   // text box on top of hustler
   // will not trigger a server request
-  say(text: string, timestamp?: number, addToChat?: boolean) {
-    EventHandler.emitter().emit(Events.CHAT_MESSAGE, this, text, timestamp, addToChat);
+  say(text: string, color: string, timestamp?: number, addToChat?: boolean) {
+    EventHandler.emitter().emit(Events.CHAT_MESSAGE, this, text, timestamp, color, addToChat);
 
     // display message IG
     // TODO: dont display if hustler not in camera viewport?
@@ -299,7 +299,8 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
             background: gameScene.rexUI.add.roundRectangle(0, 0, 2, 2, 3, 0xffffff, 0.4),
             text: getBBcodeText(gameScene, 200, 0, 0, 10, '18px')
               .setText(text)
-              .setScale(this.scale / 3.5),
+              .setScale(this.scale / 3.5)
+              .setColor(color),
             space: {
               left: 2,
               right: 2,

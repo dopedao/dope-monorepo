@@ -34,9 +34,9 @@ const Citizens = {
             // getConversation("jimmy_random"),
         ],
         path: [
-            { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...')},
+            { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...', 'white')},
             { position: new Phaser.Math.Vector2(405, 200) },
-            { position: new Phaser.Math.Vector2(800, 100), wait: 8000, onMoved: (hustler: Hustler) => hustler.say('I can\'t be walking around indefinitely...') },
+            { position: new Phaser.Math.Vector2(800, 100), wait: 8000, onMoved: (hustler: Hustler) => hustler.say('I can\'t be walking around indefinitely...', 'white') },
             { position: new Phaser.Math.Vector2(100, 500) },
         ],
         repeat: true,
@@ -55,9 +55,9 @@ const Citizens = {
             // getConv
         ],
         path: [
-            { position: new Phaser.Math.Vector2(800, 100), wait: 8000, onMoved: (hustler: Hustler) => hustler.say('I can\'t be walking around indefinitely...') },
+            { position: new Phaser.Math.Vector2(800, 100), wait: 8000, onMoved: (hustler: Hustler) => hustler.say('I can\'t be walking around indefinitely...', 'white') },
             { position: new Phaser.Math.Vector2(405, 200) },
-            { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...')},
+            { position: new Phaser.Math.Vector2(200, 300), wait: 3000, onMoved: (hustler: Hustler) => hustler.say('I need a damn break...', 'white')},
             { position: new Phaser.Math.Vector2(100, 500) },
         ],
         repeat: true,

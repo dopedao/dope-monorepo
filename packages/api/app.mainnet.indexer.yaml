@@ -1,5 +1,5 @@
 # Ethereum indexer process that runs continually to check the blockchain
-runtime: go116
+runtime: go118
 service: indexer
 
 main: ./cmd/indexServer

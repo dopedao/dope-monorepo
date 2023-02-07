@@ -71,7 +71,7 @@ export default function ChatType(props: Props) {
     if (content.length > 150)
       return;
 
-    props.manager.events.emit('chat_submit', content);
+      props.manager.events.emit('chat_submit', content);
   };
 
   return (
@@ -105,15 +105,16 @@ export default function ChatType(props: Props) {
               }}>
                 Welcome to the Dopeverse!
               </Text>
-              {messages.map((message, i) => <ListItem key={i}>
+              {messages.map((message, i) => 
+              <ListItem key={i}>
                   <HStack style={{
                     opacity: '0.8'
                   }}>
                     <Text style={{
-                      color: 'white',
+                      color: "white",
                       width: '80%',
                     }}>
-                      {message.author}: {message.message}
+                      {message.author}: <span style={{color: message.color}}>{message.message}</span>
                     </Text>
                     <Spacer />
                     <Text style={{
@@ -123,7 +124,8 @@ export default function ChatType(props: Props) {
                       {new Date(message.timestamp).toLocaleString()}
                     </Text>
                   </HStack>
-              </ListItem>)}
+                </ListItem>
+              )}
             </List>
           </div>
           <Spacer />

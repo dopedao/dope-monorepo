@@ -3,17 +3,32 @@ package game
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"math/rand"
-	"sync"
+	"net/http"
+	"strconv"
 	"time"
 
+	"github.com/dopedao/dope-monorepo/packages/api/game/dopemap"
+	events "github.com/dopedao/dope-monorepo/packages/api/game/events"
+	messages "github.com/dopedao/dope-monorepo/packages/api/game/messages"
+	utils "github.com/dopedao/dope-monorepo/packages/api/game/utils"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustler"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/gamehustlerrelation"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+)
+
+const (
+	TICKRATE    = time.Second / 5
+	MINUTES_DAY = 24 * 60
+	BOT_COUNT   = 30
 )
 
 type Game struct {
@@ -22,16 +37,141 @@ type Game struct {
 	Time   float32
 	Ticker *time.Ticker
 
-	Mutex sync.Mutex
+	//Mutex sync.Mutex
 
 	SpawnPosition schema.Position
 
 	Players      []*Player
-	ItemEntities []*ItemEntity
+	ItemEntities []ItemEntity
 
 	Register   chan *Player
 	Unregister chan *Player
 	Broadcast  chan BroadcastMessage
+}
+
+type TickData struct {
+	Time    float32          `json:"time"`
+	Tick    int64            `json:"tick"`
+	Players []PlayerMoveData `json:"players"`
+}
+
+type HandshakeData struct {
+	Id         string  `json:"id"`
+	CurrentMap string  `json:"current_map"`
+	X          float32 `json:"x"`
+	Y          float32 `json:"y"`
+	// citizen: relation{}
+	Relations json.RawMessage `json:"relations"`
+
+	Players      []PlayerData     `json:"players"`
+	ItemEntities []ItemEntityData `json:"itemEntities"`
+}
+
+type PlayerJoinData struct {
+	Name      string `json:"name"`
+	HustlerId string `json:"hustlerId"`
+}
+
+func (g *Game) HandleGameMessages(ctx context.Context, client *ent.Client, conn *websocket.Conn) {
+	ctx, log := logger.LogFor(ctx)
+	log.Info().Msgf("New connection from %s", conn.RemoteAddr().String())
+
+	WHITELISTED_WALLETS := []string{
+		"0x7C02b7eeB44E32eDa9599a85B8B373b6D1f58BD4",
+	}
+
+	for {
+		// ignore if player is already registered
+		// when a player is registered, it uses its own read and write pumps
+		if g.PlayerByConn(conn) != nil {
+			continue
+		}
+
+		var msg messages.BaseMessage
+		if err := conn.ReadJSON(&msg); err != nil {
+			// facing a close error, we need to stop handling messages
+			if _, ok := err.(*websocket.CloseError); ok {
+				break
+			}
+
+			// we need to use writejson here
+			// because player is not yet registered
+			conn.WriteJSON(messages.GenerateErrorMessage(500, "could not read json"))
+			continue
+		}
+
+		// messages from players are handled else where
+		switch msg.Event {
+		case events.PLAYER_JOIN:
+			var data PlayerJoinData
+			if err := json.Unmarshal(msg.Data, &data); err != nil {
+				// we can directly use writejson here
+				// because player is not yet registered
+				conn.WriteJSON(messages.GenerateErrorMessage(500, "could not unmarshal player_join data"))
+				continue
+			}
+
+			// check if authenticated wallet contains used hustler
+			// and get data from db
+			var gameHustler *ent.GameHustler = nil
+			if data.HustlerId != "" {
+				// 2 players cannot have the same hustler id
+				if g.PlayerByHustlerID(data.HustlerId) != nil {
+					conn.WriteJSON(messages.GenerateErrorMessage(409, "an instance of this hustler is already in the game"))
+					continue
+				}
+
+				walletAddress, err := middleware.Wallet(ctx)
+				if err != nil {
+					conn.WriteJSON(messages.GenerateErrorMessage(http.StatusUnauthorized, "could not get wallet"))
+					continue
+				}
+
+				associatedAddress, err := client.Wallet.Query().Where(wallet.HasHustlersWith(hustler.IDEQ(data.HustlerId))).OnlyID(ctx)
+				if err != nil || associatedAddress != walletAddress {
+					conn.WriteJSON(messages.GenerateErrorMessage(http.StatusUnauthorized, "could not get hustler"))
+					continue
+				}
+
+				// check if wallet whitelisted for event
+				whitelisted := false
+
+				// whitelist if og, enable in case of events
+				// hustlerId, _ := strconv.ParseInt(data.HustlerId, 10, 32)
+				// whitelisted = hustlerId <= 500
+
+				if !whitelisted {
+					for _, addr := range WHITELISTED_WALLETS {
+						if walletAddress == addr {
+							whitelisted = true
+							break
+						}
+					}
+				}
+
+				if !whitelisted {
+					conn.WriteJSON(messages.GenerateErrorMessage(http.StatusUnauthorized, "not whitelisted"))
+					continue
+				}
+
+				// get game hustler from hustler id
+				gameHustler, err = client.GameHustler.Get(ctx, data.HustlerId)
+				if err != nil {
+					gameHustler, err = client.GameHustler.Create().
+						SetID(data.HustlerId).
+						// TODO: define spawn position constant
+						SetLastPosition(g.SpawnPosition).
+						Save(ctx)
+					if err != nil {
+						conn.WriteJSON(messages.GenerateErrorMessage(500, "could not create game hustler"))
+						continue
+					}
+				}
+			}
+
+			g.HandlePlayerJoin(ctx, conn, client, gameHustler)
+		}
+	}
 }
 
 func (g *Game) Start(ctx context.Context, client *ent.Client) {
@@ -52,12 +192,12 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 			// handshake data, player ID & game state info
 			handShakeData, err := json.Marshal(g.GenerateHandshakeData(ctx, client, player))
 			if err != nil {
-				player.Send <- generateErrorMessage(500, "could not marshal handshake data")
+				player.Send <- messages.GenerateErrorMessage(500, "could not marshal handshake data")
 				return
 			}
 
-			player.Send <- BaseMessage{
-				Event: "player_handshake",
+			player.Send <- messages.BaseMessage{
+				Event: events.PLAYER_HANDSHAKE,
 				Data:  handShakeData,
 			}
 
@@ -107,8 +247,8 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 
 					g.Unregister <- player
 					g.Broadcast <- BroadcastMessage{
-						Message: BaseMessage{
-							Event: "player_leave",
+						Message: messages.BaseMessage{
+							Event: events.PLAYER_LEAVE,
 							Data:  data,
 						},
 					}
@@ -118,6 +258,41 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 			}
 		}
 	}
+}
+
+func NewGame() *Game {
+	game := Game{
+		Ticker: time.NewTicker(TICKRATE),
+		SpawnPosition: schema.Position{
+			X: 500, Y: 200,
+			CurrentMap: dopemap.NY_BUSHWICK_BASKET,
+		},
+		Register:   make(chan *Player),
+		Unregister: make(chan *Player),
+		Broadcast:  make(chan BroadcastMessage),
+	}
+
+	game.AddBots(BOT_COUNT)
+
+	return &game
+}
+
+func (game *Game) AddBots(amount int) {
+	for i := 0; i < amount; i++ {
+		hustlerId := int(rand.Float64() * 1500)
+		game.Players = append(game.Players, NewPlayer(nil, game,
+			strconv.Itoa(hustlerId), fmt.Sprintf("Bot #%d - %d", i, hustlerId),
+			game.SpawnPosition.CurrentMap, game.SpawnPosition.X, game.SpawnPosition.Y))
+	}
+}
+
+func (g *Game) PlayerByConn(conn *websocket.Conn) *Player {
+	for _, player := range g.Players {
+		if player.conn == conn {
+			return player
+		}
+	}
+	return nil
 }
 
 func (g *Game) tick(ctx context.Context, time time.Time) {
@@ -130,7 +305,7 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 	g.Time = (g.Time + 0.5)
 
 	// update fake players positions
-	boundaries := Vec2{
+	boundaries := dopemap.Position{
 		X: 2900,
 		Y: 1500,
 	}
@@ -188,17 +363,17 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 
 		data, err := json.Marshal(TickData{
 			Time:    g.Time,
-			Tick:    unixMilli(),
+			Tick:    utils.NowInUnixMillis(),
 			Players: players,
 		})
 		if err != nil {
-			player.Send <- generateErrorMessage(500, "could not marshal player move data")
+			player.Send <- messages.GenerateErrorMessage(500, "could not marshal player move data")
 			continue
 		}
 
 		select {
-		case player.Send <- BaseMessage{
-			Event: "tick",
+		case player.Send <- messages.BaseMessage{
+			Event: events.TICK,
 			Data:  data,
 		}:
 		default:
@@ -210,8 +385,8 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 
 			g.Unregister <- player
 			g.Broadcast <- BroadcastMessage{
-				Message: BaseMessage{
-					Event: "player_leave",
+				Message: messages.BaseMessage{
+					Event: events.PLAYER_LEAVE,
 					Data:  data,
 				},
 			}
@@ -224,7 +399,7 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 func (g *Game) ItemEntityByUUID(uuid uuid.UUID) *ItemEntity {
 	for _, itemEntity := range g.ItemEntities {
 		if itemEntity.id == uuid {
-			return itemEntity
+			return &itemEntity
 		}
 	}
 	return nil
@@ -248,15 +423,6 @@ func (g *Game) PlayerByUUID(uuid uuid.UUID) *Player {
 	return nil
 }
 
-func (g *Game) PlayerByConn(conn *websocket.Conn) *Player {
-	for _, player := range g.Players {
-		if player.conn == conn {
-			return player
-		}
-	}
-	return nil
-}
-
 func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 	_, log := logger.LogFor(ctx)
 
@@ -268,8 +434,8 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *Player) {
 
 	// tell every other player that this player joined
 	g.Broadcast <- BroadcastMessage{
-		Message: BaseMessage{
-			Event: "player_join",
+		Message: messages.BaseMessage{
+			Event: events.PLAYER_JOIN,
 			Data:  joinData,
 		},
 		Condition: func(otherPlayer *Player) bool {
@@ -292,20 +458,20 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, clien
 		hustler, err := client.Hustler.Get(ctx, gameHustler.ID)
 		if err != nil {
 			log.Err(err).Msgf("could not get hustler: %s", gameHustler.ID)
-			conn.WriteJSON(generateErrorMessage(500, "could not get hustler"))
+			conn.WriteJSON(messages.GenerateErrorMessage(500, "could not get hustler"))
 			return
 		}
 		// query items and quests
 		items, err := gameHustler.QueryItems().All(ctx)
 		if err != nil {
 			log.Err(err).Msgf("could not get items for hustler: %s", gameHustler.ID)
-			conn.WriteJSON(generateErrorMessage(500, "could not get items for hustler"))
+			conn.WriteJSON(messages.GenerateErrorMessage(500, "could not get items for hustler"))
 			return
 		}
 		quests, err := gameHustler.QueryQuests().All(ctx)
 		if err != nil {
 			log.Err(err).Msgf("could not get quests for hustler: %s", gameHustler.ID)
-			conn.WriteJSON(generateErrorMessage(500, "could not get quests for hustler"))
+			conn.WriteJSON(messages.GenerateErrorMessage(500, "could not get quests for hustler"))
 			return
 		}
 
@@ -327,14 +493,14 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, clien
 func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 	leaveData, err := json.Marshal(IdData{Id: player.Id.String()})
 	if err != nil {
-		player.Send <- generateErrorMessage(500, "could not marshal leave data")
+		player.Send <- messages.GenerateErrorMessage(500, "could not marshal leave data")
 		return
 	}
 
 	// tell every other player that this player left
 	g.Broadcast <- BroadcastMessage{
-		Message: BaseMessage{
-			Event: "player_leave",
+		Message: messages.BaseMessage{
+			Event: events.PLAYER_LEAVE,
 			Data:  leaveData,
 		},
 	}
@@ -343,7 +509,7 @@ func (g *Game) DispatchPlayerLeave(ctx context.Context, player *Player) {
 func (g *Game) RemoveItemEntity(itemEntity *ItemEntity) bool {
 	removed := false
 	for i, entity := range g.ItemEntities {
-		if entity == itemEntity {
+		if entity == *itemEntity {
 			g.ItemEntities = append(g.ItemEntities[:i], g.ItemEntities[i+1:]...)
 			removed = true
 
@@ -354,8 +520,8 @@ func (g *Game) RemoveItemEntity(itemEntity *ItemEntity) bool {
 			}
 
 			g.Broadcast <- BroadcastMessage{
-				Message: BaseMessage{
-					Event: "player_pickup_itementity",
+				Message: messages.BaseMessage{
+					Event: events.PLAYER_PICKUP_ITEMENTITY,
 					Data:  data,
 				},
 			}

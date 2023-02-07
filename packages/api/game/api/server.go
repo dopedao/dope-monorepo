@@ -1,9 +1,12 @@
-package game
+package api
 
 import (
 	"context"
 	"net/http"
 
+	"github.com/dopedao/dope-monorepo/packages/api/game"
+	"github.com/dopedao/dope-monorepo/packages/api/game/api/health"
+	ws "github.com/dopedao/dope-monorepo/packages/api/game/api/ws"
 	"github.com/dopedao/dope-monorepo/packages/api/game/authentication"
 	"github.com/dopedao/dope-monorepo/packages/api/indexer"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
@@ -12,18 +15,12 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/rs/cors"
 )
 
 var (
-	wsUpgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin:     func(r *http.Request) bool { return true },
-	}
-	gameState = NewGame()
+	gameState = game.NewGame()
 )
 
 func NewServer(ctx context.Context, network string) (http.Handler, error) {
@@ -38,10 +35,7 @@ func NewServer(ctx context.Context, network string) (http.Handler, error) {
 	go gameState.Start(ctx, dbprovider.Ent())
 
 	// Health check
-	r.HandleFunc("/game/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
-		_, _ = w.Write([]byte(`{"success":true}`))
-	})
+	r.HandleFunc("/game/health", health.Handle())
 
 	// Websocket endpoint
 	r.HandleFunc("/game/ws", func(w http.ResponseWriter, r *http.Request) {

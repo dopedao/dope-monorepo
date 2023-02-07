@@ -112,6 +112,9 @@ export default class NetworkHandler {
       case UniversalEventNames.PLAYER_CHAT_MESSAGE:
         this.emitter.emit(NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE, payload.data);
         break;
+      case UniversalEventNames.PLAYER_CHAT_COMMAND_RESULT:
+        this.emitter.emit(NetworkEvents.SERVER_PLAYER_CHAT_COMMAND_RESULT, payload.data)
+        break;
       case UniversalEventNames.PLAYER_UPDATE_MAP:
         this.emitter.emit(NetworkEvents.SERVER_PLAYER_UPDATE_MAP, payload.data);
         break;
