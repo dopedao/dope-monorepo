@@ -18,6 +18,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/graph"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
+	svgrender "github.com/dopedao/dope-monorepo/packages/api/internal/svg-render"
 	"github.com/dopedao/dope-monorepo/packages/api/web/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/web/verify"
 	"github.com/dopedao/dope-monorepo/packages/api/web/wallet"
@@ -34,6 +35,10 @@ func NewServer(ctx context.Context, static *storage.BucketHandle) (http.Handler,
 	r := mux.NewRouter()
 	r.Use(middleware.Session(middleware.Store))
 	r.Use(middleware.Logger)
+
+	if err := svgrender.InitRenderer(); err != nil {
+		log.Fatal().Err(err)
+	}
 
 	// TODO: Document API here?
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -63,6 +68,9 @@ func NewServer(ctx context.Context, static *storage.BucketHandle) (http.Handler,
 		DB:       0,
 	})
 	r.HandleFunc("/verify", verify.HandleVerifyRequest(redisClient))
+
+	//offchain rendered hustlers
+	r.HandleFunc("/hustlers/render/{id}", hustler.SvgHandler())
 
 	return cors.AllowAll().Handler(r), nil
 }
