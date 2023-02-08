@@ -13,8 +13,6 @@ import (
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
 
-	//"google.golang.org/api/option"
-
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/gorilla/sessions"
 	"github.com/jiulongw/siwe-go"
@@ -70,7 +68,7 @@ func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 	sc := SessionFor(ctx)
 	session, err := sc.Get(Key)
 	if err != nil {
-		log.Debug().Msg("session error")
+		log.Err(err).Msgf("unexpected error")
 		return false
 	}
 
@@ -88,10 +86,10 @@ func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 		return false
 	}
 
-	log.Debug().Msg(fmt.Sprintf("sessionCookie = %v\n ", sessionCookieStr))
+	log.Debug().Msgf("sessionCookie = %v\n ", sessionCookieStr)
 
 	if err := FirebaseVerify(ctx, client, sessionCookieStr); err != nil {
-		log.Debug().Msg("VERIFY FAILURE")
+		log.Err(err).Msgf("unexpected error")
 		return false
 	}
 
@@ -122,14 +120,14 @@ func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (stri
 
 	if _, err := client.GetUser(ctx, wallet); err != nil {
 		// User not found create a new user here with ETH UID
-		log.Debug().Msg("creates new firebase user")
+		log.Debug().Msg("create new firebase user")
 
 		params := (&auth.UserToCreate{}).UID(wallet)
 		user, err := client.CreateUser(context.TODO(), params)
 		if err != nil {
 			return "", err
 		}
-		log.Debug().Msg(fmt.Sprintf("Successfully created user with Ethereum address: %v\n", user.UID))
+		log.Debug().Msgf("Successfully created user with Ethereum address: %v\n", user.UID)
 	}
 
 	// Create custom token for the user with claims.
@@ -148,9 +146,9 @@ func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (stri
 		return "", fmt.Errorf("no api key provided")
 	}
 
-	url := fmt.Sprintf("%v%v", firebaseSigninURL, apikey)
+	url := firebaseSigninURL + apikey
 
-	log.Debug().Msg(fmt.Sprintf("signin URL %v\n", url))
+	log.Debug().Msgf("signin URL %v\n", url)
 
 	jsonBody := struct {
 		Token             string `json:"token"`
@@ -195,7 +193,7 @@ func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (stri
 		return "", err
 	}
 
-	log.Debug().Msg(fmt.Sprintf("token = %v", signInResp.IdToken))
+	log.Debug().Msgf("token = %v", signInResp.IdToken)
 
 	return signInResp.IdToken, nil
 }
@@ -219,9 +217,8 @@ func FirebaseVerify(ctx context.Context, client *auth.Client, sessionCookie stri
 	_, log := logger.LogFor(ctx)
 	log.Debug().Msg("verification")
 
-	//if _, err := client.VerifySessionCookieAndCheckRevoked(ctx, sessionCookie); err != nil {
 	if _, err := client.VerifyIDTokenAndCheckRevoked(ctx, sessionCookie); err != nil {
-		log.Debug().Msg(fmt.Sprintf("Verify Error %v", err))
+		log.Debug().Msgf("Verify Error %v", err)
 		return err
 	}
 

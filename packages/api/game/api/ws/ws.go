@@ -24,7 +24,7 @@ func HandleConnection(game *game.Game) func(http.ResponseWriter, *http.Request) 
 
 		client, err := middleware.FirebaseInit(r.Context())
 		if err != nil {
-			log.Debug().Msg("FirebaseInit error server.go")
+			log.Err(err).Msgf("unexpected error")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

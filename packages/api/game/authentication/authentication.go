@@ -90,7 +90,7 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 		client, err := middleware.FirebaseInit(r.Context())
 		if err != nil {
 			_, log := logger.LogFor(r.Context())
-			log.Debug().Msg("firebaseInit FAILURE")
+			log.Err(err).Msgf("unexpected error")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -98,20 +98,20 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 		token, err := middleware.FirebaseAuth(r.Context(), client, address)
 		if err != nil {
 			_, log := logger.LogFor(r.Context())
-			log.Debug().Msg("firebaseAuth FAILURE")
+			log.Err(err).Msgf("unexpected error")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		// Saving the JWT token in the user session
 		if err := middleware.SetWallet(r.Context(), token); err != nil {
-			//if err := middleware.SetWallet(r.Context(), address); err != nil {
 			_, log := logger.LogFor(r.Context())
-			log.Debug().Msg("SetWallet FAILURE")
+			log.Err(err).Msgf("unexpected error")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
+		w.WriteHeader(200)
 		w.Header().Set("Content-Type", "plain/text")
 		w.Write([]byte(token))
 	}
@@ -126,6 +126,8 @@ func AuthenticatedHandler(w http.ResponseWriter, r *http.Request) {
 
 	client, err := middleware.FirebaseInit(context.TODO())
 	if err != nil {
+		_, log := logger.LogFor(r.Context())
+		log.Err(err).Msgf("unexpected error")
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
@@ -144,7 +146,6 @@ func AuthenticatedHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/plain")
 	w.Write([]byte(addr.(string)))
-	//w.Write([]byte(wallet))
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {

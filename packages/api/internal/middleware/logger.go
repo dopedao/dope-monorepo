@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	//"log"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
