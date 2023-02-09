@@ -427,7 +427,7 @@ func RefreshEquipment(
 	} else {
 		// we dont want to cancel updating the equipment
 		// just because we cant get the image
-		log.Error().Msg(err.Error())
+		log.Err(err).Msgf("couldnt get svg of hustler: %v", id)
 	}
 
 	if slots.Weapon != nil {
