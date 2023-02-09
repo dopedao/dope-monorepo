@@ -1,7 +1,6 @@
 package hustler
 
 import (
-	"fmt"
 	"io"
 	"math/big"
 	"net/http"
@@ -29,7 +28,6 @@ func SvgHandler() func(http.ResponseWriter, *http.Request) {
 		svg, err := svgrender.GetOffchainRender(big.NewInt(int64(idInt)))
 		if err != nil {
 			http.Error(w, "unexpected error rendering hustler", http.StatusInternalServerError)
-			fmt.Println(err)
 			log.Err(err)
 			return
 		}
