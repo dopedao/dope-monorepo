@@ -90,24 +90,24 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 		client, err := middleware.FirebaseInit(r.Context())
 		if err != nil {
 			_, log := logger.LogFor(r.Context())
-			log.Err(err).Msgf("unexpected error")
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Err(err).Msgf("firebase init error")
+			http.Error(w, "firebase init error", http.StatusInternalServerError)
 			return
 		}
 
 		token, err := middleware.FirebaseAuth(r.Context(), client, address)
 		if err != nil {
 			_, log := logger.LogFor(r.Context())
-			log.Err(err).Msgf("unexpected error")
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Err(err).Msgf("firebase auth error")
+			http.Error(w, "firebase auth error", http.StatusInternalServerError)
 			return
 		}
 
 		// Saving the JWT token in the user session
 		if err := middleware.SetWallet(r.Context(), token); err != nil {
 			_, log := logger.LogFor(r.Context())
-			log.Err(err).Msgf("unexpected error")
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Err(err).Msgf("set wallet error")
+			http.Error(w, "set wallet error", http.StatusInternalServerError)
 			return
 		}
 
@@ -127,14 +127,16 @@ func AuthenticatedHandler(w http.ResponseWriter, r *http.Request) {
 	client, err := middleware.FirebaseInit(context.TODO())
 	if err != nil {
 		_, log := logger.LogFor(r.Context())
-		log.Err(err).Msgf("unexpected error")
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		log.Err(err).Msgf("firebase init error")
+		http.Error(w, "firebase init error", http.StatusUnauthorized)
 		return
 	}
 
 	token, err := client.VerifyIDTokenAndCheckRevoked(r.Context(), wallet)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		_, log := logger.LogFor(r.Context())
+		log.Err(err).Msgf("verify token error")
+		http.Error(w, "verify token error", http.StatusUnauthorized)
 		return
 	}
 	addr, ok := token.Claims["wallet"]

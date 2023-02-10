@@ -68,7 +68,7 @@ func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 	sc := SessionFor(ctx)
 	session, err := sc.Get(Key)
 	if err != nil {
-		log.Err(err).Msgf("unexpected error")
+		log.Err(err).Msgf("get session key error")
 		return false
 	}
 
@@ -89,7 +89,7 @@ func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 	log.Debug().Msgf("sessionCookie = %v\n ", sessionCookieStr)
 
 	if err := FirebaseVerify(ctx, client, sessionCookieStr); err != nil {
-		log.Err(err).Msgf("unexpected error")
+		log.Err(err).Msgf("verify error")
 		return false
 	}
 

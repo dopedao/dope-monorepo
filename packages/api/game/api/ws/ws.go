@@ -24,8 +24,8 @@ func HandleConnection(game *game.Game) func(http.ResponseWriter, *http.Request) 
 
 		client, err := middleware.FirebaseInit(r.Context())
 		if err != nil {
-			log.Err(err).Msgf("unexpected error")
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Err(err).Msgf("firebase init error")
+			http.Error(w, "firebase init error", http.StatusInternalServerError)
 			return
 		}
 		// check if authenticated
