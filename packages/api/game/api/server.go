@@ -4,6 +4,12 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/gorilla/mux"
+	"github.com/hashicorp/go-retryablehttp"
+	"github.com/rs/cors"
+
 	"github.com/dopedao/dope-monorepo/packages/api/game"
 	"github.com/dopedao/dope-monorepo/packages/api/game/api/health"
 	ws "github.com/dopedao/dope-monorepo/packages/api/game/api/ws"
@@ -12,11 +18,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/rpc"
-	"github.com/gorilla/mux"
-	"github.com/hashicorp/go-retryablehttp"
-	"github.com/rs/cors"
 )
 
 var (
@@ -26,7 +27,7 @@ var (
 func NewServer(ctx context.Context, network string) (http.Handler, error) {
 	_, log := logger.LogFor(ctx)
 
-	log.Debug().Msg("Starting Game Server")
+	log.Debug().Msg("Starting Game Server [NEW SERVER]")
 
 	r := mux.NewRouter()
 	r.Use(middleware.Session(middleware.Store))

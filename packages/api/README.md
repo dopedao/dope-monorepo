@@ -1,26 +1,27 @@
 # dope-api
 
-The Dope Wars api consists of a golang service that exposes a graphql endpoint. The goal is to provide a unified endpoint for blockchain data (ethereum, optimism, starknet), user data (signed messages + offchain data), and ingame assets (composite hustler illustrations, sprites, ect) that will enable people to easily build on top of the dopewars ecosystem.
+The Dope Wars api consists of multiple golang services that expose graphql endpoints. The goal is to provide a unified endpoint for blockchain data (ethereum, optimism, starknet), user data (signed messages + offchain data), and ingame assets (composite hustler illustrations, sprites, ect) that will enable people to easily build on top of the dopewars ecosystem.
 
 ## Quick Start
 
-## Env
+## ENV FILE
 
-These instructions assume you will have the power to deploy to Google Cloud, where the Dope Wars back-end services are hosted.
+To ensure the API is running locally you must have access to Google Cloud, with a Firebase project attached for Game Server Authentication. Firebase projects exist as a subset of a Google Cloud project resource. If you want to deploy manually, you must also have access to a Google Cloud project that can push to App Engine and Cloud Run.
 
-🚧 TODO: We might want to tweak these instructions for normal, local development
+DopeWars.gg is hosted on Google Cloud using a variety of services including Cloud SQL and App Engine at the time of this writing. For access to any of these you must have a _Service Account_ with the proper permissions. To learn more about Service Account Keys including how to download the JSON file for yours, [visit this documentation on Google Cloud](https://cloud.google.com/iam/docs/creating-managing-service-account-keys).
 
-If you want to deploy you need to have this file:  `~/.config/gcloud/application_default_credentials.json`
+### Service Account Key Basics
 
-If you don't have it do the following:
-
-- install the gcloud cli
-- run `gcloud auth application default-login`
+- Install the gcloud cli
+- Run `gcloud auth application default-login`
+- Find your gCloud API Service Account Key [https://console.cloud.google.com/apis/credentials]
+- Ensure that Service Account has access to Firebase Authentication ([https://console.firebase.google.com/]->Project settings->ServiceAccounts)
 
 ### MAC/LINUX
 
 - run `./bin/setenv`
 - add the complete path of application_default_credentials.json (or press enter for default)
+- add the gCloud API key
 - press enter to accept default ports
 - press `y` at the last prompt after validating the output to save them (your old .env will be backed up)
 - refer to "WINDOWS MANUAL SET UP" if the inputs are not correct or empty
@@ -30,11 +31,10 @@ If you don't have it do the following:
 - create a ".env" file in repo/packages/api
 - add the following variables with the correct path and ports :
 
-```
-GCLOUD_CRED_PATH=PATH\TO\YOUR\gcloud\application_default_credentials.json
-
+```env
+GOOGLE_APPLICATION_CREDENTIALS=PATH\TO\YOUR\gcloud\application_default_credentials.json
 GAME_SERVER_PORT=6060
-
+FIREBASE_API_KEY=firebase-web-api-key-for-making-requests-from-server
 WEB_API_PORT=7070
 ```
 
@@ -54,14 +54,14 @@ authUri: process.env.GAME_AUTH_URL ?? "http://localhost:6060/authentication",
 
 > Make sure you are at the projects root
 
-- install dependencies : `yarn`
-- run `yarn web:dev` to start the webserver
-- go to <http://localhost:3000>
+- Install dependencies : `yarn`
+- Run `yarn web:dev` to start the webserver
+- Go to <http://localhost:3000>
 
-## GAME SERVER
+## BACK END
 
-- run `docker-compose up db game web` in repo/packages/api
-- go to <http://localhost:3000/game>
+- Run `docker-compose up --build` in repo/packages/api
+- Go to <http://localhost:3000/game> to verify the game is up
 
 ## TOOLS
 
@@ -70,7 +70,6 @@ authUri: process.env.GAME_AUTH_URL ?? "http://localhost:6060/authentication",
 
 - access a running container with sh : `docker exec -it [container-hash] /bin/sh`
     > Example: `docker exec -it a782349aad34d /bin/bash`
-
     > You can get the hash from `docker ps`
 
 ## TROUBLE SHOOTING
@@ -117,10 +116,11 @@ At the time of this writing, [App Engine Standard Environment only supports up t
 
 The `gcloud` command line tool is useful to do a number of things in deploying the API. You can install it and set it up like so (after obtaining a service account login from a project lead)
 
-```shell
+```bash
 # Mac OS X commands
 brew install --cask google-cloud-sdk
 export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-service-account-creds.json"
+$env:GOOGLE_APPLICATION_CREDENTIALS="C:\Users\username\Downloads\service-account-file.json" on windows
 gcloud auth login
 gcloud config set account <your-account>
 gcloud config set project dopewars-live

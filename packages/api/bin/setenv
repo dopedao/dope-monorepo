@@ -16,8 +16,12 @@ conf=
 default_gcloud_cred_path="/home/$user/.config/gcloud/application_default_credentials.json"
 default_game_server_port=6060
 default_web_api_port=7070
+# This is not a secret, as it only identifies our Firebase project
+# Firebase security rules should be used if we use other services.
+# Sensitive things are protected via Service Account permissions.
+default_firebase_api_key="AIzaSyAaWaRkein9eqhqQstO_h1lFOxbzENNN-Q"
 
-read -p "Enter the path to your gcloud credential path: " -r gcp_input
+read -p "Enter the path to your Google Cloud + Firebase SERVICE ACCOUNT credential path: " -r gcp_input
 if [ -z "$gcp_input" ]; then
         gcloud_cred_path=$(input_or_default "$gcp_input" "$default_gcloud_cred_path")
     if [ ! -f "$gcloud_cred_path" ]; then
@@ -26,8 +30,14 @@ if [ -z "$gcp_input" ]; then
             exit 1
     fi
 fi
-conf+="GCLOUD_CRED_PATH=$gcloud_cred_path\n"
-clear
+conf+="GOOGLE_APPLICATION_CREDENTIALS=$gcloud_cred_path\n"
+
+# FIREBASE API KEY
+# For authenticating user on the server-side in game
+read -p "Enter your Firebase WEB API key for auth verification: " -r fb_key_input
+firebase_api_key=$(input_or_default "$fb_key_input" $default_firebase_api_key)
+conf+="FIREBASE_API_KEY=$firebase_api_key\n"
+
 
 read -p "Port for the game server (default: $default_game_server_port): " -r gsp_input
 game_server_port=$(input_or_default "$gsp_input" $default_game_server_port)

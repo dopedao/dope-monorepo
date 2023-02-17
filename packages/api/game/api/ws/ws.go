@@ -5,6 +5,7 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/game"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
+	"github.com/rs/zerolog/log"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/gorilla/websocket"
@@ -20,8 +21,15 @@ var (
 
 func HandleConnection(game *game.Game) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+
+		client, err := middleware.FirebaseInit(r.Context())
+		if err != nil {
+			log.Err(err).Msgf("firebase init error")
+			http.Error(w, "firebase init error", http.StatusInternalServerError)
+			return
+		}
 		// check if authenticated
-		if !middleware.IsAuthenticated(r.Context()) {
+		if !middleware.IsAuthenticated(r.Context(), client) {
 			http.Error(w, "not authenticated", http.StatusUnauthorized)
 			return
 		}

@@ -1,14 +1,12 @@
+const nextEnv = process.env.NODE_ENV;
+
+// These local URLs assume we're running the API using docker-compose
+// See packages/api/README.md for more info standing up the API locally
 const defaultNetworkConfig = {
-    // local: ws://localhost:6060/game/ws 
-    wsUri: process.env.GAME_WS_URL ?? "wss://api.dopewars.gg/game/ws",
+    wsUri: nextEnv == "development" ? "ws://localhost:6060/game/ws" : "ws://api.dopewars.gg/game/ws",
     reconnectInterval: 1000,
     maxReconnectAttempts: 10,
-
-    /*
-     * Authentication
-     * local: http://localhost:6060/authentication 
-    */
-    authUri: process.env.GAME_AUTH_URL ?? "https://api.dopewars.gg/authentication",
+    authUri: nextEnv == "development" ? "http://localhost:6060/authentication" : "https://api.dopewars.gg/authentication",
     authNoncePath: "/nonce",
     authLoginPath: "/login",
     authAuthenticatedPath: "/authenticated",
@@ -16,3 +14,5 @@ const defaultNetworkConfig = {
 };
 
 export default defaultNetworkConfig;
+
+console.info("Using network config: ", defaultNetworkConfig);

@@ -34,6 +34,7 @@ require (
 	ariga.io/atlas v0.3.7-0.20220303204946-787354f533c3 // indirect
 	cloud.google.com/go v0.104.0 // indirect
 	cloud.google.com/go/compute v1.10.0 // indirect
+	cloud.google.com/go/firestore v1.6.1 // indirect
 	cloud.google.com/go/iam v0.5.0 // indirect
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
@@ -92,6 +93,7 @@ require (
 
 require (
 	cloud.google.com/go/bigquery v1.43.0
+	firebase.google.com/go v3.13.0+incompatible
 	github.com/btcsuite/btcd v0.22.0-beta // indirect
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/markbates/grift v1.5.0

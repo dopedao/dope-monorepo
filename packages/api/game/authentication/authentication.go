@@ -1,6 +1,7 @@
 package authentication
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -83,29 +85,35 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 			return
 		}
 
-		sc := middleware.SessionFor(r.Context())
-		session, err := sc.Get(middleware.Key)
+		address := siweMessage.Address.String()
+
+		client, err := middleware.FirebaseInit(r.Context())
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			_, log := logger.LogFor(r.Context())
+			log.Err(err).Msgf("firebase init error")
+			http.Error(w, "firebase init error", http.StatusInternalServerError)
 			return
 		}
 
-		if siweMessage.ExpirationTime != nil {
-			session.Options.MaxAge = int(time.Until(*siweMessage.ExpirationTime).Seconds())
-		} else {
-			session.Options.MaxAge = 0
+		token, err := middleware.FirebaseAuth(r.Context(), client, address)
+		if err != nil {
+			_, log := logger.LogFor(r.Context())
+			log.Err(err).Msgf("firebase auth error")
+			http.Error(w, "firebase auth error", http.StatusInternalServerError)
+			return
 		}
 
-		middleware.SetWallet(r.Context(), siweMessage.Address.String())
-		middleware.SetSiwe(r.Context(), body.Message)
-		if err := session.Save(r, w); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		// Saving the JWT token in the user session
+		if err := middleware.SetWallet(r.Context(), token); err != nil {
+			_, log := logger.LogFor(r.Context())
+			log.Err(err).Msgf("set wallet error")
+			http.Error(w, "set wallet error", http.StatusInternalServerError)
 			return
 		}
 
 		w.WriteHeader(200)
-		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte("OK"))
+		w.Header().Set("Content-Type", "plain/text")
+		w.Write([]byte(token))
 	}
 }
 
@@ -116,9 +124,30 @@ func AuthenticatedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	client, err := middleware.FirebaseInit(context.TODO())
+	if err != nil {
+		_, log := logger.LogFor(r.Context())
+		log.Err(err).Msgf("firebase init error")
+		http.Error(w, "firebase init error", http.StatusUnauthorized)
+		return
+	}
+
+	token, err := client.VerifyIDTokenAndCheckRevoked(r.Context(), wallet)
+	if err != nil {
+		_, log := logger.LogFor(r.Context())
+		log.Err(err).Msgf("verify token error")
+		http.Error(w, "verify token error", http.StatusUnauthorized)
+		return
+	}
+	addr, ok := token.Claims["wallet"]
+	if !ok {
+		http.Error(w, "no wallet address found", http.StatusUnauthorized)
+		return
+	}
+
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte(wallet))
+	w.Write([]byte(addr.(string)))
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
