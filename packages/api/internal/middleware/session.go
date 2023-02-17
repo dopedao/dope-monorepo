@@ -22,7 +22,7 @@ const Key = "session"
 
 const firebaseSigninURL string = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key="
 
-var apikey string = os.Getenv("GOOGLE_API_KEY")
+var apikey string = os.Getenv("FIREBASE_API_KEY")
 
 type sessionContextKey struct{}
 
