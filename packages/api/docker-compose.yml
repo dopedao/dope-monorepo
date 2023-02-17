@@ -13,7 +13,7 @@ services:
       - dopenet
     volumes:
       - type: bind
-        source: ${GCLOUD_CRED_PATH}
+        source: ${GOOGLE_APPLICATION_CREDENTIALS}
         target: /build/.config/gcloud/application_default_credentials.json
       - ./web/:/build/web
       - ./cmd/apiServer/:/build/cmd/apiServer
@@ -32,7 +32,7 @@ services:
       - 'db'
     volumes:
       - type: bind
-        source: ${GOOGLE_APP_CRED}
+        source: ${GOOGLE_APPLICATION_CREDENTIALS}
         target: /build/.config/gcloud/application_default_credentials.json
       - ./game/:/build/game/
       - ./cmd/gameServer/:/build/cmd/gameServer/
@@ -41,7 +41,7 @@ services:
     networks:
       - dopenet
     environment:
-      GOOGLE_API_KEY: ${GC_API_KEY}
+      FIREBASE_API_KEY: ${FIREBASE_API_KEY}
       GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
       PORT: ${GAME_SERVER_PORT}
       PG_HOST: db:5432

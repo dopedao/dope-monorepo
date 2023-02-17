@@ -15,11 +15,11 @@ conf=
 # default/fallback values
 default_gcloud_cred_path="C:/Users/$user/.config/gcloud/application_default_credentials.json"
 default_firebase_path="C:/Users/$user/Desktop/dope-monorepo/firebase-adminsdk.json"
-default_api_key="123456789"
 default_game_server_port=6060
 default_web_api_port=7070
+default_firebase_api_key="AIzaSyAaWaRkein9eqhqQstO_h1lFOxbzENNN-Q"
 
-# - - - - - - - - - - - - - - - GCLOUD - - - - - - - - - - - - - - - - - - - -
+# GCLOUD SERVICE ACCOUNT CREDENTIALS
 
 read -p "Enter the path to your gcloud credential: " -r gcp_input
 if [ -z "$gcp_input" ]; then
@@ -32,36 +32,22 @@ if [ -z "$gcp_input" ]; then
 fi
 
 gcloud_cred_path=`echo $gcp_input | tr '\' '/'`
-conf="$conf GCLOUD_CRED_PATH=$gcloud_cred_path\n"
+conf="$conf GOOGLE_APPLICATION_CREDENTIALS=$gcloud_cred_path\n"
 
-# - - - - - - - - - - - - - - FIREBASE - - - - - - - - - - - - - - - - - - - -
+# FIREBASE API KEY
+# For authenticating user on the server-side in game
+read -p "Enter your Firebase WEB API key for auth verification: " -r fb_key_input
+firebase_api_key=$(input_or_default "$fb_key_input" $default_firebase_api_key)
+conf="$conf FIREBASE_API_KEY=$firebase_api_key\n"
 
-read -p "Enter the path to your firebase credential: " -r gfp_input
-if [ -z "$gfp_input" ]; then
-        firebase_cred_path=$(input_or_default "$gfp_input" "$default_firebase_path")
-    if [ ! -f "$firebase_cred_path" ]; then
-            echo -e "File not found.\nExiting."
-            echo "You need to generate a firebase private key"
-            exit 1
-    fi
-fi
 
-firebase_cred_path=`echo $gfp_input | tr '\' '/'`
-conf="$conf GOOGLE_APP_CRED=$firebase_cred_path\n"
-
-# - - - - - - - - - - - - - - API KEY - - - - - - - - - - - - - - - - - - - -
-
-read -p "Enter your google cloud api key: " -r gkp_input
-gc_api_key=$(input_or_default "$gkp_input" $default_api_key)
-conf="$conf GC_API_KEY=$gc_api_key\n"
-
-# - - - - - - - - - - - - - - GAME SERVER PORT - - - - - - - - - - - - - - - - - - - -
+# GAME SERVER PORT 
 
 read -p "Port for the game server (default: $default_game_server_port): " -r gsp_input
 game_server_port=$(input_or_default "$gsp_input" $default_game_server_port)
 conf="$conf GAME_SERVER_PORT=$game_server_port\n"
 
-# - - - - - - - - - - - - - - WEB API PORT - - - - - - - - - - - - - - - - - - - -
+# WEB API PORT
 
 read -p "Port for the web api (default: $default_web_api_port): " -r wap_input
 web_api_port=$(input_or_default "$wap_input" $default_web_api_port)
