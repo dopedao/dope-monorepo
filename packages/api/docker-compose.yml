@@ -17,6 +17,7 @@ services:
         target: /build/.config/gcloud/application_default_credentials.json
       - ./web/:/build/web
       - ./cmd/apiServer/:/build/cmd/apiServer
+      - ./internal/:/build/internal
     environment:
       # If you don't have this file run 'gcloud auth application default-login'
       GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
@@ -33,6 +34,7 @@ services:
     volumes:
       - ./game/:/build/game/
       - ./cmd/gameServer/:/build/cmd/gameServer/
+      - ./internal/:/build/internal
     ports:
       - ${GAME_SERVER_PORT}:${GAME_SERVER_PORT}
     networks:
@@ -51,6 +53,7 @@ services:
     volumes:
       - ./indexer/:/build/indexer/
       - ./cmd/indexerEthereum/:/build/cmd/indexerEthereum/
+      - ./internal/:/build/internal
     networks:
       - dopenet
     environment:
