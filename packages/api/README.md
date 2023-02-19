@@ -38,18 +38,6 @@ FIREBASE_API_KEY=firebase-web-api-key-for-making-requests-from-server
 WEB_API_PORT=7070
 ```
 
-### Frontend
-
-🚧 TODO: We probably want to code these into the app using an env variable.
-
-Set the URLs in `packages\web\src\game\constants\NetworkConfig.ts` as follows:
-
-```js
-wsUri: process.env.GAME_WS_URL ?? "ws://localhost:6060/game/ws",
-
-authUri: process.env.GAME_AUTH_URL ?? "http://localhost:6060/authentication",
-```
-
 ## FRONTEND
 
 > Make sure you are at the projects root
