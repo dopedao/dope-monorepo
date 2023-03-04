@@ -160,18 +160,20 @@ func (p *Player) AddItem(ctx context.Context, client *ent.Client, gameItem item.
 
 	p.Items = append(p.Items, gameItem)
 
-	data, err := json.Marshal(PlayerAddItemClientData{
-		Item:   gameItem.Item,
-		Pickup: pickup,
-	})
+	message, err := messages.
+		NewBaseMessage().
+		Data(PlayerAddItemClientData{
+			Item:   gameItem.Item,
+			Pickup: pickup,
+		}).
+		Event(events.PLAYER_ADD_ITEM).
+		Build()
+
 	if err != nil {
 		return err
 	}
 
-	p.Send <- messages.BaseMessage{
-		Event: events.PLAYER_ADD_ITEM,
-		Data:  data,
-	}
+	p.Send <- *message
 
 	return nil
 }
@@ -186,17 +188,19 @@ func (p *Player) AddQuest(ctx context.Context, client *ent.Client, quest Quest) 
 
 	p.Quests = append(p.Quests, quest)
 
-	data, err := json.Marshal(PlayerAddQuestClientData{
-		Quest: quest.Quest,
-	})
+	message, err := messages.
+		NewBaseMessage().
+		Data(PlayerAddQuestClientData{
+			Quest: quest.Quest,
+		}).
+		Event(events.PLAYER_ADD_QUEST).
+		Build()
+
 	if err != nil {
 		return err
 	}
 
-	p.Send <- messages.BaseMessage{
-		Event: events.PLAYER_ADD_QUEST,
-		Data:  data,
-	}
+	p.Send <- *message
 
 	return nil
 }
@@ -275,17 +279,16 @@ func handlePlayerMove(p *Player, msg json.RawMessage) {
 }
 
 func handlePlayerLeave(p *Player) {
-	data, _ := json.Marshal(item.IdData{
-		Id: p.Id.String(),
-	})
+	message, _ := messages.
+		NewBroadcast().
+		Data(item.IdData{
+			Id: p.Id.String(),
+		}).
+		Event(events.PLAYER_LEAVE).
+		Build()
 
 	p.Unregister <- p
-	p.Broadcast <- messages.BroadcastMessage{
-		Message: messages.BaseMessage{
-			Event: events.PLAYER_LEAVE,
-			Data:  data,
-		},
-	}
+	p.Broadcast <- *message
 	// closing p.send will also stop the writepump
 	close(p.Send)
 }
@@ -303,32 +306,34 @@ func handlePlayerUpdateMap(p *Player, msg json.RawMessage, log *zerolog.Logger) 
 	p.Position.X = data.X
 	p.Position.Y = data.Y
 
-	broadcastedData, err := json.Marshal(PlayerUpdateMapClientData{
-		Id:         p.Id.String(),
-		CurrentMap: data.CurrentMap,
-		X:          data.X,
-		Y:          data.Y,
-	})
+	message, err := messages.
+		NewBroadcast().
+		Data(PlayerUpdateMapClientData{
+			Id:         p.Id.String(),
+			CurrentMap: data.CurrentMap,
+			X:          data.X,
+			Y:          data.Y,
+		}).
+		Event(events.PLAYER_UPDATE_MAP).
+		Condition(
+			func(otherPlayer interface{}) bool {
+				ptr, ok := otherPlayer.(*Player)
+				if !ok {
+					log.Error().Msg("Could not cast interface to Player type")
+					return false
+				}
+
+				return p != ptr
+			},
+		).
+		Build()
+
 	if err != nil {
 		p.Send <- messages.GenerateErrorMessage(500, "could not marshal map update data")
 		return
 	}
 
-	p.Broadcast <- messages.BroadcastMessage{
-		Message: messages.BaseMessage{
-			Event: events.PLAYER_UPDATE_MAP,
-			Data:  broadcastedData,
-		},
-		Condition: func(otherPlayer interface{}) bool {
-			ptr, ok := otherPlayer.(*Player)
-			if !ok {
-				log.Error().Msg("Could not cast interface to Player type")
-				return false
-			}
-
-			return p != ptr
-		},
-	}
+	p.Broadcast <- *message
 
 	log.Info().Msgf("player %s | %s changed map: %s", p.Id, p.Name, data.CurrentMap)
 }
@@ -343,24 +348,23 @@ func handlePlayerChatMessage(p *Player, msg json.RawMessage, log *zerolog.Logger
 		return
 	}
 
-	broadcastedData, err := json.Marshal(ChatMessageClientData{
-		Message:   data.Message,
-		Author:    p.Id.String(),
-		Timestamp: utils.NowInUnixMillis(),
-		Color:     p.Chatcolor,
-	})
+	message, err := messages.
+		NewBroadcast().
+		Data(ChatMessageClientData{
+			Message:   data.Message,
+			Author:    p.Id.String(),
+			Timestamp: utils.NowInUnixMillis(),
+			Color:     p.Chatcolor,
+		}).
+		Event(events.PLAYER_CHAT_MESSAGE).
+		Build()
 
 	if err != nil {
 		p.Send <- messages.GenerateErrorMessage(500, "could not marshal chat message data")
 		return
 	}
 
-	p.Broadcast <- messages.BroadcastMessage{
-		Message: messages.BaseMessage{
-			Event: events.PLAYER_CHAT_MESSAGE,
-			Data:  broadcastedData,
-		},
-	}
+	p.Broadcast <- *message
 
 	log.Info().Msgf("player %s | %s sent chat message: %s", p.Id, p.Name, data.Message)
 }
@@ -445,6 +449,7 @@ func handlePlayerUpdateCitizenState(p *Player, msg json.RawMessage, ctx context.
 }
 
 // should really be in the items package but no idea how to break up item <> player-channel
+
 func RemoveItemEntity(itemEntities *[]*item.ItemEntity, itemEntity *item.ItemEntity, broadcastChan chan messages.BroadcastMessage) bool {
 	removed := false
 
@@ -453,18 +458,18 @@ func RemoveItemEntity(itemEntities *[]*item.ItemEntity, itemEntity *item.ItemEnt
 			*itemEntities = append((*itemEntities)[:i], (*itemEntities)[i+1:]...)
 			removed = true
 
-			data, err := json.Marshal(item.IdData{Id: itemEntity.Id.String()})
+			message, err := messages.
+				NewBroadcast().
+				Data(item.IdData{Id: itemEntity.Id.String()}).
+				Data(events.PLAYER_PICKUP_ITEMENTITY).
+				Build()
+
 			if err != nil {
 				// TODO: print error message
 				break
 			}
 
-			broadcastChan <- messages.BroadcastMessage{
-				Message: messages.BaseMessage{
-					Event: events.PLAYER_PICKUP_ITEMENTITY,
-					Data:  data,
-				},
-			}
+			broadcastChan <- *message
 
 			break
 		}

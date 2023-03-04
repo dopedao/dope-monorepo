@@ -192,16 +192,17 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 			go player.WritePump(ctx)
 
 			// handshake data, player ID & game state info
-			handShakeData, err := json.Marshal(g.GenerateHandshakeData(ctx, client, player))
+			message, err := messages.
+				NewBaseMessage().
+				Data(g.GenerateHandshakeData(ctx, client, player)).
+				Event(events.PLAYER_HANDSHAKE).
+				Build()
 			if err != nil {
 				player.Send <- messages.GenerateErrorMessage(500, "could not marshal handshake data")
 				return
 			}
 
-			player.Send <- messages.BaseMessage{
-				Event: events.PLAYER_HANDSHAKE,
-				Data:  handShakeData,
-			}
+			player.Send <- *message
 
 			log.Info().Msgf("player joined: %s | %s", player.Id, player.Name)
 		case player := <-g.Unregister:
@@ -242,18 +243,16 @@ func (g *Game) Start(ctx context.Context, client *ent.Client) {
 				case player.Send <- br.Message:
 				default:
 					log.Info().Msgf("could not send message to player: %s | %s", player.Id, player.Name)
-
-					data, _ := json.Marshal(gameItem.IdData{
-						Id: player.Id.String(),
-					})
+					message, _ := messages.
+						NewBroadcast().
+						Data(gameItem.IdData{
+							Id: player.Id.String(),
+						}).
+						Event(events.PLAYER_LEAVE).
+						Build()
 
 					g.Unregister <- player
-					g.Broadcast <- messages.BroadcastMessage{
-						Message: messages.BaseMessage{
-							Event: events.PLAYER_LEAVE,
-							Data:  data,
-						},
-					}
+					g.Broadcast <- *message
 
 					close(player.Send)
 				}
@@ -363,35 +362,34 @@ func (g *Game) tick(ctx context.Context, time time.Time) {
 			})
 		}
 
-		data, err := json.Marshal(TickData{
-			Time:    g.Time,
-			Tick:    utils.NowInUnixMillis(),
-			Players: players,
-		})
+		message, err := messages.NewBaseMessage().
+			Data(TickData{
+				Time:    g.Time,
+				Tick:    utils.NowInUnixMillis(),
+				Players: players,
+			}).
+			Event(events.TICK).
+			Build()
+
 		if err != nil {
 			player.Send <- messages.GenerateErrorMessage(500, "could not marshal player move data")
 			continue
 		}
 
 		select {
-		case player.Send <- messages.BaseMessage{
-			Event: events.TICK,
-			Data:  data,
-		}:
+		case player.Send <- *message: // Fallthrough
 		default:
 			log.Info().Msgf("could not send message to player: %s | %s", player.Id, player.Name)
 
-			data, _ := json.Marshal(gameItem.IdData{
-				Id: player.Id.String(),
-			})
+			message, _ := messages.NewBroadcast().
+				Data(gameItem.IdData{
+					Id: player.Id.String(),
+				}).
+				Event(events.PLAYER_LEAVE).
+				Build()
 
 			g.Unregister <- player
-			g.Broadcast <- messages.BroadcastMessage{
-				Message: messages.BaseMessage{
-					Event: events.PLAYER_LEAVE,
-					Data:  data,
-				},
-			}
+			g.Broadcast <- *message
 
 			close(player.Send)
 		}
@@ -419,27 +417,28 @@ func (g *Game) PlayerByUUID(uuid uuid.UUID) *p.Player {
 func (g *Game) DispatchPlayerJoin(ctx context.Context, player *p.Player) {
 	_, log := logger.LogFor(ctx)
 
-	joinData, err := json.Marshal(player.Serialize())
+	message, err := messages.NewBroadcast().
+		Data(player.Serialize()).
+		Event(events.PLAYER_JOIN).
+		Condition(
+			func(otherPlayer interface{}) bool {
+				ptr, ok := otherPlayer.(*p.Player)
+				if !ok {
+					log.Error().Msg("Could not cast interface to Player type")
+					return false
+				}
+				return player != ptr
+			},
+		).
+		Build()
+
 	if err != nil {
 		log.Err(err).Msgf("could not marshal join data for player: %s | %s", player.Id, player.Name)
 		return
 	}
 
 	// tell every other player that this player joined
-	g.Broadcast <- messages.BroadcastMessage{
-		Message: messages.BaseMessage{
-			Event: events.PLAYER_JOIN,
-			Data:  joinData,
-		},
-		Condition: func(otherPlayer interface{}) bool {
-			ptr, ok := otherPlayer.(*p.Player)
-			if !ok {
-				log.Error().Msg("Could not cast interface to Player type")
-				return false
-			}
-			return player != ptr
-		},
-	}
+	g.Broadcast <- *message
 }
 
 func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, client *ent.Client, gameHustler *ent.GameHustler) {
@@ -489,19 +488,18 @@ func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, clien
 }
 
 func (g *Game) DispatchPlayerLeave(ctx context.Context, player *p.Player) {
-	leaveData, err := json.Marshal(gameItem.IdData{Id: player.Id.String()})
+	message, err := messages.NewBroadcast().
+		Data(gameItem.IdData{Id: player.Id.String()}).
+		Event(events.PLAYER_LEAVE).
+		Build()
+
 	if err != nil {
 		player.Send <- messages.GenerateErrorMessage(500, "could not marshal leave data")
 		return
 	}
 
 	// tell every other player that this player left
-	g.Broadcast <- messages.BroadcastMessage{
-		Message: messages.BaseMessage{
-			Event: events.PLAYER_LEAVE,
-			Data:  leaveData,
-		},
-	}
+	g.Broadcast <- *message
 }
 
 func (g *Game) GenerateHandshakeData(ctx context.Context, client *ent.Client, player *p.Player) HandshakeData {
