@@ -570,7 +570,7 @@ export default class GameScene extends Scene {
         if (p.depth)
           hustler.setDepth(p.depth);
 
-        // 1.2x bounds to make sure hustler doesnt tp when in viewport 
+        // 1.2x bounds to make sure hustler doesnt tp when in viewport [tp = teleport ?]
         const cameraView = new Phaser.Geom.Rectangle(
           this.cameras.main.worldView.x - (this.cameras.main.worldView.width * 0.2), 
           this.cameras.main.worldView.y - (this.cameras.main.worldView.height * 0.2), 

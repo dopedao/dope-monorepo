@@ -1,15 +1,28 @@
 package middleware
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
 
+	firebase "firebase.google.com/go"
+	"firebase.google.com/go/auth"
+
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/gorilla/sessions"
 	"github.com/jiulongw/siwe-go"
 )
 
 const Key = "session"
+
+const firebaseSigninURL string = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key="
+
+var apikey string = os.Getenv("FIREBASE_API_KEY")
 
 type sessionContextKey struct{}
 
@@ -46,14 +59,41 @@ func SessionFor(ctx context.Context) SessionContext {
 	return ctx.Value(sessionCtxKey).(SessionContext)
 }
 
-func IsAuthenticated(ctx context.Context) bool {
+// IsAuthenticated.
+func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
+	_, log := logger.LogFor(ctx)
+
+	log.Debug().Msg("authentication starts")
+
 	sc := SessionFor(ctx)
 	session, err := sc.Get(Key)
 	if err != nil {
+		log.Err(err).Msgf("get session key error")
 		return false
 	}
 
-	return session.Values["wallet"] != nil
+	// Retrieve the session cookie from the session
+	sessionCookie, ok := session.Values["wallet"]
+	if !ok {
+		log.Debug().Msg("session cookie not found in session")
+		return false
+	}
+
+	// Convert sessionCookie from interface{} to string
+	sessionCookieStr, ok := sessionCookie.(string)
+	if !ok {
+		log.Debug().Msg("session cookie is not a string")
+		return false
+	}
+
+	log.Debug().Msgf("sessionCookie = %v\n ", sessionCookieStr)
+
+	if err := FirebaseVerify(ctx, client, sessionCookieStr); err != nil {
+		log.Err(err).Msgf("verify error")
+		return false
+	}
+
+	return true
 }
 
 // wallet address
@@ -73,6 +113,120 @@ func SetWallet(ctx context.Context, wallet string) error {
 	return nil
 }
 
+// FirebaseAuth authenticate a user.
+func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (string, error) {
+	// Check if the user exists using the wallet address (UID = Wallet)
+	_, log := logger.LogFor(ctx)
+
+	if _, err := client.GetUser(ctx, wallet); err != nil {
+		// User not found create a new user here with ETH UID
+		log.Debug().Msg("create new firebase user")
+
+		params := (&auth.UserToCreate{}).UID(wallet)
+		user, err := client.CreateUser(context.TODO(), params)
+		if err != nil {
+			return "", err
+		}
+		log.Debug().Msgf("Successfully created user with Ethereum address: %v\n", user.UID)
+	}
+
+	// Create custom token for the user with claims.
+	claims := map[string]interface{}{
+		"wallet": wallet,
+	}
+
+	token, err := client.CustomTokenWithClaims(context.TODO(), wallet, claims)
+	if err != nil {
+		return "", err
+	}
+
+	log.Debug().Msg(fmt.Sprintf("token = %v", token))
+
+	if apikey == "" {
+		return "", fmt.Errorf("no api key provided")
+	}
+
+	url := firebaseSigninURL + apikey
+
+	log.Debug().Msgf("signin URL %v\n", url)
+
+	jsonBody := struct {
+		Token             string `json:"token"`
+		ReturnSecureToken bool   `json:"returnSecureToken"`
+	}{token, true}
+
+	data, err := json.Marshal(jsonBody)
+	if err != nil {
+		return "", err
+	}
+
+	body := bytes.NewBuffer(data)
+
+	req, err := http.NewRequest(http.MethodPost, url, body)
+	if err != nil {
+		return "", err
+	}
+
+	httpClient := &http.Client{}
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	defer resp.Body.Close()
+
+	data, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("failed to sign in user [%v] [%v]", resp.StatusCode, string(data))
+	}
+
+	signInResp := struct {
+		IdToken   string `json:"idToken"`
+		ExpiresIn string `json:"expiresIn"`
+	}{}
+
+	if err := json.Unmarshal(data, &signInResp); err != nil {
+		return "", err
+	}
+
+	log.Debug().Msgf("token = %v", signInResp.IdToken)
+
+	return signInResp.IdToken, nil
+}
+
+// FirebaseInit returns a firebase auth client or an error if it fails.
+func FirebaseInit(ctx context.Context) (*auth.Client, error) {
+	_, log := logger.LogFor(ctx)
+	log.Debug().Msg("initialization of firebase")
+
+	app, err := firebase.NewApp(context.Background(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("error initializing app: %v", err)
+	}
+
+	return app.Auth(context.TODO())
+}
+
+// FirebaseVerify verifies whether the custom token exists and not expired.
+func FirebaseVerify(ctx context.Context, client *auth.Client, sessionCookie string) error {
+
+	_, log := logger.LogFor(ctx)
+	log.Debug().Msg("verification")
+
+	if _, err := client.VerifyIDTokenAndCheckRevoked(ctx, sessionCookie); err != nil {
+		log.Debug().Msgf("Verify Error %v", err)
+		return err
+	}
+
+	// Authentication successful
+	log.Debug().Msg("auth successful")
+	return nil
+}
+
 func Wallet(ctx context.Context) (string, error) {
 	sc := SessionFor(ctx)
 	session, err := sc.Get(Key)
@@ -80,12 +234,12 @@ func Wallet(ctx context.Context) (string, error) {
 		return "", err
 	}
 
-	wallet := session.Values["wallet"]
-	if wallet == nil {
+	token := session.Values["wallet"]
+	if token == nil {
 		return "", errors.New("unauthorized")
 	}
 
-	return wallet.(string), nil
+	return token.(string), nil
 }
 
 func SetSiwe(ctx context.Context, message string) error {

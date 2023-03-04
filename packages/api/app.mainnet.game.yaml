@@ -7,6 +7,10 @@ main: ./cmd/gameServer
 env_variables:
   PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2
   NETWORK: mainnet
+  # This is not a secret, as it only identifies our Firebase project
+  # Firebase security rules should be used if we use other services.
+  # Sensitive things are protected via Service Account permissions.
+  FIREBASE_API_KEY: AIzaSyAaWaRkein9eqhqQstO_h1lFOxbzENNN-Q
 
 manual_scaling:
   instances: 1

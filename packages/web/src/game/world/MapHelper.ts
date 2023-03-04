@@ -41,6 +41,9 @@ export default class MapHelper {
 
   createCollisions() {
     // enable collisions for all tiles that have index 1
+
+    console.log("CREATE COLLISION FUNC");
+
     this.map.collideLayer?.setCollision(1);
 
     // create matterjs collisions from collidelayer
@@ -189,7 +192,11 @@ export default class MapHelper {
     }
   }
 
-  createEntities() {
+  createEntities() 
+  {
+
+    console.log("CREATE ENTITIES FUNC");
+
     if (this.map.entityLayers.length === 0) {
       console.warn('No entity layer found');
       return;

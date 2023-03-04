@@ -15,10 +15,12 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
+	svgrender "github.com/dopedao/dope-monorepo/packages/api/internal/svg-render"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	solsha3 "github.com/miguelmota/go-solidity-sha3"
+	"github.com/rs/zerolog"
 )
 
 const (
@@ -155,33 +157,9 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 		return nil, fmt.Errorf("hustler: getting metadata: %w", err)
 	}
 
-	metadata, err := p.Contract.TokenURI(nil, e.Id)
+	hustlerSvg, err := getHustlerSvg(p.Contract, e.Id, &log)
 	if err != nil {
-		log.Warn().
-			Str("indexer", "HUSTLER").
-			Str("hustler_id", e.Id.String()).
-			Msg("Failed to get metadata from contract, Skipping…")
-		return nil, nil
-	}
-
-	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
-	if err != nil {
-		return nil, fmt.Errorf("hustler: decoding metadata: %w", err)
-	}
-
-	safeStr := CleanJsonString(string(decoded))
-
-	var parsed Metadata
-	if err := json.Unmarshal([]byte(safeStr), &parsed); err != nil {
-		log.
-			Err(err).
-			Str("indexer", "HUSTLER").
-			Str("hustler_id", e.Id.String()).
-			Str("txn", e.Raw.TxHash.Hex()).
-			Str("json", string(safeStr)).
-			Msg("hustler: unmarshalling metadata")
-		// No-op, we don't want to fail the entire block if we can't parse a single hustler.
-		return func(tx *ent.Tx) error { return nil }, nil
+		return nil, fmt.Errorf("hustler: getting svg from tokenURI: %w", err)
 	}
 
 	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(
@@ -272,7 +250,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 			SetHairID(hairID).
 			SetNillableBeardID(beardID).
 			SetNillableTitle(title).
-			SetSvg(parsed.Image).
+			SetSvg(hustlerSvg).
 			SetViewbox([]int{
 				int(new(big.Int).SetBytes(viewbox[31:32]).Int64()),
 				int(new(big.Int).SetBytes(viewbox[30:31]).Int64()),
@@ -295,7 +273,6 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 			UpdateNewValues().
 			Exec(ctx); err != nil {
 			log.Debug().Str("indexer", "HUSTLER").
-				Str("safeStr", safeStr).
 				Str("name", safeName).
 				Msg("Failed Saving Hustler")
 			return fmt.Errorf("ProcessMetadataUpdate ent tx updating hustler %s metadata: %w", e.Id.String(), err)
@@ -441,34 +418,17 @@ func RefreshEquipment(
 		return fmt.Errorf("casting id to int: %s", id)
 	}
 
-	// This can fail because the TokenURI info is too large.
-	// If we don't catch it here it can crash the indexer.
-	// Better to skip it.
-	metadata, err := h.TokenURI(nil, big)
-	if err != nil {
-		log.
-			Err(err).
-			Str("indexer", "HUSTLER").
-			Str("hustler_id", id).
-			Msg("RefreshEquipment getting TokenURI")
-		return nil
-	}
-
-	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
-	if err != nil {
-		return fmt.Errorf("decoding metadata: %w", err)
-	}
-
-	safeStr := CleanJsonString(string(decoded))
-
-	var parsed Metadata
-	if err := json.Unmarshal([]byte(safeStr), &parsed); err != nil {
-		return fmt.Errorf("hustler unmarshalling metadata: %w", err)
-	}
-
 	u := tx.Hustler.Update().
-		Where(hustler.IDEQ(id)).
-		SetSvg(parsed.Image)
+		Where(hustler.IDEQ(id))
+
+	hustlerSvg, err := getHustlerSvg(h, big, &log)
+	if err == nil {
+		u.SetSvg(hustlerSvg)
+	} else {
+		// we dont want to cancel updating the equipment
+		// just because we cant get the image
+		log.Err(err).Msgf("couldnt get svg of hustler: %v", id)
+	}
 
 	if slots.Weapon != nil {
 		u = u.SetWeaponID(slots.Weapon.String())
@@ -535,6 +495,38 @@ func RefreshEquipment(
 	}
 
 	return nil
+}
+
+func getHustlerSvg(h *bindings.Hustler, big *big.Int, log *zerolog.Logger) (string, error) {
+	metadata, err := h.TokenURI(nil, big)
+	if err != nil {
+		log.
+			Err(err).
+			Str("indexer", "HUSTLER").
+			Str("hustler_id", big.String()).
+			Msg("RefreshEquipment getting svg from TokenURI. Getting svg offchain.")
+
+		offchainHustlerSvg, err := svgrender.GetOffchainRender(big)
+		if err != nil {
+			return "", err
+		}
+
+		return offchainHustlerSvg, nil
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
+	if err != nil {
+		return "", fmt.Errorf("decoding metadata: %w", err)
+	}
+
+	safeStr := CleanJsonString(string(decoded))
+
+	var parsed Metadata
+	if err := json.Unmarshal([]byte(safeStr), &parsed); err != nil {
+		return "", fmt.Errorf("hustler unmarshalling metadata: %w", err)
+	}
+
+	return parsed.Image, nil
 }
 
 type Slots struct {

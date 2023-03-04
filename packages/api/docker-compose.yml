@@ -13,10 +13,11 @@ services:
       - dopenet
     volumes:
       - type: bind
-        source: ${GCLOUD_CRED_PATH}
+        source: ${GOOGLE_APPLICATION_CREDENTIALS}
         target: /build/.config/gcloud/application_default_credentials.json
       - ./web/:/build/web
       - ./cmd/apiServer/:/build/cmd/apiServer
+      - ./internal/:/build/internal
     environment:
       # If you don't have this file run 'gcloud auth application default-login'
       GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
@@ -31,13 +32,19 @@ services:
     depends_on:
       - 'db'
     volumes:
+      - type: bind
+        source: ${GOOGLE_APPLICATION_CREDENTIALS}
+        target: /build/.config/gcloud/application_default_credentials.json
       - ./game/:/build/game/
       - ./cmd/gameServer/:/build/cmd/gameServer/
+      - ./internal/:/build/internal
     ports:
       - ${GAME_SERVER_PORT}:${GAME_SERVER_PORT}
     networks:
       - dopenet
     environment:
+      FIREBASE_API_KEY: ${FIREBASE_API_KEY}
+      GOOGLE_APPLICATION_CREDENTIALS: /build/.config/gcloud/application_default_credentials.json
       PORT: ${GAME_SERVER_PORT}
       PG_HOST: db:5432
     command: CompileDaemon --build="go build ./cmd/gameServer/main.go" --command=./main
@@ -51,6 +58,7 @@ services:
     volumes:
       - ./indexer/:/build/indexer/
       - ./cmd/indexerEthereum/:/build/cmd/indexerEthereum/
+      - ./internal/:/build/internal
     networks:
       - dopenet
     environment:

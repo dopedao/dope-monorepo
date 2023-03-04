@@ -1,0 +1,73 @@
+#!/bin/bash
+# A small script to create the .env file needed for docker-compose
+
+input_or_default() {
+    if [ -z "$1" ]; then
+        echo "$2"
+    fi
+
+    echo "$1"
+}
+
+user="$(cmd.exe /c echo %USERNAME%)"
+conf=
+
+# default/fallback values
+default_gcloud_cred_path="C:/Users/$user/.config/gcloud/application_default_credentials.json"
+default_firebase_path="C:/Users/$user/Desktop/dope-monorepo/firebase-adminsdk.json"
+default_game_server_port=6060
+default_web_api_port=7070
+# This is not a secret, as it only identifies our Firebase project
+# Firebase security rules should be used if we use other services.
+# Sensitive things are protected via Service Account permissions.
+default_firebase_api_key="AIzaSyAaWaRkein9eqhqQstO_h1lFOxbzENNN-Q"
+
+# GCLOUD SERVICE ACCOUNT CREDENTIALS
+
+read -p "Enter the path to your gcloud credential: " -r gcp_input
+if [ -z "$gcp_input" ]; then
+        gcloud_cred_path=$(input_or_default "$gcp_input" "$default_gcloud_cred_path")
+    if [ ! -f "$gcloud_cred_path" ]; then
+            echo -e "File not found.\nExiting."
+            echo "Try installing the gcloud cli and run the following command: gcloud auth application default-login"
+            exit 1
+    fi
+fi
+
+gcloud_cred_path=`echo $gcp_input | tr '\' '/'`
+conf="$conf GOOGLE_APPLICATION_CREDENTIALS=$gcloud_cred_path\n"
+
+# FIREBASE API KEY
+# For authenticating user on the server-side in game
+read -p "Enter your Firebase WEB API key for auth verification: " -r fb_key_input
+firebase_api_key=$(input_or_default "$fb_key_input" $default_firebase_api_key)
+conf="$conf FIREBASE_API_KEY=$firebase_api_key\n"
+
+
+# GAME SERVER PORT 
+
+read -p "Port for the game server (default: $default_game_server_port): " -r gsp_input
+game_server_port=$(input_or_default "$gsp_input" $default_game_server_port)
+conf="$conf GAME_SERVER_PORT=$game_server_port\n"
+
+# WEB API PORT
+
+read -p "Port for the web api (default: $default_web_api_port): " -r wap_input
+web_api_port=$(input_or_default "$wap_input" $default_web_api_port)
+conf="$conf WEB_API_PORT=$web_api_port"
+
+echo -e "Final config:\n$conf\n"
+read -p "Looks good? (y, N): " -n 1 -r looks_good
+if [ "$looks_good" = "n" ] || [ "$looks_good" = "N" ]; then
+    echo
+    echo "A-bort-ing"
+    exit 1
+else
+    if [ -f ".env" ]; then
+        echo "Backing up old .env file"
+        cp .env .env.backup-$((1 + RANDOM % 100))
+    fi
+
+    echo -e "$conf" > .env
+    echo "Done"
+fi
