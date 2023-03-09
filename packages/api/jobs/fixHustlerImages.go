@@ -52,7 +52,7 @@ func FixHustlerImages() {
 			log.Warn().Msgf("Error getting offchain render for %v", h.ID)
 		}
 
-		log.Debug().Msgf("Updating %v with offchain image\n%v", h.ID)
+		log.Debug().Msgf("Updating %v with offchain image", h.ID)
 		dbClient.Hustler.UpdateOneID(h.ID).SetSvg(offchainHustlerSvg).Exec(ctx)
 	}
 }
