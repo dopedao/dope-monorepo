@@ -29,7 +29,7 @@ type Rect struct {
 }
 
 func decodeImage(image string, offset string) (DecodedImage, error) {
-	if len(image) <= 0 {
+	if len(image) == 0 {
 		return DecodedImage{}, fmt.Errorf("empty data")
 	}
 
