@@ -157,7 +157,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 		return nil, fmt.Errorf("hustler: getting metadata: %w", err)
 	}
 
-	hustlerSvg, err := getHustlerSvg(p.Contract, e.Id, &log)
+	hustlerSvg, err := GetHustlerSvg(p.Contract, e.Id, &log)
 	if err != nil {
 		return nil, fmt.Errorf("hustler: getting svg from tokenURI: %w", err)
 	}
@@ -421,7 +421,7 @@ func RefreshEquipment(
 	u := tx.Hustler.Update().
 		Where(hustler.IDEQ(id))
 
-	hustlerSvg, err := getHustlerSvg(h, big, &log)
+	hustlerSvg, err := GetHustlerSvg(h, big, &log)
 	if err == nil {
 		u.SetSvg(hustlerSvg)
 	} else {
@@ -497,15 +497,20 @@ func RefreshEquipment(
 	return nil
 }
 
-func getHustlerSvg(h *bindings.Hustler, big *big.Int, log *zerolog.Logger) (string, error) {
+// Tries to get hustler svg from chain,
+// if it fails, it tries to get it from offchain
+func GetHustlerSvg(h *bindings.Hustler, big *big.Int, log *zerolog.Logger) (string, error) {
+
+	// On-chain SVG
 	metadata, err := h.TokenURI(nil, big)
 	if err != nil {
 		log.
 			Err(err).
 			Str("indexer", "HUSTLER").
 			Str("hustler_id", big.String()).
-			Msg("RefreshEquipment getting svg from TokenURI. Getting svg offchain.")
+			Msg("COULD NOT GET HUSTLER IMAGE FROM TOKENURI.")
 
+		// Off-chain SVG
 		offchainHustlerSvg, err := svgrender.GetOffchainRender(big)
 		if err != nil {
 			return "", err
