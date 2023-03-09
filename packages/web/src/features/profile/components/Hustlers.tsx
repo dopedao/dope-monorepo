@@ -120,7 +120,9 @@ const Hustlers = ({ searchValue }: { searchValue?: string | null }) => {
               return (
                 <ProfileCard key={id}>
                   <ProfileCardHeader>
-                    {formattedType} #{id}
+                    <Link href={`/hustlers/${id}`} passHref>
+                      <a>{formattedType} #{id}</a>
+                    </Link>
                   </ProfileCardHeader>
                   <PanelBody>
                     {svg && (
