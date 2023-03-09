@@ -9,6 +9,7 @@ import (
 	"regexp"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -208,20 +209,20 @@ func GetOffchainRender(hustlerId *big.Int) (string, error) {
 	cleanTitle := cleanString(title)
 	cleanName := cleanString(hustlerMeta.Name)
 
-	fmt.Printf("Rendering hustler#%s\nName: %s\nTitle: %s\nForeground: %s\nBackground: %s\nSex: %d\nParts: %v\nResolution: %d\nViewBox: %v",
-		hustlerId.String(),
-		cleanName,
-		cleanTitle,
-		foreground,
-		background,
-		gender,
-		partNames,
-		resolution,
-		viewBox,
-	)
+	_, logger := logger.LogFor(context.TODO())
+	logger.With().Str("Internal", "SvgRender").Str("hustler", hustlerId.String())
 
-	svg, err := BuildSVG(parts, background, foreground, cleanTitle, cleanName, viewBox, resolution)
-	if err != nil {
+	logger.Info().
+		Str("Name", cleanName).
+		Str("Title", cleanTitle).
+		Str("Foreground", foreground).
+		Str("Background", background).
+		Int("Sex", int(gender)).
+		Int("Resolution", resolution).
+		Msgf("Parts: %v\nViewBox: %v", partNames, viewBox)
+
+	svg := BuildSVG(parts, background, foreground, cleanTitle, cleanName, viewBox, resolution, &logger)
+	if len(svg) == 0 {
 		return "", fmt.Errorf("rendering hustler %s", hustlerId.String())
 	}
 
