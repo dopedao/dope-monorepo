@@ -54,7 +54,7 @@ func NewServer(ctx context.Context, network string) (http.Handler, error) {
 	// Game authentication
 	authRouter := r.PathPrefix("/authentication").Subrouter()
 	authCors := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://dopewars.gg", "http://localhost:3001"},
+		AllowedOrigins:   []string{"https://dopewars.gg", "http://localhost:3000"},
 		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
 	})
