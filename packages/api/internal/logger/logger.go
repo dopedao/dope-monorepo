@@ -10,11 +10,11 @@ import (
 type LogKV func(*zerolog.Context) zerolog.Context
 
 func LogFor(ctx context.Context, values ...LogKV) (context.Context, zerolog.Logger) {
-	sub := zerolog.Ctx(ctx).With()
+	logWithCtx := zerolog.Ctx(ctx).With()
 	for _, value := range values {
-		sub = value(&sub)
+		logWithCtx = value(&logWithCtx)
 	}
-	lg := sub.Logger()
+	lg := logWithCtx.Logger()
 	return lg.WithContext(ctx), lg
 }
 

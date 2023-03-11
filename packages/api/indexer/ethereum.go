@@ -196,7 +196,7 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 			break
 		}
 
-		log.Info().Msgf("Indexing %s from %d to %d.", contract.Name, _from, _to)
+		// log.Debug().Msgf("Indexing %s from %d to %d.", contract.Name, _from, _to)
 
 		logs, err := e.eth.FilterLogs(ctx, ethereum.FilterQuery{
 			FromBlock: new(big.Int).SetUint64(_from),
@@ -227,8 +227,8 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 		}
 
 		_from = _to + 1
-		log.Debug().
-			Msgf("%v - Processed %v", contract.Name, _to)
+		// log.Debug().
+		// 	Msgf("%v - Processed %v", contract.Name, _to)
 
 		// Because we can have quite a few transactions to commit, this code
 		// can cause deadlocks. We chunk these into batches of 100 to avoid them.
@@ -237,7 +237,11 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 		// and ensure it uses an Ent upsert operation.
 		txChunks := chunkTx(committers, txLimit)
 
-		log.Debug().Msgf("%v - %v Chunks with %v total transactions", contract.Name, len(txChunks), len(committers))
+		if len(txChunks) > 1 || len(committers) > 1 {
+			log.Info().
+				Msgf("%v - %v Chunks with %v total transactions", contract.Name, len(txChunks), len(committers))
+		}
+
 		for _, committerChunk := range txChunks {
 			if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
 				log.Debug().Msgf(
@@ -251,7 +255,7 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 						return err
 					}
 				}
-				log.Debug().Msgf(
+				log.Info().Msgf(
 					"%v - block %v COMMITTED %v changes",
 					contract.Name,
 					_from,
@@ -266,7 +270,7 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 
 		// Update sync state only when we've successfully processed
 		// all the transactions above.
-		log.Debug().Msgf("%v - Updating sync state %v", contract.Name, _from)
+		// log.Debug().Msgf("%v - Updating sync state %v", contract.Name, _from)
 		if err := dbprovider.Ent().SyncState.
 			Create().
 			SetID(contract.Address.Hex()).

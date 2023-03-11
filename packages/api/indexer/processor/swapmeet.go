@@ -20,6 +20,7 @@ import (
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/rs/zerolog"
 )
 
 type SwapMeetProcessor struct {
@@ -72,7 +73,14 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMe
 		// are not in their inventory.
 		//
 		// -- faces
-		_, log := logger.LogFor(ctx)
+
+		// Tagged logger
+		_, log := logger.LogFor(
+			ctx,
+			func(zctx *zerolog.Context) zerolog.Context {
+				return zctx.Str("SwapMeetProcessor", "ProcessSetRle")
+			})
+
 		log.Warn().Msgf("failed getting TokenURI during ProcessSetRle %s metadata: %v", e.Id.String(), err)
 		return func(tx *ent.Tx) error {
 			if err := tx.Item.Create().
@@ -167,12 +175,33 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMe
 }
 
 func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings.SwapMeetTransferBatch) (func(tx *ent.Tx) error, error) {
+
+	// Tagged logger
+	_, log := logger.LogFor(
+		ctx,
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("SwapMeetProcessor", "ProcessTransferBatch")
+		})
+
+	log.Info().
+		Msgf("from: %s, to: %s, ids: %v, values: %v",
+			e.From.Hex(), e.To.Hex(), e.Ids, e.Values)
+
 	return func(tx *ent.Tx) error {
 		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
 			return fmt.Errorf("swapmeet: %w", err)
 		}
 
+		log.Info().
+			Msgf(
+				"from: %s, to: %s, id: %s",
+				e.From.Hex(), e.To.Hex(), e.Ids)
+
+		// Transfer of Gear from wallet to wallet (not the null address)
 		if e.From != (common.Address{}) {
+			log.Info().
+				Msg("Transferring gear wallet to wallet")
+
 			for i, id := range e.Ids {
 				if err := tx.WalletItems.
 					UpdateOneID(fmt.Sprintf("%s-%s", e.From.Hex(), id.String())).
@@ -182,7 +211,7 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings
 				}
 			}
 		}
-
+		// Transfer of Gear to a real wallet (not the null address)
 		if e.To != (common.Address{}) {
 			for i, id := range e.Ids {
 				if err := tx.WalletItems.
@@ -199,9 +228,9 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings
 			}
 		}
 
-		// If it is not from the zero address and to the hustler contract, it is
-		// an equip to an existing hustler.
+		// Equip of an existing hustler
 		if e.From != (common.Address{}) && e.To == hustlerAddr {
+			log.Info().Msg("Equipping existing hustler")
 			wallet, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.From.Hex())).First(ctx)
 			if err != nil {
 				return fmt.Errorf("getting user's hustlers: %w", err)
@@ -214,8 +243,9 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings
 			}
 		}
 
-		// If from the hustler contract this is an unequip.
+		// UN-Equip of existing hustler
 		if e.From == hustlerAddr {
+			log.Info().Msg("Unequipping existing hustler")
 			wallet, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.To.Hex())).First(ctx)
 			if err != nil {
 				return fmt.Errorf("getting user's hustlers: %w", err)
@@ -234,9 +264,20 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings
 
 func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e bindings.SwapMeetTransferSingle) (func(tx *ent.Tx) error, error) {
 	return func(tx *ent.Tx) error {
+		_, log := logger.LogFor(
+			ctx,
+			func(zctx *zerolog.Context) zerolog.Context {
+				return zctx.Str("SwapMeetProcessor", "ProcessTransferSingle")
+			})
+
 		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
 			return fmt.Errorf("swapmeet: %w", err)
 		}
+
+		log.Info().
+			Str("From", e.From.Hex()).
+			Str("To", e.To.Hex()).Str("Id", e.Id.String()).
+			Str("ID", fmt.Sprintf("%v", e.Id))
 
 		if e.From != (common.Address{}) {
 			if err := tx.WalletItems.
@@ -264,6 +305,7 @@ func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e binding
 		// If it is not from the zero address and to the hustler contract, it is
 		// an equip to an existing hustler.
 		if e.From != (common.Address{}) && e.To == hustlerAddr {
+			log.Info().Msg("Equipping existing hustler")
 			wallet, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.From.Hex())).First(ctx)
 			if err != nil {
 				return fmt.Errorf("getting user's hustlers: %w", err)
@@ -278,6 +320,7 @@ func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e binding
 
 		// If from the hustler contract this is an unequip.
 		if e.From == hustlerAddr {
+			log.Info().Msg("Unequipping existing hustler")
 			wallet, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.To.Hex())).First(ctx)
 			if err != nil {
 				return fmt.Errorf("getting user's hustlers: %w", err)
