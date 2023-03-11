@@ -42,12 +42,10 @@ jobs:
         with:
           deliverables: 'packages/api/app.mainnet.indexer.yaml'
 
-      # Commented out for the time being so we don't spend cash
-      # on something not in use
-      # - id: 'deploy-game'
-      #   uses: 'google-github-actions/deploy-appengine@v0.8.0'
-      #   with:
-      #     deliverables: 'packages/api/app.mainnet.game.yaml'
+      - id: 'deploy-game'
+        uses: 'google-github-actions/deploy-appengine@v0.8.0'
+        with:
+          deliverables: 'packages/api/app.mainnet.game.yaml'
 
       - id: 'deploy-jobs'
         uses: 'google-github-actions/deploy-appengine@v0.8.0'

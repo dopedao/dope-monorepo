@@ -26,14 +26,17 @@ func SyncHustlers() {
 	numOwners := len(ownersWithTokenBalances)
 	for i := 0; i < numOwners; i++ {
 		owner := ownersWithTokenBalances[i]
-		log.Info().Msgf(
-			"%v - %v tokens\n",
-			owner.Address,
-			len(owner.TokenBalances))
+		log.Info().
+			Str("Job", "SyncHustlers").
+			Msgf(
+				"%v - %v tokens\n",
+				owner.Address,
+				len(owner.TokenBalances))
 
 		tokens := GetHustlerMetaForOwner(owner)
 
 		log.Info().
+			Str("Job", "SyncHustlers").
 			Msgf(
 				"Hustler Sync Completion %0.3f%%\n",
 				(float64(i)/float64(numOwners))*100)
@@ -55,7 +58,9 @@ func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
 	// pp.Print(t)
 	tokenId, err := hexStringToInteger(t.Id.TokenId)
 	if err != nil {
-		log.Error().Msgf("Error converting tokenId to int %v", err)
+		log.Error().
+			Str("Job", "SyncHustlers").
+			Msgf("Error converting tokenId to int %v", err)
 		return
 	}
 	// Get some attributes required to save model
@@ -76,6 +81,7 @@ func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
 	}
 
 	log.Info().
+		Str("Job", "SyncHustlers").
 		Int64("tokenId", tokenId).
 		Str("name", t.Metadata.Name).
 		Msg("Saving Hustler")
@@ -104,6 +110,7 @@ func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
 
 	if hustlerErr != nil {
 		log.Error().
+			Str("Job", "SyncHustlers").
 			Int64("tokenId", tokenId).
 			Err(err).
 			Interface("attributes", t.Metadata.Attributes).
@@ -135,7 +142,7 @@ func GetHustlerOwners() []OwnerAddress {
 		baseUrl,
 		hustlerContractAddr)
 
-	log.Info().Msg("GETTING OWNERS")
+	log.Info().Str("Job", "SyncHustlers").Msg("GETTING OWNERS")
 
 	body := makeGetRequest(url)
 
@@ -143,11 +150,14 @@ func GetHustlerOwners() []OwnerAddress {
 	var responsePage OwnerAddressResponsePage
 	if err := json.Unmarshal(body, &responsePage); err != nil {
 		log.Error().
+			Str("Job", "SyncHustlers").
 			Str("body", string(body)).
 			Msgf("Unmarshaling HustlerOwners: %v", err)
 	}
 
-	log.Info().Msgf("Found %v wallets\n", len(responsePage.Owners))
+	log.Info().
+		Str("Job", "SyncHustlers").
+		Msgf("Found %v wallets\n", len(responsePage.Owners))
 	return responsePage.Owners
 }
 
@@ -178,6 +188,7 @@ func GetHustlerMetaForOwner(owner OwnerAddress) []Nft {
 		var tokens []Nft
 		if err := json.Unmarshal(body, &tokens); err != nil {
 			log.Warn().
+				Str("Job", "SyncHustlers").
 				Str("body", string(body)).
 				Msgf("Unmarshaling NFTMetaBatch: %v", err)
 		}

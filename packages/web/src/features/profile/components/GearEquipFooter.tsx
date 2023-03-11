@@ -15,13 +15,14 @@ const GearEquipFooter = ({ id }: { id: string }) => {
   const { data, isFetching: loading } = useHustlersWalletQuery(
     {
       where: {
-        id: account,
+        id: account?.toLowerCase(),
       },
     },
     {
       enabled: !!account,
     },
   );
+  console.log(account, loading, data);
 
   const swapmeet = useSwapMeet();
   const isConnectedToOptimism = useNetworkCheckOptimism();

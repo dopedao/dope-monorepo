@@ -16,6 +16,10 @@ cron:
   target: jobs
   url: /paper-claims
 - description: "Sync Hustlers"
-  schedule: every 1 hours
+  schedule: every 12 hours
   target: jobs
   url: /sync-hustlers
+- description: "Fix Hustler Images"
+  schedule: every 24 hours
+  target: jobs
+  url: /fix-hustler-images
