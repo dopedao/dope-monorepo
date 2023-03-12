@@ -15,8 +15,10 @@ cron:
   schedule: every 24 hours
   target: jobs
   url: /paper-claims
+# Very expensive to call Alchemy this many times
+# so don't do this often.
 - description: "Sync Hustlers"
-  schedule: every 12 hours
+  schedule: every 72 hours
   target: jobs
   url: /sync-hustlers
 - description: "Fix Hustler Images"
