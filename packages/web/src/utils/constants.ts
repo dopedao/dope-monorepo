@@ -86,8 +86,13 @@ export const NETWORK = {
   },
 };
 
-const MAINNET_API_URL = 'https://api.dopewars.gg/query';
-// const MAINNET_API_URL = 'http://localhost:8080/query';
+let apiUrl = 'https://api.dopewars.gg';
+// Set in .env.local in /packages/web
+if (process.env.NEXT_PUBLIC_APP_ENV && process.env.NEXT_PUBLIC_APP_ENV === 'development') {
+  apiUrl = 'http://localhost:8080';
+}
+const MAINNET_API_URL = apiUrl;
+
 const TESTNET_API_URL = 'https://testnet.api.dopewars.gg/query';
 
 export const API_URI = {

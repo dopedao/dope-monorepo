@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { API_URI } from 'utils/constants';
 
 const imageWidth = 960;
 const imageHeight = 480;
@@ -12,7 +13,7 @@ const frameHeight = (imageHeight / 8) * sizeMultiplier;
 const HustlerSpriteSheetWalk = styled.div<{ id?: string }>`
   width: ${frameWidth}px;
   height: ${frameHeight}px;
-  background: url('https://api.dopewars.gg/hustlers/${({ id }) => id}/sprites/composite.png');
+  background: url('${API_URI[1]}/hustlers/${({ id }) => id}/sprites/composite.png');
   // 800% width so we see the first 8 frames
   background-size: auto 800%;
   image-rendering: pixelated;

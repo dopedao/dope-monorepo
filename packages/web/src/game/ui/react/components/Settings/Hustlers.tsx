@@ -17,6 +17,7 @@ import {
 import { ethers } from 'ethers';
 import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { API_URI } from 'utils/constants';
 
 const Hustlers = () => {
   const [hustlers, setHustlers] = React.useState<any>();
@@ -25,7 +26,7 @@ const Hustlers = () => {
     if (!(window.ethereum as any)?.selectedAddress) return;
 
     fetch(
-      `https://api.dopewars.gg/wallets/${ethers.utils.getAddress(
+      `${API_URI}/wallets/${ethers.utils.getAddress(
         (window.ethereum as any).selectedAddress,
       )}/hustlers`,
     )

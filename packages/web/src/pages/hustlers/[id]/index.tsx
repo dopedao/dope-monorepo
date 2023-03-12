@@ -23,6 +23,7 @@ import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
 import { BigNumber } from 'ethers';
+import { API_URI } from 'utils/constants';
 
 // We receive things like 'FEMALE-BODY-2' from the API
 const getBodyIndexFromMetadata = (bodyStringFromApi?: string) => {
@@ -131,7 +132,7 @@ const Flex = () => {
     <AppWindow padBody={true} navbar={<HustlerFlexNavBar />} scrollable>
       <Head
         title={`Dope Wars Hustler Flex`}
-        ogImage={`https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`}
+        ogImage={`${API_URI[1]}/hustlers/${hustlerId}/sprites/composite.png`}
       />
       {isLoading && <LoadingBlock />}
       {!isLoading && itemRles && (
