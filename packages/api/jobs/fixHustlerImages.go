@@ -32,7 +32,7 @@ var dbClient = dbprovider.Ent()
 func FixHustlerImages() {
 	ctx := context.Background()
 	log := zerolog.New(os.Stderr)
-	hustContractBinding := getHustlerContractBinding(log)
+	hContractBinding := GetHustlerContractBinding(log)
 
 	if err := svgR.InitRenderer(); err != nil {
 		log.Fatal().Msg("initializing svg-renderer")
@@ -68,7 +68,7 @@ func FixHustlerImages() {
 		}
 
 		hustlerSvg, err := processor.GetHustlerSvg(
-			hustContractBinding, bigId, &log)
+			hContractBinding, bigId, &log)
 		if err != nil {
 			log.Error().
 				Str("Job", "FixHustlerImages").
@@ -82,7 +82,7 @@ func FixHustlerImages() {
 	}
 }
 
-func getHustlerContractBinding(log zerolog.Logger) *bindings.Hustler {
+func GetHustlerContractBinding(log zerolog.Logger) *bindings.Hustler {
 	// Setup ethereum client
 	retryableHTTPClient := retryablehttp.NewClient()
 	retryableHTTPClient.Logger = nil

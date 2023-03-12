@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/bodypart"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
@@ -52,6 +53,8 @@ var (
 	accessorySlot = big.NewInt(14)
 )
 
+var dbClient = dbprovider.Ent()
+
 // HACK: Update addresses for testnet contracts. Stop gap until processors support dependency injection.
 func init() {
 	if os.Getenv("NETWORK") == "testnet" {
@@ -88,8 +91,12 @@ func (p *HustlerProcessor) Setup(address common.Address, eth interface {
 }
 
 func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.HustlerAddRles) (func(tx *ent.Tx) error, error) {
-	ctx, log := logger.LogFor(ctx)
-	log.Debug().Str("indexer", "HUSTLER").Str("indexer", "HUSTLER").Msgf("ProcessAddRles")
+	// Tagged logger
+	ctx, log := logger.LogFor(
+		ctx,
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("HustlerProcessor", "ProcessAddRles")
+		})
 
 	var builders []*ent.BodyPartCreate
 
@@ -114,8 +121,15 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.Hustle
 		sex = bodypart.SexMALE
 	}
 
+	log.Debug().Msgf("Body part: %s - Sex: %s", part, sex)
+
 	return func(tx *ent.Tx) error {
-		n, err := tx.BodyPart.Query().Where(bodypart.And(bodypart.TypeEQ(part), bodypart.SexEQ(sex))).Count(ctx)
+		n, err := tx.BodyPart.
+			Query().
+			Where(bodypart.
+				And(bodypart.TypeEQ(part), bodypart.SexEQ(sex))).
+			Count(ctx)
+
 		if err != nil {
 			return fmt.Errorf("hustler: getting body count: %w", err)
 		}
@@ -146,11 +160,16 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 	ctx context.Context,
 	e bindings.HustlerMetadataUpdate,
 ) (func(tx *ent.Tx) error, error) {
-	ctx, log := logger.LogFor(ctx)
-	log.Debug().
-		Str("indexer", "HUSTLER").
-		Str("hustler_id", e.Id.String()).
-		Msgf("ProcessMetadataUpdate %s", e.Id)
+
+	ctx, log := logger.LogFor(
+		ctx,
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("HustlerProcessor", "ProcessMetadataUpdate")
+		},
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("hustler_id", e.Id.String())
+		},
+	)
 
 	meta, err := p.Contract.Metadata(nil, e.Id)
 	if err != nil {
@@ -183,6 +202,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 	if err != nil {
 		return nil, fmt.Errorf("getting viewbox from storage: %w", err)
 	}
+	// log.Debug().Msgf("viewbox: %s", viewbox)
 
 	order, err := p.Eth.StorageAt(
 		ctx,
@@ -194,6 +214,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 	if err != nil {
 		return nil, fmt.Errorf("getting order from storage: %w", err)
 	}
+	// log.Debug().Msgf("order: %s", order)
 
 	bodyParts, err := p.Eth.StorageAt(
 		ctx,
@@ -205,7 +226,10 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 	if err != nil {
 		return nil, fmt.Errorf("getting body from storage: %w", err)
 	}
+	// log.Debug().Msgf("body: %s", bodyParts)
 
+	// BEARD_ID has to exist in our database or indexer can fail
+	// It's a pointer to string because it can be nil.
 	var beardID *string
 	sex := hustler.DefaultSex
 	if new(big.Int).SetBytes(bodyParts[31:32]).Uint64() == 1 {
@@ -214,11 +238,44 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 		sex = hustler.SexMALE
 		beardID_ := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBEARD, new(big.Int).SetBytes(bodyParts[28:29]).Uint64())
 		beardID = &beardID_
+		// beard check
+		_, err = dbClient.BodyPart.Query().Where(bodypart.IDEQ(*beardID)).Only(ctx)
+		if err != nil {
+			*beardID = ""
+			log.Warn().Str("BeardID", *beardID).Msg("BAD BEARD")
+		}
+
 	}
 
-	bodyID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeBODY, new(big.Int).SetBytes(bodyParts[30:31]).Uint64())
-	hairID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeHAIR, new(big.Int).SetBytes(bodyParts[29:30]).Uint64())
+	// BODY_ID has to exist in our database or indexer can fail
+	bodyID := fmt.Sprintf(
+		"%s-%s-%d", sex, bodypart.TypeBODY,
+		new(big.Int).SetBytes(bodyParts[30:31]).Uint64(),
+	)
+	_, err = dbClient.BodyPart.Query().Where(bodypart.IDEQ(bodyID)).Only(ctx)
+	if err != nil {
+		log.Warn().Str("BodyID", bodyID).Msg("BAD BODY")
+		bodyID = fmt.Sprintf(
+			"%s-%s-%d", sex, bodypart.TypeBODY,
+			// set to default if people are using random, non-existent parts
+			0,
+		)
+	}
 
+	// HAIR_ID has to exist in our database or indexer can fail
+	hairID := fmt.Sprintf("%s-%s-%d", sex, bodypart.TypeHAIR, new(big.Int).SetBytes(bodyParts[29:30]).Uint64())
+	_, err = dbClient.BodyPart.Query().Where(bodypart.IDEQ(hairID)).Only(ctx)
+	if err != nil {
+		log.Warn().Str("HairID", hairID).Msg("BAD HAIR")
+		hairID = fmt.Sprintf(
+			"%s-%s-%d", sex, bodypart.TypeHAIR,
+			// set to default if people are using random, non-existent parts
+			0,
+		)
+	}
+
+	// We have to use a pointer here because title can be nil
+	// and Go is draconian.
 	var title *string
 	typ := hustler.TypeREGULAR
 	if e.Id.Cmp(big.NewInt(500)) == -1 {
@@ -236,6 +293,30 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 	}
 
 	safeName := CleanJsonString(meta.Name)
+
+	// LOG BEFORE UPDATING …and deal with stupid nil pointers
+	var beardIDStr string
+	if (beardID) == nil {
+		beardIDStr = ""
+	} else {
+		beardIDStr = *beardID
+	}
+	var titleStr string
+	if (title) == nil {
+		titleStr = ""
+	} else {
+		titleStr = *title
+	}
+	log.Debug().
+		Str("bodyParts", string(bodyParts)).
+		Str("viewBox", string(viewbox)).
+		Str("order", string(order)).
+		Str("body_id", bodyID).
+		Str("hair_id", hairID).
+		Str("beard_id", beardIDStr).
+		Str("title", titleStr).
+		Str("name", safeName).
+		Msg("Attempting to upsert hustler metadata")
 
 	return func(tx *ent.Tx) error {
 		if err := tx.Hustler.Create().
