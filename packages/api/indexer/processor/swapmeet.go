@@ -20,6 +20,7 @@ import (
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/rs/zerolog"
 )
 
@@ -174,51 +175,82 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMe
 	}, nil
 }
 
-func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings.SwapMeetTransferBatch) (func(tx *ent.Tx) error, error) {
+func (p *SwapMeetProcessor) ProcessTransferBatch(
+	ctx context.Context,
+	e bindings.SwapMeetTransferBatch) (func(tx *ent.Tx) error, error) {
+	return handleProcess("ProcessTransferBatch",
+		p, ctx, e.From, e.To, e.Ids, e.Values, e.Raw)
+}
 
+func (p *SwapMeetProcessor) ProcessTransferSingle(
+	ctx context.Context,
+	e bindings.SwapMeetTransferSingle) (func(tx *ent.Tx) error, error) {
+	idArr := []*big.Int{e.Id}
+	valueArr := []*big.Int{e.Value}
+
+	return handleProcess("ProcessTransferSingle",
+		p, ctx, e.From, e.To, idArr, valueArr, e.Raw)
+}
+
+// Go Generics with structs are not supported yet, so we have to use
+// lots of parameters to eliminate boilerplate code.
+//
+// The benefit is that we don't have to copypasta code across
+// and fuck around with a million lines to find out why the indexer is broken.
+func handleProcess(
+	eventName string,
+	p *SwapMeetProcessor,
+	ctx context.Context,
+	from common.Address,
+	to common.Address,
+	ids []*big.Int,
+	values []*big.Int,
+	raw ethtypes.Log) (func(tx *ent.Tx) error, error) {
 	// Tagged logger
 	_, log := logger.LogFor(
 		ctx,
 		func(zctx *zerolog.Context) zerolog.Context {
-			return zctx.Str("SwapMeetProcessor", "ProcessTransferBatch")
+			return zctx.Str("SwapMeetProcessor", eventName)
 		})
 
 	log.Info().
-		Msgf("from: %s, to: %s, ids: %v, values: %v",
-			e.From.Hex(), e.To.Hex(), e.Ids, e.Values)
+		Str("From", from.Hex()).
+		Str("To", to.Hex()).
+		Str("IDs", fmt.Sprintf("%v", ids)).
+		Uint64("Block", raw.BlockNumber)
 
 	return func(tx *ent.Tx) error {
-		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
+		if err := ensureWalletExists(ctx, tx, to); err != nil {
 			return fmt.Errorf("swapmeet: %w", err)
 		}
 
 		log.Info().
 			Msgf(
 				"from: %s, to: %s, id: %s",
-				e.From.Hex(), e.To.Hex(), e.Ids)
+				from.Hex(), to.Hex(), ids)
 
 		// Transfer of Gear from wallet to wallet (not the null address)
-		if e.From != (common.Address{}) {
+		if from != (common.Address{}) {
 			log.Info().
 				Msg("Transferring gear wallet to wallet")
 
-			for i, id := range e.Ids {
+			for i, id := range ids {
 				if err := tx.WalletItems.
-					UpdateOneID(fmt.Sprintf("%s-%s", e.From.Hex(), id.String())).
-					AddBalance(schema.BigInt{Int: new(big.Int).Neg(e.Values[i])}).
+					UpdateOneID(fmt.Sprintf("%s-%s", from.Hex(), id.String())).
+					AddBalance(schema.BigInt{Int: new(big.Int).Neg(values[i])}).
 					Exec(ctx); err != nil {
 					return fmt.Errorf("swapmeet: update wallet items balance: %w", err)
 				}
 			}
 		}
 		// Transfer of Gear to a real wallet (not the null address)
-		if e.To != (common.Address{}) {
-			for i, id := range e.Ids {
+		if to != (common.Address{}) {
+			for i, id := range ids {
 				if err := tx.WalletItems.
 					Create().
-					SetID(fmt.Sprintf("%s-%s", e.To.Hex(), id.String())).
-					SetBalance(schema.BigInt{Int: e.Values[i]}).
-					SetWalletID(e.To.Hex()).
+					SetID(fmt.Sprintf("%s-%s", to.Hex(), id.String())).
+					SetBalance(schema.BigInt{Int: values[i]}).
+					SetWalletID(to.Hex()).
 					SetItemID(id.String()).
 					OnConflictColumns(walletitems.FieldID).
 					UpdateNewValues().
@@ -229,105 +261,55 @@ func (p *SwapMeetProcessor) ProcessTransferBatch(ctx context.Context, e bindings
 		}
 
 		// Equip of an existing hustler
-		if e.From != (common.Address{}) && e.To == hustlerAddr {
-			log.Info().Msg("Equipping existing hustler")
-			wallet, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.From.Hex())).First(ctx)
+		if from != (common.Address{}) && to == hustlerAddr {
+			log.Info().
+				Msgf(
+					"Refreshing equipment for entire wallet of EQUIPPED hustler owner: %s",
+					to.Hex())
+
+			wallet, err := tx.Wallet.Query().
+				WithHustlers().
+				Where(wallet.IDEQ(to.Hex())).
+				First(ctx)
 			if err != nil {
 				return fmt.Errorf("getting user's hustlers: %w", err)
 			}
+			log.Debug().
+				Str("Wallet to Find", from.Hex()).
+				Str("Wallet", wallet.ID).
+				Int("Hustler Count", len(wallet.Edges.Hustlers)).
+				Msgf("EQUIP - REFRESH EQUIPMENT")
 
 			for _, h := range wallet.Edges.Hustlers {
-				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
+				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(raw.BlockNumber)); err != nil {
 					return err
 				}
 			}
 		}
 
 		// UN-Equip of existing hustler
-		if e.From == hustlerAddr {
-			log.Info().Msg("Unequipping existing hustler")
-			wallet, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.To.Hex())).First(ctx)
+		if from == hustlerAddr {
+			log.Info().
+				Msgf(
+					"Refreshing equipment for entire wallet of unequipped hustler owner: %s",
+					to.Hex())
+
+			wallet, err := tx.Wallet.
+				Query().
+				WithHustlers().
+				Where(wallet.IDEQ(to.Hex())).
+				First(ctx)
 			if err != nil {
 				return fmt.Errorf("getting user's hustlers: %w", err)
 			}
+			log.Debug().
+				Str("Wallet to Find", to.Hex()).
+				Str("Wallet", wallet.ID).
+				Int("Hustler Count", len(wallet.Edges.Hustlers)).
+				Msgf("UNEQUIP - REFRESH EQUIPMENT")
 
 			for _, h := range wallet.Edges.Hustlers {
-				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
-					return err
-				}
-			}
-		}
-
-		return nil
-	}, nil
-}
-
-func (p *SwapMeetProcessor) ProcessTransferSingle(ctx context.Context, e bindings.SwapMeetTransferSingle) (func(tx *ent.Tx) error, error) {
-	return func(tx *ent.Tx) error {
-		_, log := logger.LogFor(
-			ctx,
-			func(zctx *zerolog.Context) zerolog.Context {
-				return zctx.Str("SwapMeetProcessor", "ProcessTransferSingle")
-			})
-
-		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
-			return fmt.Errorf("swapmeet: %w", err)
-		}
-
-		log.Info().
-			Str("From", e.From.Hex()).
-			Str("To", e.To.Hex()).Str("Id", e.Id.String()).
-			Str("ID", fmt.Sprintf("%v", e.Id))
-
-		if e.From != (common.Address{}) {
-			if err := tx.WalletItems.
-				UpdateOneID(fmt.Sprintf("%s-%s", e.From.Hex(), e.Id.String())).
-				AddBalance(schema.BigInt{Int: new(big.Int).Neg(e.Value)}).
-				Exec(ctx); err != nil {
-				return fmt.Errorf("swapmeet: update wallet item balance: %w", err)
-			}
-		}
-
-		if e.To != (common.Address{}) {
-			if err := tx.WalletItems.
-				Create().
-				SetID(fmt.Sprintf("%s-%s", e.To.Hex(), e.Id.String())).
-				SetBalance(schema.BigInt{Int: e.Value}).
-				SetWalletID(e.To.Hex()).
-				SetItemID(e.Id.String()).
-				OnConflictColumns(walletitems.FieldID).
-				AddBalance(schema.BigInt{Int: e.Value}).
-				Exec(ctx); err != nil {
-				return fmt.Errorf("swapmeet: upsert wallet item balance: %w", err)
-			}
-		}
-
-		// If it is not from the zero address and to the hustler contract, it is
-		// an equip to an existing hustler.
-		if e.From != (common.Address{}) && e.To == hustlerAddr {
-			log.Info().Msg("Equipping existing hustler")
-			wallet, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.From.Hex())).First(ctx)
-			if err != nil {
-				return fmt.Errorf("getting user's hustlers: %w", err)
-			}
-
-			for _, h := range wallet.Edges.Hustlers {
-				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
-					return err
-				}
-			}
-		}
-
-		// If from the hustler contract this is an unequip.
-		if e.From == hustlerAddr {
-			log.Info().Msg("Unequipping existing hustler")
-			wallet, err := tx.Wallet.Query().WithHustlers().Where(wallet.IDEQ(e.To.Hex())).First(ctx)
-			if err != nil {
-				return fmt.Errorf("getting user's hustlers: %w", err)
-			}
-
-			for _, h := range wallet.Edges.Hustlers {
-				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
+				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(raw.BlockNumber)); err != nil {
 					return err
 				}
 			}
