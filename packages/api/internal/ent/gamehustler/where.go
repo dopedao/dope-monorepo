@@ -55,6 +55,16 @@ func IDLTE(id string) predicate.GameHustler {
 	return predicate.GameHustler(sql.FieldLTE(FieldID, id))
 }
 
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.GameHustler {
+	return predicate.GameHustler(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.GameHustler {
+	return predicate.GameHustler(sql.FieldContainsFold(FieldID, id))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.GameHustler {
 	return predicate.GameHustler(sql.FieldEQ(FieldCreatedAt, v))

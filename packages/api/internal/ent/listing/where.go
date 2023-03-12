@@ -53,6 +53,16 @@ func IDLTE(id string) predicate.Listing {
 	return predicate.Listing(sql.FieldLTE(FieldID, id))
 }
 
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.Listing {
+	return predicate.Listing(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.Listing {
+	return predicate.Listing(sql.FieldContainsFold(FieldID, id))
+}
+
 // Active applies equality check predicate on the "active" field. It's identical to ActiveEQ.
 func Active(v bool) predicate.Listing {
 	return predicate.Listing(sql.FieldEQ(FieldActive, v))

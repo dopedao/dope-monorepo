@@ -54,6 +54,16 @@ func IDLTE(id string) predicate.WalletItems {
 	return predicate.WalletItems(sql.FieldLTE(FieldID, id))
 }
 
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.WalletItems {
+	return predicate.WalletItems(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.WalletItems {
+	return predicate.WalletItems(sql.FieldContainsFold(FieldID, id))
+}
+
 // Balance applies equality check predicate on the "balance" field. It's identical to BalanceEQ.
 func Balance(v schema.BigInt) predicate.WalletItems {
 	return predicate.WalletItems(sql.FieldEQ(FieldBalance, v))

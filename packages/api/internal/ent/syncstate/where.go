@@ -52,6 +52,16 @@ func IDLTE(id string) predicate.SyncState {
 	return predicate.SyncState(sql.FieldLTE(FieldID, id))
 }
 
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.SyncState {
+	return predicate.SyncState(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.SyncState {
+	return predicate.SyncState(sql.FieldContainsFold(FieldID, id))
+}
+
 // StartBlock applies equality check predicate on the "start_block" field. It's identical to StartBlockEQ.
 func StartBlock(v uint64) predicate.SyncState {
 	return predicate.SyncState(sql.FieldEQ(FieldStartBlock, v))

@@ -55,6 +55,16 @@ func IDLTE(id string) predicate.Event {
 	return predicate.Event(sql.FieldLTE(FieldID, id))
 }
 
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.Event {
+	return predicate.Event(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.Event {
+	return predicate.Event(sql.FieldContainsFold(FieldID, id))
+}
+
 // Address applies equality check predicate on the "address" field. It's identical to AddressEQ.
 func Address(v common.Address) predicate.Event {
 	return predicate.Event(sql.FieldEQ(FieldAddress, v))

@@ -34,14 +34,16 @@ type AmountWhereInput struct {
 	And        []*AmountWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "type" field predicates.
 	Type      *amount.Type  `json:"type,omitempty"`
@@ -173,6 +175,12 @@ func (i *AmountWhereInput) P() (predicate.Amount, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, amount.IDLTE(*i.IDLTE))
 	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, amount.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, amount.IDContainsFold(*i.IDContainsFold))
+	}
 	if i.Type != nil {
 		predicates = append(predicates, amount.TypeEQ(*i.Type))
 	}
@@ -288,14 +296,16 @@ type BodyPartWhereInput struct {
 	And        []*BodyPartWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "type" field predicates.
 	Type      *bodypart.Type  `json:"type,omitempty"`
@@ -448,6 +458,12 @@ func (i *BodyPartWhereInput) P() (predicate.BodyPart, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, bodypart.IDLTE(*i.IDLTE))
+	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, bodypart.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, bodypart.IDContainsFold(*i.IDContainsFold))
 	}
 	if i.Type != nil {
 		predicates = append(predicates, bodypart.TypeEQ(*i.Type))
@@ -630,14 +646,16 @@ type DopeWhereInput struct {
 	And        []*DopeWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "claimed" field predicates.
 	Claimed    *bool `json:"claimed,omitempty"`
@@ -796,6 +814,12 @@ func (i *DopeWhereInput) P() (predicate.Dope, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, dope.IDLTE(*i.IDLTE))
+	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, dope.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, dope.IDContainsFold(*i.IDContainsFold))
 	}
 	if i.Claimed != nil {
 		predicates = append(predicates, dope.ClaimedEQ(*i.Claimed))
@@ -1002,14 +1026,16 @@ type EventWhereInput struct {
 	And        []*EventWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "index" field predicates.
 	Index      *uint64  `json:"index,omitempty"`
@@ -1137,6 +1163,12 @@ func (i *EventWhereInput) P() (predicate.Event, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, event.IDLTE(*i.IDLTE))
 	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, event.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, event.IDContainsFold(*i.IDContainsFold))
+	}
 	if i.Index != nil {
 		predicates = append(predicates, event.IndexEQ(*i.Index))
 	}
@@ -1228,14 +1260,16 @@ type GameHustlerWhereInput struct {
 	And        []*GameHustlerWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "created_at" field predicates.
 	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
@@ -1355,6 +1389,12 @@ func (i *GameHustlerWhereInput) P() (predicate.GameHustler, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, gamehustler.IDLTE(*i.IDLTE))
 	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, gamehustler.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, gamehustler.IDContainsFold(*i.IDContainsFold))
+	}
 	if i.CreatedAt != nil {
 		predicates = append(predicates, gamehustler.CreatedAtEQ(*i.CreatedAt))
 	}
@@ -1452,14 +1492,16 @@ type GameHustlerItemWhereInput struct {
 	And        []*GameHustlerItemWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "item" field predicates.
 	Item             *string  `json:"item,omitempty"`
@@ -1576,6 +1618,12 @@ func (i *GameHustlerItemWhereInput) P() (predicate.GameHustlerItem, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, gamehustleritem.IDLTE(*i.IDLTE))
 	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, gamehustleritem.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, gamehustleritem.IDContainsFold(*i.IDContainsFold))
+	}
 	if i.Item != nil {
 		predicates = append(predicates, gamehustleritem.ItemEQ(*i.Item))
 	}
@@ -1652,14 +1700,16 @@ type GameHustlerQuestWhereInput struct {
 	And        []*GameHustlerQuestWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "quest" field predicates.
 	Quest             *string  `json:"quest,omitempty"`
@@ -1780,6 +1830,12 @@ func (i *GameHustlerQuestWhereInput) P() (predicate.GameHustlerQuest, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, gamehustlerquest.IDLTE(*i.IDLTE))
 	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, gamehustlerquest.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, gamehustlerquest.IDContainsFold(*i.IDContainsFold))
+	}
 	if i.Quest != nil {
 		predicates = append(predicates, gamehustlerquest.QuestEQ(*i.Quest))
 	}
@@ -1862,14 +1918,16 @@ type GameHustlerRelationWhereInput struct {
 	And        []*GameHustlerRelationWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "citizen" field predicates.
 	Citizen             *string  `json:"citizen,omitempty"`
@@ -2011,6 +2069,12 @@ func (i *GameHustlerRelationWhereInput) P() (predicate.GameHustlerRelation, erro
 	if i.IDLTE != nil {
 		predicates = append(predicates, gamehustlerrelation.IDLTE(*i.IDLTE))
 	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, gamehustlerrelation.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, gamehustlerrelation.IDContainsFold(*i.IDContainsFold))
+	}
 	if i.Citizen != nil {
 		predicates = append(predicates, gamehustlerrelation.CitizenEQ(*i.Citizen))
 	}
@@ -2150,14 +2214,16 @@ type HustlerWhereInput struct {
 	And        []*HustlerWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "type" field predicates.
 	Type      *hustler.Type  `json:"type,omitempty"`
@@ -2431,6 +2497,12 @@ func (i *HustlerWhereInput) P() (predicate.Hustler, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, hustler.IDLTE(*i.IDLTE))
+	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, hustler.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, hustler.IDContainsFold(*i.IDContainsFold))
 	}
 	if i.Type != nil {
 		predicates = append(predicates, hustler.TypeEQ(*i.Type))
@@ -3018,14 +3090,16 @@ type ItemWhereInput struct {
 	And        []*ItemWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "type" field predicates.
 	Type      *item.Type  `json:"type,omitempty"`
@@ -3309,6 +3383,12 @@ func (i *ItemWhereInput) P() (predicate.Item, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, item.IDLTE(*i.IDLTE))
+	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, item.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, item.IDContainsFold(*i.IDContainsFold))
 	}
 	if i.Type != nil {
 		predicates = append(predicates, item.TypeEQ(*i.Type))
@@ -3920,14 +4000,16 @@ type ListingWhereInput struct {
 	And        []*ListingWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "active" field predicates.
 	Active    *bool `json:"active,omitempty"`
@@ -4051,6 +4133,12 @@ func (i *ListingWhereInput) P() (predicate.Listing, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, listing.IDLTE(*i.IDLTE))
 	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, listing.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, listing.IDContainsFold(*i.IDContainsFold))
+	}
 	if i.Active != nil {
 		predicates = append(predicates, listing.ActiveEQ(*i.Active))
 	}
@@ -4160,14 +4248,16 @@ type SearchWhereInput struct {
 	And        []*SearchWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "type" field predicates.
 	Type      *search.Type  `json:"type,omitempty"`
@@ -4326,6 +4416,12 @@ func (i *SearchWhereInput) P() (predicate.Search, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, search.IDLTE(*i.IDLTE))
+	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, search.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, search.IDContainsFold(*i.IDContainsFold))
 	}
 	if i.Type != nil {
 		predicates = append(predicates, search.TypeEQ(*i.Type))
@@ -4508,14 +4604,16 @@ type SyncStateWhereInput struct {
 	And        []*SyncStateWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "start_block" field predicates.
 	StartBlock      *uint64  `json:"startBlock,omitempty"`
@@ -4623,6 +4721,12 @@ func (i *SyncStateWhereInput) P() (predicate.SyncState, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, syncstate.IDLTE(*i.IDLTE))
 	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, syncstate.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, syncstate.IDContainsFold(*i.IDContainsFold))
+	}
 	if i.StartBlock != nil {
 		predicates = append(predicates, syncstate.StartBlockEQ(*i.StartBlock))
 	}
@@ -4666,14 +4770,16 @@ type WalletWhereInput struct {
 	And        []*WalletWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "paper" field predicates.
 	Paper      *schema.BigInt  `json:"paper,omitempty"`
@@ -4803,6 +4909,12 @@ func (i *WalletWhereInput) P() (predicate.Wallet, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, wallet.IDLTE(*i.IDLTE))
 	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, wallet.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, wallet.IDContainsFold(*i.IDContainsFold))
+	}
 	if i.Paper != nil {
 		predicates = append(predicates, wallet.PaperEQ(*i.Paper))
 	}
@@ -4924,14 +5036,16 @@ type WalletItemsWhereInput struct {
 	And        []*WalletItemsWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
-	ID      *string  `json:"id,omitempty"`
-	IDNEQ   *string  `json:"idNEQ,omitempty"`
-	IDIn    []string `json:"idIn,omitempty"`
-	IDNotIn []string `json:"idNotIn,omitempty"`
-	IDGT    *string  `json:"idGT,omitempty"`
-	IDGTE   *string  `json:"idGTE,omitempty"`
-	IDLT    *string  `json:"idLT,omitempty"`
-	IDLTE   *string  `json:"idLTE,omitempty"`
+	ID             *string  `json:"id,omitempty"`
+	IDNEQ          *string  `json:"idNEQ,omitempty"`
+	IDIn           []string `json:"idIn,omitempty"`
+	IDNotIn        []string `json:"idNotIn,omitempty"`
+	IDGT           *string  `json:"idGT,omitempty"`
+	IDGTE          *string  `json:"idGTE,omitempty"`
+	IDLT           *string  `json:"idLT,omitempty"`
+	IDLTE          *string  `json:"idLTE,omitempty"`
+	IDEqualFold    *string  `json:"idEqualFold,omitempty"`
+	IDContainsFold *string  `json:"idContainsFold,omitempty"`
 
 	// "balance" field predicates.
 	Balance      *schema.BigInt  `json:"balance,omitempty"`
@@ -5046,6 +5160,12 @@ func (i *WalletItemsWhereInput) P() (predicate.WalletItems, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, walletitems.IDLTE(*i.IDLTE))
+	}
+	if i.IDEqualFold != nil {
+		predicates = append(predicates, walletitems.IDEqualFold(*i.IDEqualFold))
+	}
+	if i.IDContainsFold != nil {
+		predicates = append(predicates, walletitems.IDContainsFold(*i.IDContainsFold))
 	}
 	if i.Balance != nil {
 		predicates = append(predicates, walletitems.BalanceEQ(*i.Balance))

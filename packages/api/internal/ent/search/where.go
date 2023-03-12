@@ -54,6 +54,16 @@ func IDLTE(id string) predicate.Search {
 	return predicate.Search(sql.FieldLTE(FieldID, id))
 }
 
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.Search {
+	return predicate.Search(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.Search {
+	return predicate.Search(sql.FieldContainsFold(FieldID, id))
+}
+
 // Greatness applies equality check predicate on the "greatness" field. It's identical to GreatnessEQ.
 func Greatness(v int) predicate.Search {
 	return predicate.Search(sql.FieldEQ(FieldGreatness, v))

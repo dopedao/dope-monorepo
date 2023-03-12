@@ -53,6 +53,16 @@ func IDLTE(id string) predicate.GameHustlerItem {
 	return predicate.GameHustlerItem(sql.FieldLTE(FieldID, id))
 }
 
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.GameHustlerItem {
+	return predicate.GameHustlerItem(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.GameHustlerItem {
+	return predicate.GameHustlerItem(sql.FieldContainsFold(FieldID, id))
+}
+
 // Item applies equality check predicate on the "item" field. It's identical to ItemEQ.
 func Item(v string) predicate.GameHustlerItem {
 	return predicate.GameHustlerItem(sql.FieldEQ(FieldItem, v))

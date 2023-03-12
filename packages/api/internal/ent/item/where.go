@@ -53,6 +53,16 @@ func IDLTE(id string) predicate.Item {
 	return predicate.Item(sql.FieldLTE(FieldID, id))
 }
 
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.Item {
+	return predicate.Item(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.Item {
+	return predicate.Item(sql.FieldContainsFold(FieldID, id))
+}
+
 // NamePrefix applies equality check predicate on the "name_prefix" field. It's identical to NamePrefixEQ.
 func NamePrefix(v string) predicate.Item {
 	return predicate.Item(sql.FieldEQ(FieldNamePrefix, v))

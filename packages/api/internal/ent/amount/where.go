@@ -54,6 +54,16 @@ func IDLTE(id string) predicate.Amount {
 	return predicate.Amount(sql.FieldLTE(FieldID, id))
 }
 
+// IDEqualFold applies the EqualFold predicate on the ID field.
+func IDEqualFold(id string) predicate.Amount {
+	return predicate.Amount(sql.FieldEqualFold(FieldID, id))
+}
+
+// IDContainsFold applies the ContainsFold predicate on the ID field.
+func IDContainsFold(id string) predicate.Amount {
+	return predicate.Amount(sql.FieldContainsFold(FieldID, id))
+}
+
 // Amount applies equality check predicate on the "amount" field. It's identical to AmountEQ.
 func Amount(v schema.BigInt) predicate.Amount {
 	return predicate.Amount(sql.FieldEQ(FieldAmount, v))
