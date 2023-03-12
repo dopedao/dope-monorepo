@@ -430,6 +430,7 @@ func (p *HustlerProcessor) ProcessTransferSingle(
 			if err := tx.Hustler.
 				Create().
 				SetID(e.Id.String()).
+				SetWalletID(e.To.Hex()).
 				SetType(typ).
 				SetAge(block.Time()).
 				OnConflictColumns(hustler.FieldID).
@@ -446,7 +447,8 @@ func (p *HustlerProcessor) ProcessTransferSingle(
 		if e.To != (common.Address{}) {
 			chain := tx.Hustler.
 				Create().
-				SetID(e.Id.String())
+				SetID(e.Id.String()).
+				SetWalletID(e.To.Hex())
 
 			typ := hustler.TypeREGULAR
 			if e.Id.Cmp(big.NewInt(500)) == -1 {
