@@ -10,7 +10,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	"github.com/dopedao/dope-monorepo/packages/api/jobs"
-	"github.com/dopedao/dope-monorepo/packages/api/jobs/alchemy"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
@@ -66,7 +65,7 @@ func newServer(ctx context.Context) (http.Handler, error) {
 	handleJob(r, "/paper-claims", jobs.PaperClaims, qPaperClaims)
 
 	qSyncHustlers := make(chan int, JOB_LIMIT)
-	handleJob(r, "/sync-hustlers", alchemy.SyncHustlers, qSyncHustlers)
+	handleJob(r, "/sync-hustlers", jobs.SyncHustlers, qSyncHustlers)
 
 	qFixHustlerImages := make(chan int, JOB_LIMIT)
 	handleJob(r, "/fix-hustler-images", jobs.FixHustlerImages, qFixHustlerImages)

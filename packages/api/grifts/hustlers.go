@@ -2,7 +2,6 @@ package grifts
 
 import (
 	"github.com/dopedao/dope-monorepo/packages/api/jobs"
-	"github.com/dopedao/dope-monorepo/packages/api/jobs/alchemy"
 
 	g "github.com/markbates/grift/grift"
 )
@@ -10,7 +9,7 @@ import (
 var _ = g.Namespace("hustlers", func() {
 	g.Desc("sync", "Sync all Hustler tokens into database from the blockchain")
 	g.Add("sync", func(c *g.Context) error {
-		alchemy.SyncHustlers()
+		jobs.SyncHustlers()
 		return nil
 	})
 

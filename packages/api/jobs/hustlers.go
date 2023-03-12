@@ -1,6 +1,6 @@
 // Methods for syncing Hustlers
 
-package alchemy
+package jobs
 
 import (
 	"context"
@@ -10,25 +10,35 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
+	a "github.com/dopedao/dope-monorepo/packages/api/jobs/alchemy"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
 // HUSTLERS
 var baseUrl = "https://opt-mainnet.g.alchemy.com/nft/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG"
 var hustlerContractAddr = "0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"
-var dbClient = dbprovider.Ent()
 
 func SyncHustlers() {
 	ctx := context.Background()
 	ownersWithTokenBalances := GetHustlerOwners()
 	numOwners := len(ownersWithTokenBalances)
+
+	// Tagged logger
+	_, log := logger.LogFor(
+		ctx,
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("Job", "SyncHustlers")
+		})
+
+	// hContractBinding := GetHustlerContractBinding(log)
+
 	for i := 0; i < numOwners; i++ {
 		owner := ownersWithTokenBalances[i]
 		log.Info().
-			Str("Job", "SyncHustlers").
 			Msgf(
 				"%v - %v tokens\n",
 				owner.Address,
@@ -37,7 +47,6 @@ func SyncHustlers() {
 		tokens := GetHustlerMetaForOwner(owner)
 
 		log.Info().
-			Str("Job", "SyncHustlers").
 			Msgf(
 				"Hustler Sync Completion %0.3f%%\n",
 				(float64(i)/float64(numOwners))*100)
@@ -49,13 +58,28 @@ func SyncHustlers() {
 			//
 			// PROCESS AND STORE INFO LIKE THE HUSTLER INDEXER
 			//   indexer/processor/hustler.go
-			// Ideally this should call similar code that runs for
-			//   ProcessMetadataUpdate,  ProcessTransferSingle
+			//
+			// This does not currently store information
+			// for gear that belongs to a hustler.
+			// Doing so causes issues with the front-end
+			// as gear does not appear to belong to that hustler.
+			//
+			// Something like…
+			//
+			// if err := processor.RefreshEquipment(
+			// 	ctx,
+			// 	p.Eth,
+			// 	tx,
+			// 	currToken.Id,
+			// 	hustlerAddr,
+			// 	new(big.Int).SetUint64(raw.BlockNumber)); err != nil {
+			// 	return err
+			// }
 		}
 	}
 }
 
-func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
+func UpsertHustlerFromAlchemy(ctx context.Context, t a.Nft) {
 	// pp.Print(t)
 	tokenId, err := hexStringToInteger(t.Id.TokenId)
 	if err != nil {
@@ -123,7 +147,7 @@ func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
 	}
 }
 
-func valueForAttribute(attrs []NftAttribute, searchKey string) interface{} {
+func valueForAttribute(attrs []a.NftAttribute, searchKey string) interface{} {
 	for i := range attrs {
 		if attrs[i].TraitType == searchKey {
 			return attrs[i].Value
@@ -141,7 +165,7 @@ func hexStringToInteger(hexString string) (int64, error) {
 }
 
 // https://docs.alchemy.com/reference/getownersforcollection
-func GetHustlerOwners() []OwnerAddress {
+func GetHustlerOwners() []a.OwnerAddress {
 	url := fmt.Sprintf(
 		"%v/getOwnersForCollection?contractAddress=%v&withTokenBalances=true",
 		baseUrl,
@@ -149,10 +173,10 @@ func GetHustlerOwners() []OwnerAddress {
 
 	log.Info().Str("Job", "SyncHustlers").Msg("GETTING OWNERS")
 
-	body := makeGetRequest(url)
+	body := a.MakeGetRequest(url)
 
 	// Decode it
-	var responsePage OwnerAddressResponsePage
+	var responsePage a.OwnerAddressResponsePage
 	if err := json.Unmarshal(body, &responsePage); err != nil {
 		log.Error().
 			Str("Job", "SyncHustlers").
@@ -166,8 +190,8 @@ func GetHustlerOwners() []OwnerAddress {
 	return responsePage.Owners
 }
 
-func GetHustlerMetaForOwner(owner OwnerAddress) []Nft {
-	var allTokens []Nft
+func GetHustlerMetaForOwner(owner a.OwnerAddress) []a.Nft {
+	var allTokens []a.Nft
 	url := fmt.Sprintf("%v/getNFTMetadataBatch", baseUrl)
 	// Endpoint only supports 100 tokens per request
 	tokenLimit := 100
@@ -176,10 +200,10 @@ func GetHustlerMetaForOwner(owner OwnerAddress) []Nft {
 	// Need to chunk requests in batches of `tokenLimit`
 	// or Alchemy API will reject it
 	for _, chunk := range tokenBalanceChunks {
-		var tokenPayload TokenPayloadRequest
+		var tokenPayload a.TokenPayloadRequest
 		for j := 0; j < len(chunk); j++ {
 			tb := owner.TokenBalances[j]
-			p := TokenPayload{
+			p := a.TokenPayload{
 				ContractAddress: hustlerContractAddr,
 				TokenId:         tb.TokenId,
 			}
@@ -187,10 +211,10 @@ func GetHustlerMetaForOwner(owner OwnerAddress) []Nft {
 		}
 		jsonPayload, _ := json.Marshal(tokenPayload)
 
-		body := makePostRequest(url, jsonPayload)
+		body := a.MakePostRequest(url, jsonPayload)
 
 		// Decode it
-		var tokens []Nft
+		var tokens []a.Nft
 		if err := json.Unmarshal(body, &tokens); err != nil {
 			log.Warn().
 				Str("Job", "SyncHustlers").
@@ -217,18 +241,17 @@ func GetHustlerMetaForTokenId(id big.Int) []byte {
 		hustlerContractAddr,
 		id.String())
 
-	body := makeGetRequest(url)
+	body := a.MakeGetRequest(url)
 
 	return body
 }
 
 // Split slices into chunks of predetermined size
-func chunkTokenBalances(slice []TokenBalance, chunkSize int) [][]TokenBalance {
-	var chunks [][]TokenBalance
+func chunkTokenBalances(slice []a.TokenBalance, chunkSize int) [][]a.TokenBalance {
+	var chunks [][]a.TokenBalance
 	for i := 0; i < len(slice); i += chunkSize {
 		end := i + chunkSize
-		// necessary check to avoid slicing beyond
-		// slice capacity
+		// avoid slicing beyond capacity
 		if end > len(slice) {
 			end = len(slice)
 		}
