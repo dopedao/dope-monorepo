@@ -22,9 +22,17 @@ type PaperProcessor struct {
 func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e bindings.PaperTransfer) (func(tx *ent.Tx) error, error) {
 	ctx, log := logger.LogFor(ctx)
 
+	log.Debug().
+		Msgf(
+			"PAPER transfer to %s from %s for %v",
+			e.To.Hex(),
+			e.From.Hex(),
+			schema.BigInt{Int: e.Value},
+		)
+
 	return func(tx *ent.Tx) error {
 		if e.To != (common.Address{}) {
-			log.Debug().Msgf("PAPER transfer to %s", e.To.Hex())
+
 			bal, err := p.Contract.BalanceOf(nil, e.To)
 			if err != nil {
 				return fmt.Errorf("PAPER getting to wallet %s balance at txn %s: %w", e.To.Hex(), e.Raw.TxHash.Hex(), err)
