@@ -54,7 +54,8 @@ func (Hustler) Fields() []ent.Field {
 // Edges of the Hustler.
 func (Hustler) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("wallet", Wallet.Type).Ref("hustlers").Unique(),
+		// Bad stuff can happen if we have null WalletIDs
+		edge.From("wallet", Wallet.Type).Ref("hustlers").Unique().Required(),
 		edge.From("weapon", Item.Type).Ref("hustler_weapons").Unique(),
 		edge.From("clothes", Item.Type).Ref("hustler_clothes").Unique(),
 		edge.From("vehicle", Item.Type).Ref("hustler_vehicles").Unique(),
