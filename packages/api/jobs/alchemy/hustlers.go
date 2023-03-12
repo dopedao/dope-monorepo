@@ -12,6 +12,7 @@ import (
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/rs/zerolog/log"
 )
 
@@ -80,6 +81,10 @@ func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
 		age = 0
 	}
 
+	// This needs to be an EIP-55 compliant address
+	// or it causes issues for us down the line elsewhere.
+	walletAddress := common.HexToAddress(t.OwnerAddress).Hex()
+
 	log.Info().
 		Str("Job", "SyncHustlers").
 		Int64("tokenId", tokenId).
@@ -88,14 +93,14 @@ func UpsertHustlerFromAlchemy(ctx context.Context, t Nft) {
 
 	// Make sure Wallet exists
 	dbClient.Wallet.Create().
-		SetID(t.OwnerAddress).
+		SetID(walletAddress).
 		OnConflict().
 		DoNothing().
 		Exec(ctx)
 
 	// Create Hustler
 	hustlerErr := dbClient.Hustler.Create().
-		SetWalletID(t.OwnerAddress).
+		SetWalletID(walletAddress).
 		SetID(fmt.Sprint(tokenId)).
 		SetAge(age).
 		SetSex(sex).
