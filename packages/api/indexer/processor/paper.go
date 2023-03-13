@@ -23,12 +23,10 @@ func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e bindings.PaperTr
 	ctx, log := logger.LogFor(ctx)
 
 	log.Debug().
-		Msgf(
-			"PAPER transfer to %s from %s for %v",
-			e.To.Hex(),
-			e.From.Hex(),
-			schema.BigInt{Int: e.Value},
-		)
+		Str("From", e.From.Hex()).
+		Str("to", e.To.Hex()).
+		Str("Amount", e.Value.String()).
+		Msg("PAPER transfer")
 
 	return func(tx *ent.Tx) error {
 		if e.To != (common.Address{}) {

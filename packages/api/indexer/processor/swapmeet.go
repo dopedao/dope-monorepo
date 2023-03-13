@@ -62,27 +62,17 @@ func (p *SwapMeetProcessor) Setup(address common.Address, eth interface {
 func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMeetSetRle) (func(tx *ent.Tx) error, error) {
 	metadata, err := p.Contract.TokenURI(nil, e.Id)
 	if err != nil {
-		// This can fail because the TokenURI data is so large that
-		// our API does not return it.
-		//
-		// If that's the case we do not return an error, instead
-		// choosing to insert a blank entry to the database, so we can
-		// continue indexing Hustlers and make them appear in the database.
-		//
-		// This isn't the most optimal solution, but it's better than the
-		// entire site bricking and people complaining their Hustlers
-		// are not in their inventory.
-		//
-		// -- faces
-
 		// Tagged logger
 		_, log := logger.LogFor(
 			ctx,
 			func(zctx *zerolog.Context) zerolog.Context {
 				return zctx.Str("SwapMeetProcessor", "ProcessSetRle")
+			},
+			func(zctx *zerolog.Context) zerolog.Context {
+				return zctx.Str("ItemId", e.Id.String())
 			})
 
-		log.Warn().Msgf("failed getting TokenURI during ProcessSetRle %s metadata: %v", e.Id.String(), err)
+		log.Warn().Err(err).Msg("Failed getting TokenURI during ProcessSetRle")
 		return func(tx *ent.Tx) error {
 			if err := tx.Item.Create().
 				SetID(e.Id.String()).

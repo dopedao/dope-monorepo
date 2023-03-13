@@ -96,7 +96,8 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.Hustle
 		ctx,
 		func(zctx *zerolog.Context) zerolog.Context {
 			return zctx.Str("HustlerProcessor", "ProcessAddRles")
-		})
+		},
+	)
 
 	var builders []*ent.BodyPartCreate
 
@@ -121,7 +122,10 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.Hustle
 		sex = bodypart.SexMALE
 	}
 
-	log.Debug().Msgf("Body part: %s - Sex: %s", part, sex)
+	log.Debug().
+		Str("Body Part", part.String()).
+		Str("Sex", sex.String()).
+		Msg("Processing body part")
 
 	return func(tx *ent.Tx) error {
 		n, err := tx.BodyPart.
