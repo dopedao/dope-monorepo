@@ -300,15 +300,11 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 
 	// LOG BEFORE UPDATING …and deal with stupid nil pointers
 	var beardIDStr string
-	if (beardID) == nil {
-		beardIDStr = ""
-	} else {
+	if (beardID) != nil {
 		beardIDStr = *beardID
 	}
 	var titleStr string
-	if (title) == nil {
-		titleStr = ""
-	} else {
+	if (title) != nil {
 		titleStr = *title
 	}
 	log.Debug().
