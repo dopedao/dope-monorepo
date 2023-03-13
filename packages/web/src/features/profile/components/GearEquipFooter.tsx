@@ -15,7 +15,7 @@ const GearEquipFooter = ({ id }: { id: string }) => {
   const { data, isFetching: loading } = useHustlersWalletQuery(
     {
       where: {
-        id: account?.toLowerCase(),
+        or: [{ id: account?.toLowerCase() }, { id: account }],
       },
     },
     {
