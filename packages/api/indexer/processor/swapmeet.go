@@ -250,58 +250,45 @@ func handleProcess(
 			}
 		}
 
-		// Equip of an existing hustler
+		// REFRESH EQUIPMENT OF WALLET ACTED UPON ---------------------------------
+		var walletAddressToRefresh string
+		var desc string
+
 		if from != (common.Address{}) && to == hustlerAddr {
-			log.Info().
-				Msgf(
-					"Refreshing equipment for entire wallet of EQUIPPED hustler owner: %s",
-					to.Hex())
-
-			wallet, err := tx.Wallet.Query().
-				WithHustlers().
-				Where(wallet.IDEQ(to.Hex())).
-				First(ctx)
-			if err != nil {
-				return fmt.Errorf("getting user's hustlers: %w", err)
-			}
-			log.Debug().
-				Str("Wallet to Find", from.Hex()).
-				Str("Wallet", wallet.ID).
-				Int("Hustler Count", len(wallet.Edges.Hustlers)).
-				Msgf("EQUIP - REFRESH EQUIPMENT")
-
-			for _, h := range wallet.Edges.Hustlers {
-				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(raw.BlockNumber)); err != nil {
-					return err
-				}
-			}
+			// EQUIP of hustler
+			walletAddressToRefresh = from.Hex()
+			desc = "REFRESH FROM EQUIP"
+		} else if from == hustlerAddr {
+			// UN-Equip of hustler
+			walletAddressToRefresh = to.Hex()
+			desc = "REFRESH FROM UNEQUIP"
+		} else {
+			log.Panic().Msg("We shouldn't get here when trying to refresh equipment")
 		}
 
-		// UN-Equip of existing hustler
-		if from == hustlerAddr {
-			log.Info().
-				Msgf(
-					"Refreshing equipment for entire wallet of unequipped hustler owner: %s",
-					to.Hex())
+		log.Info().
+			Str("Wallet Address", walletAddressToRefresh).
+			Msg("Refreshing equipment for hustler owner")
 
-			wallet, err := tx.Wallet.
-				Query().
-				WithHustlers().
-				Where(wallet.IDEQ(to.Hex())).
-				First(ctx)
-			if err != nil {
-				return fmt.Errorf("getting user's hustlers: %w", err)
-			}
-			log.Debug().
-				Str("Wallet to Find", to.Hex()).
-				Str("Wallet", wallet.ID).
-				Int("Hustler Count", len(wallet.Edges.Hustlers)).
-				Msgf("UNEQUIP - REFRESH EQUIPMENT")
+		wallet, err := tx.Wallet.Query().
+			WithHustlers().
+			Where(wallet.IDEQ(walletAddressToRefresh)).
+			First(ctx)
+		if err != nil {
+			return fmt.Errorf("getting user's hustlers: %w", err)
+		}
 
-			for _, h := range wallet.Edges.Hustlers {
-				if err := RefreshEquipment(ctx, p.Eth, tx, h.ID, hustlerAddr, new(big.Int).SetUint64(raw.BlockNumber)); err != nil {
-					return err
-				}
+		log.Debug().
+			Str("Found Wallet Address", walletAddressToRefresh).
+			Str("Found Wallet", wallet.ID).
+			Int("Hustler Count", len(wallet.Edges.Hustlers)).
+			Msgf(desc)
+
+		for _, h := range wallet.Edges.Hustlers {
+			if err := RefreshEquipment(
+				ctx, p.Eth, tx, h.ID, hustlerAddr,
+				new(big.Int).SetUint64(raw.BlockNumber)); err != nil {
+				return err
 			}
 		}
 
