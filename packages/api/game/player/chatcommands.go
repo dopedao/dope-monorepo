@@ -41,18 +41,11 @@ func handlePlayerCommand(p *Player, msg json.RawMessage, log *zerolog.Logger) {
 			Message: command.Name + " is not a valid command.",
 		}
 
-		errorToastJson, err := json.Marshal(errorToast)
-		if err != nil {
-			p.Send <- messages.GenerateErrorMessage(500, "could not marshal invalid command error")
-			return
-		}
-
-		p.Broadcast <- messages.BroadcastMessage{
-			Message: messages.BaseMessage{
-				Event: events.PLAYER_CHAT_COMMAND_RESULT,
-				Data:  errorToastJson,
-			},
-			Condition: func(other interface{}) bool {
+		message, err := messages.
+			NewBroadcast().
+			Data(errorToast).
+			Event(events.PLAYER_CHAT_COMMAND_RESULT).
+			Condition(func(other interface{}) bool {
 				ptr, ok := other.(*Player)
 				if !ok {
 					log.Error().Msg("Could not cast interface to Player type")
@@ -60,8 +53,15 @@ func handlePlayerCommand(p *Player, msg json.RawMessage, log *zerolog.Logger) {
 				}
 
 				return p == ptr
-			},
+			}).
+			Build()
+
+		if err != nil {
+			log.Err(err).Msg("could not build message")
+			p.Send <- messages.GenerateErrorMessage(500, "could not marshal invalid command error")
 		}
+
+		p.Broadcast <- *message
 	}
 }
 
@@ -81,28 +81,30 @@ func handleSetcolor(args []string, p *Player, log *zerolog.Logger) {
 			Message: colorArg + " is not a valid color! Allowed colors are: [" + strings.Join(allowedColors[:], ", ") + "]",
 		}
 
-		invalidArgErrJson, err := json.Marshal(&invalidArgErr)
+		message, err := messages.
+			NewBroadcast().
+			Data(invalidArgErr).
+			Event(events.PLAYER_CHAT_COMMAND_RESULT).
+			Condition(
+				func(other interface{}) bool {
+					ptr, ok := other.(*Player)
+					if !ok {
+						log.Error().Msg("Could not cast interface to Player type")
+						return false
+					}
+
+					return p == ptr
+				},
+			).
+			Build()
+
 		if err != nil {
+			log.Err(err).Msg("could not update chatcolor")
 			p.Send <- messages.GenerateErrorMessage(500, "could not update chatcolor")
 			return
 		}
 
-		p.Broadcast <- messages.BroadcastMessage{
-			Message: messages.BaseMessage{
-				Event: events.PLAYER_CHAT_COMMAND_RESULT,
-				Data:  invalidArgErrJson,
-			},
-			// show toast only to the player that issued the command
-			Condition: func(other interface{}) bool {
-				ptr, ok := other.(*Player)
-				if !ok {
-					log.Error().Msg("Could not cast interface to Player type")
-					return false
-				}
-
-				return p == ptr
-			},
-		}
+		p.Broadcast <- *message
 		return
 	}
 
@@ -116,25 +118,28 @@ func handleSetcolor(args []string, p *Player, log *zerolog.Logger) {
 		Message: "Chatcolor changed to: " + p.Chatcolor,
 	}
 
-	clientDataJson, err := json.Marshal(&clientData)
+	message, err := messages.
+		NewBroadcast().
+		Data(clientData).
+		Event(events.PLAYER_CHAT_COMMAND_RESULT).
+		Condition(
+			func(other interface{}) bool {
+				ptr, ok := other.(*Player)
+				if !ok {
+					log.Error().Msg("Could not cast interface to Player type")
+					return false
+				}
+
+				return p == ptr
+			},
+		).
+		Build()
+
 	if err != nil {
+		log.Err(err).Msg("could not update chatcolor")
 		p.Send <- messages.GenerateErrorMessage(500, "could not update chatcolor")
 		return
 	}
 
-	p.Broadcast <- messages.BroadcastMessage{
-		Message: messages.BaseMessage{
-			Event: events.PLAYER_CHAT_COMMAND_RESULT,
-			Data:  clientDataJson,
-		},
-		Condition: func(other interface{}) bool {
-			ptr, ok := other.(*Player)
-			if !ok {
-				log.Error().Msg("Could not cast interface to Player type")
-				return false
-			}
-
-			return p == ptr
-		},
-	}
+	p.Broadcast <- *message
 }
