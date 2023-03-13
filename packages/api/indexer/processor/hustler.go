@@ -316,7 +316,7 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 		Str("beard_id", beardIDStr).
 		Str("title", titleStr).
 		Str("name", safeName).
-		Msg("Attempting to upsert hustler metadata")
+		Msg("Upsert hustler metadata")
 
 	return func(tx *ent.Tx) error {
 		if err := tx.Hustler.Create().
