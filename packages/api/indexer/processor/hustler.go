@@ -439,7 +439,7 @@ func (p *HustlerProcessor) ProcessTransferSingle(
 				return fmt.Errorf("hustler: create hustler: %w", err)
 			}
 
-			if err := RefreshEquipment(ctx, p.Eth, tx, e.Id.String(), hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
+			if err := RefreshHustlerEquipment(ctx, p.Eth, tx, e.Id.String(), hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
 				return err
 			}
 		}
@@ -472,7 +472,7 @@ func (p *HustlerProcessor) ProcessTransferSingle(
 	}, nil
 }
 
-func RefreshEquipment(
+func RefreshHustlerEquipment(
 	ctx context.Context,
 	eth interface {
 		bind.ContractBackend

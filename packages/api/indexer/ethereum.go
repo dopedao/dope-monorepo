@@ -168,6 +168,10 @@ func (e *Ethereum) Sync(ctx context.Context) {
 		},
 	)
 
+	// log.Debug().
+	// 	Int("Number of Contracts", len(e.contracts)).
+	// 	Msg("Starting sync loop.")
+
 	defer e.ticker.Stop()
 
 	for {
@@ -235,11 +239,9 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 		_to := Min(e.latest, _from+blockLimit)
 
 		if _from > _to {
-			// No new blocks
+			// waiting for new blocks
 			break
 		}
-
-		// log.Debug().Msgf("Indexing %s from %d to %d.", contract.Name, _from, _to)
 
 		logs, err := e.eth.FilterLogs(ctx, ethereum.FilterQuery{
 			FromBlock: new(big.Int).SetUint64(_from),
@@ -280,12 +282,6 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 		// and ensure it uses an Ent upsert operation.
 		txChunks := chunkTx(committers, txLimit)
 
-		if len(txChunks) > 1 || len(committers) > 1 {
-			log.Info().
-				Msgf("%v Chunks with %v total transactions",
-					len(txChunks), len(committers))
-		}
-
 		for _, committerChunk := range txChunks {
 			if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
 				log.Debug().
@@ -299,7 +295,6 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 						return err
 					}
 				}
-				log.Info().Msgf("COMMITTED %v changes", len(committerChunk))
 
 				*numUpdates += len(committerChunk)
 				return nil
@@ -307,6 +302,10 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 				log.Err(err).Msgf("FAIL Indexing contract")
 				return err
 			}
+			log.Debug().
+				Int("Changes", len(committers)).
+				Int("Chunks", len(txChunks)).
+				Msg("Committed changes")
 		}
 
 		// Update sync state only when we've successfully processed

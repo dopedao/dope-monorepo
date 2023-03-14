@@ -66,10 +66,9 @@ func (p *SwapMeetProcessor) ProcessSetRle(ctx context.Context, e bindings.SwapMe
 		_, log := logger.LogFor(
 			ctx,
 			func(zctx *zerolog.Context) zerolog.Context {
-				return zctx.Str("SwapMeetProcessor", "ProcessSetRle")
-			},
-			func(zctx *zerolog.Context) zerolog.Context {
-				return zctx.Str("ItemId", e.Id.String())
+				return zctx.
+					Str("SwapMeetProcessor", "ProcessSetRle").
+					Str("ItemId", e.Id.String())
 			})
 
 		log.Warn().Err(err).Msg("Failed getting TokenURI during ProcessSetRle")
@@ -200,14 +199,13 @@ func handleProcess(
 	_, log := logger.LogFor(
 		ctx,
 		func(zctx *zerolog.Context) zerolog.Context {
-			return zctx.Str("SwapMeetProcessor", eventName)
+			return zctx.
+				Str("SwapMeetProcessor", eventName).
+				Str("From", from.Hex()).
+				Str("To", to.Hex()).
+				Str("IDs", fmt.Sprintf("%v", ids)).
+				Uint64("Block", raw.BlockNumber)
 		})
-
-	log.Info().
-		Str("From", from.Hex()).
-		Str("To", to.Hex()).
-		Str("IDs", fmt.Sprintf("%v", ids)).
-		Uint64("Block", raw.BlockNumber)
 
 	return func(tx *ent.Tx) error {
 		if err := ensureWalletExists(ctx, tx, to); err != nil {
@@ -215,9 +213,7 @@ func handleProcess(
 		}
 
 		log.Info().
-			Msgf(
-				"from: %s, to: %s, id: %s",
-				from.Hex(), to.Hex(), ids)
+			Msg("Transferring gear")
 
 		// Transfer of Gear from wallet to wallet (not the null address)
 		if from != (common.Address{}) {
@@ -263,7 +259,12 @@ func handleProcess(
 			walletAddressToRefresh = to.Hex()
 			desc = "REFRESH FROM UNEQUIP"
 		} else {
-			log.Panic().Msg("We shouldn't get here when trying to refresh equipment")
+			// Wallet to wallet transfer
+			log.Info().
+				Str("From", from.Hex()).
+				Str("To", to.Hex()).
+				Msg("Wallet to wallet transfer - skipping equipment refresh")
+			return nil
 		}
 
 		log.Info().
@@ -285,7 +286,7 @@ func handleProcess(
 			Msgf(desc)
 
 		for _, h := range wallet.Edges.Hustlers {
-			if err := RefreshEquipment(
+			if err := RefreshHustlerEquipment(
 				ctx, p.Eth, tx, h.ID, hustlerAddr,
 				new(big.Int).SetUint64(raw.BlockNumber)); err != nil {
 				return err
