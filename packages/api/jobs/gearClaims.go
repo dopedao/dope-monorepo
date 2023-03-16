@@ -36,8 +36,8 @@ func GearClaims() {
 	}
 
 	log.Default().Println("Getting all DOPE NFTs from database")
-	dopes, err := client.Dope.Query().All(ctx)
-	if err != nil {
+	dopes, dopeFindErr := client.Dope.Query().All(ctx)
+	if dopeFindErr != nil {
 		log.Fatal("Getting ethereum dopes.") //nolint:gocritic
 	}
 

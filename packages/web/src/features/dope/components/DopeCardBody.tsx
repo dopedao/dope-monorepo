@@ -131,6 +131,7 @@ const DopeCardBody = ({
                 transform: scale(1);
                 transition: transform 0.5s;
                 position: relative;
+                color: var(--gray-400);
               }
             `}
           >

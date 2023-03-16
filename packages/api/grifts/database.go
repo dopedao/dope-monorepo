@@ -13,6 +13,7 @@ var _ = g.Namespace("db", func() {
 	g.Add("bootstrap", func(c *g.Context) error {
 		b.Bootstrap()
 		g.Run("paper:seed_wallets", c)
+		g.Run("gear:set_metrics", c)
 		// g.Run("hustlers:sync", c)
 		return nil
 	})
