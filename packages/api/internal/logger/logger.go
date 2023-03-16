@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -10,6 +11,12 @@ import (
 type LogKV func(*zerolog.Context) zerolog.Context
 
 func LogFor(ctx context.Context, values ...LogKV) (context.Context, zerolog.Logger) {
+
+	// Customize zerolog for Cloud Platform a bit so things show up correctly.
+	zerolog.LevelFieldName = "severity"
+	zerolog.TimestampFieldName = "timestamp"
+	zerolog.TimeFieldFormat = time.RFC3339Nano
+
 	logWithCtx := zerolog.Ctx(ctx).With()
 	for _, value := range values {
 		logWithCtx = value(&logWithCtx)
