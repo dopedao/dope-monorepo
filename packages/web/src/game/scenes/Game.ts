@@ -23,12 +23,12 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import TilesAnimator from 'game/world/TilesAnimator';
 import UIScene, { chakraToastStyle, loadingSpinner, toastStyle } from './UI';
 
+
 export default class GameScene extends Scene {
   public rexUI!: RexUIPlugin;
 
   private hustlerData: any;
 
-  // is the game initialized
   private initialized = false;
 
   private _player!: Player;
@@ -47,7 +47,7 @@ export default class GameScene extends Scene {
   private _musicManager!: MusicManager;
 
   public dayColor = [0xfd, 0xff, 0xdb];
-  public nightColor = [0xb8, 0xbe, 0xff];
+  public nightColor = [0xF8, 0xFE, 0xFF];
 
   readonly zoom: number = 3;
 
@@ -113,20 +113,11 @@ export default class GameScene extends Scene {
   }
 
   create() {
-    // create item entities when need
-    const stopHandleItemEntities = this.handleItemEntities();
-    // handle camera effects
-    const stopHandleCamera = this._handleCamera();
-    // handle inputs
-    // we dont need to unsubscribe because we're listening to scene specific events
+    this.handleItemEntities();
+    this._handleCamera();
     this._handleInputs();
 
-    // clean
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      // unsubscribe from listeners
-      // stopHandleItemEntities();
-      // stopHandleCamera();
-
       this.loadingSpinner?.destroy();
       this.loadingSpinner = undefined;
 
@@ -139,7 +130,6 @@ export default class GameScene extends Scene {
       NetworkHandler.getInstance().emitter.removeAllListeners();
       ControlsManager.getInstance().emitter.removeAllListeners();
 
-      // shutdown ui scene on game scene shutdown
       this.scene.stop('UIScene');
     });
     
@@ -199,12 +189,22 @@ export default class GameScene extends Scene {
 
         this._tickRate = data.tick_rate / (1000 * 1000);
 
+        const maps = ['NY_Bushwick_Basket', 'NY_FortGreene_Police', 'NY_BrookH_Club', 'NY_FortGreen_Park',
+                      'NY_BushWick_BorderSouth', 'NY_Brownsville_Pawn', 'NY_BrookH_Hospital', 'NY_Brownsville_Depot'];
+
         // create map and entities
         this._mapHelper = new MapHelper(this);
-        this.mapHelper.createMap(data.current_map);
-        this.mapHelper.createEntities();
-        this.mapHelper.createCollisions();
+        let i : number = 0;
 
+        while (i < maps.length)
+        {
+          this.mapHelper.createMap(maps[i]);
+          this.mapHelper.createEntities();
+          this.mapHelper.createCollisions();
+          i++;
+        }
+
+        //Why here ?
         const security = new Citizen(this.matter.world, 1010, -575, 'NY_BrookH_Club', '', 'Security', undefined, [
           new Conversation('security_nightclub', [
               {
@@ -243,23 +243,9 @@ export default class GameScene extends Scene {
         // start playing music
         this.musicManager.shuffle();
 
-        // initiate all players
-        data.players.forEach(data => {
-          this._hustlers.push(
-            new Hustler(this.matter.world, data.x, data.y, data.hustlerId, data.name),
-          );
-          this._hustlers[this._hustlers.length - 1].setData('id', data.id);
-          this._hustlers[this._hustlers.length - 1].currentMap = data.current_map;
-          if (data.current_map !== this.player.currentMap)
-            this._hustlers[this._hustlers.length - 1].setVisible(false);
-        });
-        // initiate all item entities
-        data.itemEntities.forEach(iData => {
-          this._itemEntities.push(
-            new ItemEntity(this.matter.world, iData.x, iData.y, iData.item, Items[iData.item]),
-          );
-          this._itemEntities[this._itemEntities.length - 1].setData('id', iData.id);
-        });
+        this.initiatePlayers(data);
+
+        this.initiateItemEntities(data);
 
         this.initializeGame(data);
     });
@@ -267,101 +253,110 @@ export default class GameScene extends Scene {
     this.loadingSpinner = this.add.reactDom(loadingSpinner);
   }
 
-  update(time: number, delta: number) {
-    if (!this.initialized) return;
-
-    this._player.update();
-
-    // dont update hustlers/citizens that are not in the same map
-    // as the player.
-    this._hustlers.forEach(hustler => hustler.currentMap === this._player.currentMap ? hustler.update() : {});
-    this._citizens.forEach(citizen => citizen.currentMap === this._player.currentMap ? citizen.update() : {});
-    this._itemEntities.forEach(itemEntity => itemEntity.update());
-
-    // update map
-    const level = this.mapHelper.mapReader.ldtk.levels.find(
-      l => l.identifier === this._player.currentMap,
-    )!;
-    const centerMapPos = new Phaser.Math.Vector2(
-      (level.worldX + (level.worldX + level.pxWid)) / 2,
-      (level.worldY + (level.worldY + level.pxHei)) / 2,
-    );
-    const playerPos = new Phaser.Math.Vector2(this._player.x, this._player.y);
-
-    // check to load new maps
-    // west
-    if (playerPos.x - centerMapPos.x < -(level.pxWid / 4)) this._checkDir(level, 'w', true);
-    // east
-    else if (playerPos.x - centerMapPos.x > level.pxWid / 4) this._checkDir(level, 'e', true);
-    // north
-    if (playerPos.y - centerMapPos.y < -(level.pxHei / 4)) this._checkDir(level, 'n', true);
-    // south
-    else if (playerPos.y - centerMapPos.y > level.pxHei / 4) this._checkDir(level, 's', true);
-    
-    
-
-    // check in which map we're in
-    // west
-    if (playerPos.x - centerMapPos.x < -(level.pxWid / 2)) this._checkDir(level, 'w', false);
-    // east
-    else if (playerPos.x - centerMapPos.x > level.pxWid / 2) this._checkDir(level, 'e', false);
-    // north
-    if (playerPos.y - centerMapPos.y < -(level.pxHei / 2)) this._checkDir(level, 'n', false);
-    // south
-    else if (playerPos.y - centerMapPos.y > level.pxHei / 2) this._checkDir(level, 's', false);
+  private initiatePlayers(data: any): void {
+    for (const { x, y, hustlerId, name, id, current_map } of data.players) {
+      const hustler = new Hustler(this.matter.world, x, y, hustlerId, name);
+      hustler.setData('id', id);
+      hustler.currentMap = current_map;
+      if (current_map !== this.player.currentMap) {
+        hustler.setVisible(false);
+      }
+      this._hustlers.push(hustler);
+    }
+  }
+  
+  private initiateItemEntities(data: any): void {
+    for (const { x, y, item, id } of data.itemEntities) {
+      const itemEntity = new ItemEntity(this.matter.world, x, y, item, Items[item]);
+      itemEntity.setData('id', id);
+      this._itemEntities.push(itemEntity);
+    }
   }
 
-  initializeGame(handshakeData: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) {
-    // const jimmyData = Citizens["jimmy"];
-    // const jimmy = new Citizen(this.matter.world, 
-    //   jimmyData.position.x, jimmyData.position.y, 
-    //   jimmyData.position.currentMap, 
-    //   jimmyData.hustlerId, jimmyData.name, jimmyData.description,
-    //   getConversation("jimmy_random", handshakeData.relations?.["jimmy"]?.text) ?? jimmyData.conversations,
-    //   jimmyData.path, jimmyData.repeat, jimmyData.shouldFollowPath,
-    // ).setData('id', "jimmy");
-    // const oracleJones = new Citizen(
-    //   this.matter.world,
-    //   Citizens["oracle_jones"].position.x,
-    //   Citizens["oracle_jones"].position.y,
-    //   Citizens["oracle_jones"].position.currentMap,
-    //   Citizens["oracle_jones"].hustlerId,
-    //   Citizens["oracle_jones"].name,
-    //   Citizens["oracle_jones"].description,
-    //   getConversation("oracle_jones_random", handshakeData.relations?.["oracle_jones"]?.text) ?? Citizens["oracle_jones"].conversations,
-    //   Citizens["oracle_jones"].path,
-    //   Citizens["oracle_jones"].repeat,
-    //   Citizens["oracle_jones"].shouldFollowPath,
-    // );
+private checkDirection(level: Level, playerPos: Phaser.Math.Vector2, centerMapPos: Phaser.Math.Vector2, widthThreshold: number, heightThreshold: number, patchMap: boolean) {
+  const dx = playerPos.x - centerMapPos.x;
+  const dy = playerPos.y - centerMapPos.y;
+  const directions = [
+    { dir: 'w', cond: dx < -widthThreshold },
+    { dir: 'e', cond: dx > widthThreshold },
+    { dir: 'n', cond: dy < -heightThreshold },
+    { dir: 's', cond: dy > heightThreshold },
+  ];
 
-    // this.citizens.push(jimmy, oracleJones);
+  for (const { dir, cond } of directions) {
+    if (cond) this._checkDir(level, dir, patchMap);
+  }
+}
 
-    const camera = this.cameras.main;
+private updateEntities(entities: Array<any>, playerCurrentMap: string) {
+  entities.forEach(entity => {
+    if (entity.currentMap === playerCurrentMap) {
+      entity.update();
+    }
+  });
+}
 
-    // make the camera follow the player
-    camera.setZoom(this.zoom, this.zoom);
-    camera.startFollow(this._player, true, 0.5, 0.5, -5, -5);
+update(time: number, delta: number) {
+  if (!this.initialized) {
+    return;
+  }
 
-    this.lights.enable();
-    this.lights.setAmbientColor(0xfdffdb);
-    this.lights.addLight(0, 0, 100000, 0xffffff, 0);
+  const level = this.mapHelper.mapReader.ldtk.levels.find(l => l.identifier === this._player.currentMap)!;
+  const centerMapPos = new Phaser.Math.Vector2(
+    (level.worldX + (level.worldX + level.pxWid)) / 2,
+    (level.worldY + (level.worldY + level.pxHei)) / 2
+  );
+  const playerPos = new Phaser.Math.Vector2(this._player.x, this._player.y);
 
-    // this._player.questManager.add(getQuest("SEND_CHAT_MESSAGES", this)!);
+  this.checkDirection(level, playerPos, centerMapPos, level.pxWid / 4, level.pxHei / 4, true);
+  this.checkDirection(level, playerPos, centerMapPos, level.pxWid / 2, level.pxHei / 2, false);
 
-    const map = this.mapHelper.loadedMaps[this._player.currentMap];
-    // TODO: update function on map which gets called only when player is in the map
-    map.otherGfx?.setAlpha(0);
-    // start tiles animators
-    map.displayLayers.forEach(l => l.getData('animators').forEach((animator: TilesAnimator) => animator.start()));
+  this._player.update();
 
-    this._handleNetwork();
-    
-    this.scene.launch('UIScene', { player: this._player, hustlerData: this.hustlerData });
+  this.updateEntities(this._hustlers, this._player.currentMap);
+  this.updateEntities(this._citizens, this._player.currentMap);
+  this._itemEntities.forEach(itemEntity => itemEntity.update());
+}
 
-    this.initialized = true;
-    this.loadingSpinner?.destroy();
+
+
+initializeGame(handshakeData: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) {
+  const camera = this.cameras.main;
+
+  // Set camera properties
+  camera.setZoom(this.zoom, this.zoom);
+  camera.startFollow(this._player, true, 0.5, 0.5, -5, -5);
+
+  // Enable and configure lights
+  this.lights.enable();
+  this.lights.setAmbientColor(0xfdffdb);
+  this.lights.addLight(0, 0, 100000, 0xffffff, 0);
+
+  // Retrieve the current map
+  const map = this.mapHelper.loadedMaps[this._player.currentMap];
+
+  // Hide any other graphics and start tile animators
+  if (map.otherGfx) {
+    map.otherGfx.setAlpha(0);
+  }
+  map.displayLayers.forEach(layer => {
+    const animators = layer.getData('animators');
+    animators.forEach((animator: TilesAnimator) => animator.start());
+  });
+
+  // Handle network events
+  this._handleNetwork();
+
+  // Launch UI scene
+  this.scene.launch('UIScene', { player: this._player, hustlerData: this.hustlerData });
+
+  // Update game state
+  this.initialized = true;
+  if (this.loadingSpinner) {
+    this.loadingSpinner.destroy();
     this.loadingSpinner = undefined;
   }
+}
 
   handleItemEntities() {
     const onRemoveItem = (item: Item, drop: boolean) => {
@@ -426,43 +421,41 @@ export default class GameScene extends Scene {
       if (Date.now() - last < delta) return;
       last = Date.now();
 
-      // run asynchronously
-      setTimeout(() => {
-        const citizenToTalkTo = this._citizens.find(
-          citizen => citizen.conversations.length !== 0 && 
-            citizen.getBounds().contains(pointer.worldX, pointer.worldY),
-        );
-        const itemToPickUp = this._itemEntities.find(item =>
-          item.getBounds().contains(pointer.worldX, pointer.worldY),
-        );
+      const citizenToTalkTo = this._citizens.find(
+        citizen => citizen.conversations.length !== 0 && 
+          citizen.getBounds().contains(pointer.worldX, pointer.worldY),
+      );
 
-        let interacted = false;
-        const checkInteraction = () => {
-          if (!citizenToTalkTo && !itemToPickUp) return;
+      const itemToPickUp = this._itemEntities.find(item =>
+        item.getBounds().contains(pointer.worldX, pointer.worldY),
+      );
 
-          if (
-            citizenToTalkTo &&
-            new Phaser.Math.Vector2(this._player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) <
-              100
-          ) {
-            citizenToTalkTo?.onInteraction(this._player);
-            EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
-            interacted = true;
-          } else if (
-            itemToPickUp &&
-            new Phaser.Math.Vector2(this._player).distance(itemToPickUp) < 100
-          ) {
-            this._player.tryPickupItem(itemToPickUp);
-            interacted = true;
-          }
+      let interacted = false;
+      const checkInteraction = () => {
+        if (!citizenToTalkTo && !itemToPickUp) return;
+
+        if (
+          citizenToTalkTo &&
+          new Phaser.Math.Vector2(this._player).distance(new Phaser.Math.Vector2(citizenToTalkTo)) <
+            100
+        ) {
+          citizenToTalkTo?.onInteraction(this._player);
+          EventHandler.emitter().emit(Events.PLAYER_CITIZEN_INTERACT, citizenToTalkTo);
+          interacted = true;
+        } else if (
+          itemToPickUp &&
+          new Phaser.Math.Vector2(this._player).distance(itemToPickUp) < 100
+        ) {
+          this._player.tryPickupItem(itemToPickUp);
+          interacted = true;
         }
+      }
 
-        checkInteraction();
-        if (interacted) return;
-        
-        this._player.navigator.moveTo(pointer.worldX, pointer.worldY, checkInteraction);
+      checkInteraction();
+      if (interacted) return;
+      
+      this._player.navigator.moveTo(pointer.worldX, pointer.worldY, checkInteraction);
       });
-    });
 
     // zoom with scroll wheel
     this.input.on('wheel', (pointer: Phaser.Input.Pointer, gameObjects: Array<Phaser.GameObjects.GameObject>, deltaX: number, deltaY: number) => {
@@ -477,14 +470,6 @@ export default class GameScene extends Scene {
 
   private _handleNetwork() {
     const networkHandler = NetworkHandler.getInstance();
-
-    // EventHandler.emitter().on(Events.PLAYER_CITIZEN_INTERACT_FINISH, (citizen: Citizen, cancelled: boolean) => {
-    //   if (cancelled || !networkHandler.connected) return;
-
-    //   networkHandler.sendMessage(UniversalEventNames.PLAYER_UPDATE_CITIZEN_STATE, {
-    //     citizen: citizen.getData('id'),
-    //     conversation: citizen.con
-    // });
 
     // register listeners
     networkHandler.on(NetworkEvents.DISCONNECTED, () => {
@@ -548,18 +533,34 @@ export default class GameScene extends Scene {
       },
     );
     networkHandler.on(NetworkEvents.TICK, (data: DataTypes[NetworkEvents.TICK]) => {
-      const currentMap = this._mapHelper.loadedMaps[this._player.currentMap]; 
-      // sine function imitating day/night cycle
       // only works with 1440 minutes a day cycle
-      // TODO: defined in ldtk? along with position of sun
       const cursor = 230;
-      const maxSunIntensity = 300; 
-      const maxMoonIntensity = 50;
-      const fn = (Math.sin((data.time / cursor) - (Math.PI/2)) + 1) / 2;
-      const color = this.dayColor.map(color => (Math.round(color * fn)).toString(16)).join('');
-      this.lights.setAmbientColor(Number.parseInt(color, 16) < 272722 ? 
-        Number.parseInt(this.nightColor.map(color => (Math.round(color * (0.2 - fn))).toString(16)).join(''), 16) : 
-          Number.parseInt(color, 16));
+
+      // Calculate the intensity factor based on the time of day
+      const minFactor = 0.35;
+      const maxFactor = 0.9;
+      const timeFactor = Math.min(Math.max((Math.sin((data.time / cursor) - (Math.PI/2)) + 1) / 2, minFactor), maxFactor);
+
+      // Calculate the color based on the current time factor
+      const dayColorHex = this.dayColor.map(color => (Math.round(color * timeFactor)).toString(16)).join('');
+      const nightColorHex = this.nightColor.map(color => (Math.round(color * (0.2 - timeFactor))).toString(16)).join('');
+
+      // Determine which color to use based on time of day
+      let ambientColor;
+
+      if (Number.parseInt(dayColorHex, 16) < 272722)
+      {
+      // nighttime
+      ambientColor = Number.parseInt(nightColorHex, 16);
+      }
+      else
+      {
+      //daytime
+      ambientColor = Number.parseInt(dayColorHex, 16);
+      }
+
+      // Set the ambient color
+      this.lights.setAmbientColor(ambientColor);
 
       // update players positions
       data.players.forEach(p => {
@@ -595,15 +596,6 @@ export default class GameScene extends Scene {
             hustler.setPosition(p.x, p.y);
           }, false);
 
-          // using pathfinding, heavy cpu usage
-          // hustler.navigator.moveTo(p.x, p.y, undefined, () => {
-          //   // if hustler has been stuck, dont pathfind
-          //   const targetTile = currentMap.collideLayer?.getTileAtWorldXY(p.x, p.y);
-          //   if (targetTile && !targetTile.collides)
-          //     hustler.navigator.target = new Phaser.Math.Vector2(targetTile.x, targetTile.y);
-          //   else 
-          //     hustler.setPosition(p.x, p.y);
-          // });
         }
       });
     });
@@ -623,21 +615,27 @@ export default class GameScene extends Scene {
     );
   }
 
+  private _loadMapInBackground(identifier: string) {
+      this.mapHelper.createCollisions();
+      this.mapHelper.createEntities();
+  }
+
   private _checkDir(level: Level, dir: string, patchMap: boolean) {
-    level.__neighbours.forEach(n => {
-      const lvl = this.mapHelper.mapReader.ldtk.levels.find(level => level.uid === n.levelUid)!;
-      if (Object.keys(this.mapHelper.loadedMaps).find(m => m === lvl.identifier)) {
-        if (!patchMap && n.dir === dir && 
-          this.player.x > lvl.worldX && this.player.x < lvl.worldX + lvl.pxWid &&
-           this.player.y > lvl.worldY && this.player.y < lvl.worldY + lvl.pxHei) {  
-          // map player is currently in
-          const lastMap = this.mapHelper.loadedMaps[this._player.currentMap]!;
+    const playerX = this.player.x;
+    const playerY = this.player.y;
+
+    for (const n of level.__neighbours) {
+      const lvl = this.mapHelper.mapReader.ldtk.levels.find(l => l.uid === n.levelUid)!;
+      if (lvl.identifier in this.mapHelper.loadedMaps) {
+        const { worldX, worldY, pxWid, pxHei } = lvl;
+        if (patchMap || n.dir !== dir || playerX <= worldX || playerX >= worldX + pxWid || playerY <= worldY || playerY >= worldY + pxHei) {
+          continue;
+        }
+        const lastMap = this.mapHelper.loadedMaps[this._player.currentMap]!;
 
           // NOTE: do check directly in tilesanimator update?
           // stop tiles animations when not in current map
-          lastMap.displayLayers
-            .forEach(l => l.getData('animators')
-              .forEach((animator: TilesAnimator) => animator.stop()));
+          lastMap.displayLayers.flatMap(l => l.getData('animators')).forEach(animator => animator.stop());
 
           // slowly increase alpha to max_alpha
           if (lastMap.otherGfx) {
@@ -662,9 +660,11 @@ export default class GameScene extends Scene {
           
           // NOTE: do check directly in tilesanimator update?
           // make sure animators are started
-          currentMap.displayLayers
-            .forEach(l => l.getData('animators')
-              .forEach((animator: TilesAnimator) => animator.start()));
+          for (const layer of currentMap.displayLayers) {
+            for (const { start } of layer.getData('animators')) {
+              start();
+            }
+          }
           
           // slowly decrease alpha to 0
           if (currentMap.otherGfx) {
@@ -683,78 +683,64 @@ export default class GameScene extends Scene {
             }
           }
 
-          // TODO: multiple map change messages are getting sent. fix this
-          if (NetworkHandler.getInstance().connected)
-            NetworkHandler.getInstance().send(UniversalEventNames.PLAYER_UPDATE_MAP, {
+          const currentMapId = this._player.currentMap;
+
+          if (NetworkHandler.getInstance()?.connected) {
+            NetworkHandler.getInstance()?.send(UniversalEventNames.PLAYER_UPDATE_MAP, {
               current_map: lvl.identifier,
               x: this._player.x,
               y: this._player.y,
             });
-
-          const updateHustlerMap = (h: Hustler) => {
-            if (h.currentMap === this._player.currentMap && !h.visible) {
-              h.setVisible(true);
-              h.setActive(true);
-            } else {
-              // TODO: only hide hustler if not in viewport too?
-              h.setVelocity(0);
-              h.navigator.cancel();
-              h.setVisible(false);
-              h.setActive(false);
-            }
           }
 
-          // TODO: use phaser time events instead
-          this._citizens.forEach(c => updateHustlerMap(c));
+          const updateHustlerMap = (h: Hustler) => {
+            if (h.currentMap === currentMapId) {
+              if (!h.visible) {
+                h.setVisible(true);
+                h.setActive(true);
+              }
+            } else {
+              if (h.visible) {
+                h.setVelocity(0);
+                h.navigator?.cancel();
+                h.setVisible(false);
+                h.setActive(false);
+              }
+            }
+          };
+
+          const collideLayer = this.mapHelper.map.collideLayer;
+
+          this._citizens.forEach(updateHustlerMap);
           this._hustlers.forEach(h => {
             updateHustlerMap(h);
 
-            if (h.currentMap === this._player.currentMap) {
-              // constantly check if hustler has to move to a new position on map change and if yes
-              // just teleport him instead of moving him
-              const id = setInterval(() => {
-                if (h.navigator.target) {
-                  h.setPosition(
-                    this.mapHelper.map.collideLayer!.tileToWorldX(
-                      (h.navigator.path[h.navigator.path.length - 1] ?? h.navigator.target).x,
-                    ),
-                    this.mapHelper.map.collideLayer!.tileToWorldY(
-                      (h.navigator.path[h.navigator.path.length - 1] ?? h.navigator.target).y,
-                    ),
-                  );
-                  h.navigator.cancel();
-                  clearInterval(id);
-                }
+            if (h.currentMap === currentMapId && collideLayer) {
+              const id = this.time.addEvent({
+                delay: 1000,
+                callback: () => {
+                  if (h.navigator.target) {
+                    h.setPosition(
+                      collideLayer.tileToWorldX((h.navigator.path[h.navigator.path.length - 1] ?? h.navigator.target).x),
+                      collideLayer.tileToWorldY((h.navigator.path[h.navigator.path.length - 1] ?? h.navigator.target).y),
+                    );
+                    h.navigator.cancel();
+                    id.remove();
+                  }
+                },
+                repeat: 0,
               });
-              // clear after 1 second
-              setTimeout(() => clearInterval(id), 1000);
             }
           });
-        }
         return;
       }
-
-      if (!patchMap) return;
-
-      if (n.dir === dir) {
-        const beforeMap = performance.now(); 
-        this.mapHelper.createMap(lvl.identifier);
-        const afterMap = performance.now();
-        
-        console.info(`${lvl.identifier}: Map creation took ${afterMap - beforeMap}ms`);
-
-        const beforeCollisions = performance.now();
-        this.mapHelper.createCollisions();
-        const afterCollisions = performance.now();
-
-        console.info(`${lvl.identifier}: Collision creation took ${afterCollisions - beforeCollisions}ms`);
-
-        const beforeEntities = performance.now();
-        this.mapHelper.createEntities();
-        const afterEntities = performance.now();
-
-        console.info(`${lvl.identifier}: Entities creation took ${afterEntities - beforeEntities}ms`);
+      else if (patchMap && n.dir === dir) {
+        this._loadMapInBackground(lvl.identifier);
+        return;
       }
-    });
+    }
+
+    if (!patchMap) return;
   }
+
 }

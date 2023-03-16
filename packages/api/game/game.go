@@ -28,7 +28,7 @@ import (
 const (
 	TICKRATE    = time.Second / 5
 	MINUTES_DAY = 24 * 60
-	BOT_COUNT   = 30
+	BOT_COUNT   = 0
 )
 
 type Game struct {

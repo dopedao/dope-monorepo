@@ -10,12 +10,14 @@ export default class MapHelper {
   map!: LDtkMapPack;
 
   loadedMaps: { [key: string]: LDtkMapPack } = {};
+  
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
 
     // create the map
     this.mapReader = new LdtkReader(this.scene, this.scene.cache.json.get('map'));
+
   }
 
   createMap(level: string) {
