@@ -11,12 +11,7 @@ import (
 type LogKV func(*zerolog.Context) zerolog.Context
 
 func LogFor(ctx context.Context, values ...LogKV) (context.Context, zerolog.Logger) {
-
-	// Customize zerolog for Cloud Platform a bit so things show up correctly.
-	zerolog.LevelFieldName = "severity"
-	zerolog.TimestampFieldName = "timestamp"
-	zerolog.TimeFieldFormat = time.RFC3339Nano
-
+	SetGcpLevels()
 	logWithCtx := zerolog.Ctx(ctx).With()
 	for _, value := range values {
 		logWithCtx = value(&logWithCtx)
@@ -30,4 +25,11 @@ func LogFatalOnErr(err error, msg string) {
 	if err != nil {
 		log.Fatal().Err(err).Msgf(msg) //nolint:gocritic
 	}
+}
+
+// Customize zerolog for Cloud Platform a bit so things show up correctly.
+func SetGcpLevels() {
+	zerolog.LevelFieldName = "severity"
+	zerolog.TimestampFieldName = "timestamp"
+	zerolog.TimeFieldFormat = time.RFC3339Nano
 }

@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math/big"
 	"net/http"
+	"os"
 	"sync"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount"
@@ -258,12 +259,12 @@ func (o *Opensea) getAssetCollection(ctx context.Context, contract string, limit
 		return nil, fmt.Errorf("retrieving opensea assets: %w", err)
 	}
 	// Dump json file to tmp so we can debug
-	// err = os.WriteFile(
-	// 	fmt.Sprintf("./tmp/assets-%v.json", offset),
-	// 	bytes, 0644)
-	// if err != nil {
-	// 	log.Err(err).Msgf("Writing Json asset file")
-	// }
+	err = os.WriteFile(
+		fmt.Sprintf("./tmp/assets-%v.json", offset),
+		bytes, 0644)
+	if err != nil {
+		log.Err(err).Msgf("Writing Json asset file")
+	}
 	parsedAssets := &Assets{Assets: []Asset{}}
 
 	return parsedAssets, json.Unmarshal(bytes, parsedAssets)
