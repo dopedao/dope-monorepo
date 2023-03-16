@@ -5,7 +5,7 @@ service: game
 main: ./cmd/gameServer
 
 env_variables:
-  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/4
+  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/5
   NETWORK: mainnet
   # This is not a secret, as it only identifies our Firebase project
   # Firebase security rules should be used if we use other services.
