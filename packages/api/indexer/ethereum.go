@@ -310,7 +310,7 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 
 		// Update sync state only when we've successfully processed
 		// all the transactions above.
-		// log.Debug().Msgf("%v - Updating sync state %v", contract.Name, _from)
+		log.Debug().Msg("Updating SyncState block in DB.")
 		if err := dbprovider.Ent().SyncState.
 			Create().
 			SetID(contract.Address.Hex()).
