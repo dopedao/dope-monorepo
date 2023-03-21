@@ -14,6 +14,7 @@ import (
 	"firebase.google.com/go/auth"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/gorilla/sessions"
 	"github.com/jiulongw/siwe-go"
 )
@@ -104,7 +105,8 @@ func SetWallet(ctx context.Context, wallet string) error {
 		return err
 	}
 
-	session.Values["wallet"] = wallet
+	//hack: make address eip-55 compliant
+	session.Values["wallet"] = common.HexToAddress(wallet).Hex()
 
 	if err := sc.Save(session); err != nil {
 		return err
