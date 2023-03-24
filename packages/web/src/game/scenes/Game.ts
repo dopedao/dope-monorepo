@@ -200,8 +200,6 @@ export default class GameScene extends Scene {
 
         this._tickRate = data.tick_rate / (1000 * 1000);
 
-        // const maps = ['NY_Bushwick_Basket', 'NY_FortGreene_Police', 'NY_BrookH_Club', 'NY_FortGreen_Park',
-        //               'NY_BushWick_BorderSouth', 'NY_Brownsville_Pawn', 'NY_BrookH_Hospital', 'NY_Brownsville_Depot'];
         const maps = [NY_BUSHWICK_BASKET, NY_FORTGREENE_POLICE, NY_BROOKH_CLUB, NY_FORTGREEN_PARK,
           NY_BUSHWICK_BORDERSOUTH, NY_BROWNSVILLE_PAWN, NY_BROOKH_HOSPITAL, NY_BROWNSVILLE_DEPOT];
 
