@@ -23,6 +23,17 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import TilesAnimator from 'game/world/TilesAnimator';
 import UIScene, { chakraToastStyle, loadingSpinner, toastStyle } from './UI';
 
+import {
+  NY_BUSHWICK_BASKET,
+  NY_FORTGREENE_POLICE,
+  NY_BROOKH_CLUB,
+  NY_FORTGREEN_PARK,
+  NY_BUSHWICK_BORDERSOUTH,
+  NY_BROWNSVILLE_PAWN,
+  NY_BROOKH_HOSPITAL,
+  NY_BROWNSVILLE_DEPOT,
+} from './map_const';
+
 
 export default class GameScene extends Scene {
   public rexUI!: RexUIPlugin;
@@ -189,19 +200,18 @@ export default class GameScene extends Scene {
 
         this._tickRate = data.tick_rate / (1000 * 1000);
 
-        const maps = ['NY_Bushwick_Basket', 'NY_FortGreene_Police', 'NY_BrookH_Club', 'NY_FortGreen_Park',
-                      'NY_BushWick_BorderSouth', 'NY_Brownsville_Pawn', 'NY_BrookH_Hospital', 'NY_Brownsville_Depot'];
+        // const maps = ['NY_Bushwick_Basket', 'NY_FortGreene_Police', 'NY_BrookH_Club', 'NY_FortGreen_Park',
+        //               'NY_BushWick_BorderSouth', 'NY_Brownsville_Pawn', 'NY_BrookH_Hospital', 'NY_Brownsville_Depot'];
+        const maps = [NY_BUSHWICK_BASKET, NY_FORTGREENE_POLICE, NY_BROOKH_CLUB, NY_FORTGREEN_PARK,
+          NY_BUSHWICK_BORDERSOUTH, NY_BROWNSVILLE_PAWN, NY_BROOKH_HOSPITAL, NY_BROWNSVILLE_DEPOT];
 
         // create map and entities
         this._mapHelper = new MapHelper(this);
-        let i : number = 0;
-
-        while (i < maps.length)
-        {
+        
+        for (let i = 0; i < maps.length; i++) {
           this.mapHelper.createMap(maps[i]);
           this.mapHelper.createEntities();
           this.mapHelper.createCollisions();
-          i++;
         }
 
         //Why here ?
@@ -253,7 +263,7 @@ export default class GameScene extends Scene {
     this.loadingSpinner = this.add.reactDom(loadingSpinner);
   }
 
-  private initiatePlayers(data: any): void {
+  private initiatePlayers(data: any) {
     for (const { x, y, hustlerId, name, id, current_map } of data.players) {
       const hustler = new Hustler(this.matter.world, x, y, hustlerId, name);
       hustler.setData('id', id);
@@ -265,7 +275,7 @@ export default class GameScene extends Scene {
     }
   }
   
-  private initiateItemEntities(data: any): void {
+  private initiateItemEntities(data: any) {
     for (const { x, y, item, id } of data.itemEntities) {
       const itemEntity = new ItemEntity(this.matter.world, x, y, item, Items[item]);
       itemEntity.setData('id', id);
@@ -296,7 +306,7 @@ private updateEntities(entities: Array<any>, playerCurrentMap: string) {
   });
 }
 
-update(time: number, delta: number) {
+update() {
   if (!this.initialized) {
     return;
   }
@@ -320,7 +330,7 @@ update(time: number, delta: number) {
 
 
 
-initializeGame(handshakeData: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) {
+initializeGame() {
   const camera = this.cameras.main;
 
   // Set camera properties
@@ -548,15 +558,11 @@ initializeGame(handshakeData: DataTypes[NetworkEvents.PLAYER_HANDSHAKE]) {
       // Determine which color to use based on time of day
       let ambientColor;
 
-      if (Number.parseInt(dayColorHex, 16) < 272722)
-      {
-      // nighttime
-      ambientColor = Number.parseInt(nightColorHex, 16);
+      if (Number.parseInt(dayColorHex, 16) < 272722) {
+        ambientColor = Number.parseInt(nightColorHex, 16);
       }
-      else
-      {
-      //daytime
-      ambientColor = Number.parseInt(dayColorHex, 16);
+      else {
+        ambientColor = Number.parseInt(dayColorHex, 16);
       }
 
       // Set the ambient color

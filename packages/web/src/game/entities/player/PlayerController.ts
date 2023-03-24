@@ -35,8 +35,6 @@ export default class PlayerController {
   update() {
     // if (Phaser.Input.Keyboard.JustUp((this.mainKeys as any).inventory)) this.player.toggleInventory();
 
-    //console.log("o");
-
     if (
       Phaser.Input.Keyboard.JustUp(this.arrows.space) ||
       Phaser.Input.Keyboard.JustUp((this.mainKeys as any).interact)

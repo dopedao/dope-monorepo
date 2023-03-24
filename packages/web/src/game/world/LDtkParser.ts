@@ -71,8 +71,6 @@ export class LdtkReader {
     let tilesetWidth = tilesetObj.__cWid;
     let tileSize = layer.__gridSize;
 
-
-    //map = this.scene.add.tilemap(layer.__identifier, tileSize, tileSize, layer.__cWid, layer.__cHei);
     map = tempScene.add.tilemap(layer.__identifier, tileSize, tileSize, layer.__cWid, layer.__cHei);
     const mainTileset = map.addTilesetImage(tileset);
     
