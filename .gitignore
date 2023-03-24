@@ -26,4 +26,4 @@ generated
 !packages/api/internal/graph/generated
 .DS_Store
 pgdata
-tmp/*
+tmp

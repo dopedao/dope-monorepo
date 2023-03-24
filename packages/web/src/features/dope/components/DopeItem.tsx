@@ -25,7 +25,7 @@ const Bullet = ({ color }: BulletProps) => (
       min-width: 10px;
       border-radius: 50%;
       margin-right: 8px;
-      background-color: ${color};
+      background-color: ${color || '#fff'};
       // necessary when 'align-items: top' to ensure proper alignment with text
       margin-top: 4px;
     `}
@@ -61,7 +61,7 @@ const Item = ({
     <Bullet color={color} />
     <div
       css={css`
-        color: ${color};
+        color: ${color || '#fff'};
       `}
     >
       {name}

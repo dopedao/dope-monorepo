@@ -59,7 +59,10 @@ func SeedPaperWallets() error {
 		if err != nil {
 			return err
 		}
-		walletAddress := row[0].(string)
+		// This needs to be an EIP-55 compliant address
+		// or it causes issues for us down the line elsewhere.
+		walletAddress := common.HexToAddress(row[0].(string)).Hex()
+
 		log.Default().Printf("Adding %s", walletAddress)
 		err = db.Wallet.Create().
 			SetID(walletAddress).
@@ -75,7 +78,6 @@ func SeedPaperWallets() error {
 }
 
 // Assumes Wallets are already in the database, otherwise it does nothing.
-// If no wallets in place, call SeedPaperWallets
 func PaperBalances() {
 	ctx := context.Background()
 	db := dbprovider.Ent()

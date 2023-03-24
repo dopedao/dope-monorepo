@@ -6,7 +6,7 @@ main: ./cmd/jobServer
 
 env_variables:
   OPENSEA: secret://projects/803405501117/secrets/opensea/versions/2
-  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2
+  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/5
   NETWORK: mainnet
 
 # Manual scaling requires a "B" type instance

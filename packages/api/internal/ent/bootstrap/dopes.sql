@@ -8024,3 +8024,6 @@ INSERT INTO "public"."dopes" ("id", "order", "rank", "score") VALUES
 ('997', 997, 5392, 3),
 ('998', 998, 3449, 4),
 ('999', 999, 1996, 5);
+
+-- Ensure people dont get stung by resetting DB later on if dopes have been claimed
+UPDATE dopes SET claimed='t', opened='t';

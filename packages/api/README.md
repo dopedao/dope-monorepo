@@ -122,4 +122,5 @@ gcloud app deploy --appyaml app.mainnet.api.yaml
 gcloud app deploy --appyaml app.mainnet.indexer.yaml
 gcloud app deploy --appyaml app.mainnet.game.yaml
 gcloud app deploy --appyaml app.mainnet.jobs.yaml
+gcloud app deploy cron.yaml
 ```

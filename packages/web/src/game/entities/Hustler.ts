@@ -1,17 +1,13 @@
 import { createHustlerAnimations } from 'game/anims/HustlerAnimations';
 import HustlerAnimator from 'game/anims/HustlerAnimator';
-import { Base, Categories, CharacterCategories, SpritesMap } from 'game/constants/Sprites';
-import HustlerModel from 'game/gfx/models/HustlerModel';
-import SkewQuad from 'game/gfx/pipelines/SkewQuadPipeline';
 import EventHandler, { Events } from 'game/handlers/events/EventHandler';
 import GameScene from 'game/scenes/Game';
-import UIScene from 'game/scenes/UI';
 import { getBBcodeText } from 'game/ui/rex/RexUtils';
 import PathNavigator from 'game/world/PathNavigator';
 import PF from 'pathfinding';
-import { Animations, Types } from 'phaser';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
 import Toast from 'phaser3-rex-plugins/templates/ui/toast/Toast';
+import { API_URI } from 'utils/constants';
 
 export enum Direction {
   North = '_back',
@@ -119,7 +115,7 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
       if (!this.scene.textures.exists(key)) {
         this.scene.load.spritesheet(
           key,
-          `https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`,
+          `${API_URI[1]}/hustlers/${hustlerId}/sprites/composite.png`,
           { frameWidth: 60, frameHeight: 60 },
         );
         this.setDisplaySize(60, 60);

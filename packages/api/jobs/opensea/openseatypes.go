@@ -65,13 +65,13 @@ type AssetContract struct {
 	ExternalLink                string          `json:"external_link"`
 	ImageURL                    string          `json:"image_url"`
 	DefaultToFiat               bool            `json:"default_to_fiat"`
-	DevBuyerFeeBasisPoints      int64           `json:"dev_buyer_fee_basis_points"`
-	DevSellerFeeBasisPoints     int64           `json:"dev_seller_fee_basis_points"`
+	DevBuyerFeeBasisPoints      StringInt       `json:"dev_buyer_fee_basis_points"`
+	DevSellerFeeBasisPoints     StringInt       `json:"dev_seller_fee_basis_points"`
 	OnlyProxiedTransfers        bool            `json:"only_proxied_transfers"`
-	OpenseaBuyerFeeBasisPoints  int64           `json:"opensea_buyer_fee_basis_points"`
-	OpenseaSellerFeeBasisPoints int64           `json:"opensea_seller_fee_basis_points"`
-	BuyerFeeBasisPoints         int64           `json:"buyer_fee_basis_points"`
-	SellerFeeBasisPoints        int64           `json:"seller_fee_basis_points"`
+	OpenseaBuyerFeeBasisPoints  StringInt       `json:"opensea_buyer_fee_basis_points"`
+	OpenseaSellerFeeBasisPoints StringInt       `json:"opensea_seller_fee_basis_points"`
+	BuyerFeeBasisPoints         StringInt       `json:"buyer_fee_basis_points"`
+	SellerFeeBasisPoints        StringInt       `json:"seller_fee_basis_points"`
 	PayoutAddress               *common.Address `json:"payout_address"`
 }
 
@@ -87,8 +87,8 @@ type Collection struct {
 	CreatedDate                 string          `json:"created_date"`
 	DefaultToFiat               bool            `json:"default_to_fiat"`
 	Description                 string          `json:"description"`
-	DevBuyerFeeBasisPoints      string          `json:"dev_buyer_fee_basis_points"`
-	DevSellerFeeBasisPoints     string          `json:"dev_seller_fee_basis_points"`
+	DevBuyerFeeBasisPoints      StringInt       `json:"dev_buyer_fee_basis_points"`
+	DevSellerFeeBasisPoints     StringInt       `json:"dev_seller_fee_basis_points"`
 	DiscordURL                  string          `json:"discord_url"`
 	DisplayData                 *DisplayData    `json:"display_data"`
 	ExternalURL                 string          `json:"external_url"`
@@ -102,8 +102,8 @@ type Collection struct {
 	MediumUsername              interface{}     `json:"medium_username"`
 	Name                        string          `json:"name"`
 	OnlyProxiedTransfers        bool            `json:"only_proxied_transfers"`
-	OpenseaBuyerFeeBasisPoints  string          `json:"opensea_buyer_fee_basis_points"`
-	OpenseaSellerFeeBasisPoints string          `json:"opensea_seller_fee_basis_points"`
+	OpenseaBuyerFeeBasisPoints  StringInt       `json:"opensea_buyer_fee_basis_points"`
+	OpenseaSellerFeeBasisPoints StringInt       `json:"opensea_seller_fee_basis_points"`
 	PayoutAddress               *common.Address `json:"payout_address"`
 	RequireEmail                bool            `json:"require_email"`
 	ShortDescription            string          `json:"short_description"`

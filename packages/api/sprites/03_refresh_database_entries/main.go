@@ -4,14 +4,13 @@
 // Without this field updated the proper item sprite will not render
 // on the final sprite sheet.
 //
-// AUTH NOTES
+// # AUTH NOTES
 //
-// * For buckets, you have to auth with a json file as spelled out here
-//   https://cloud.google.com/docs/authentication/production
+//   - For buckets, you have to auth with a json file as spelled out here
+//     https://cloud.google.com/docs/authentication/production
 //
-// * For PGSQL you have to pass the db password to the script as first parameter like
-//   go run 03_refresh_database_sprite_entries.go DBPASSWORD
-//
+//   - For PGSQL you have to pass the db password to the script as first parameter like
+//     go run 03_refresh_database_sprite_entries/main.go DBPASSWORD
 package main
 
 import (
@@ -50,7 +49,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		println(attrs.Name)
+		fmt.Println(attrs.Name)
 
 		if !strings.Contains(attrs.Name, ".png") {
 			continue
@@ -83,6 +82,7 @@ func main() {
 
 			body.Sprite = bucketUrl + attrs.Name
 
+			fmt.Printf("id: %s, sprite: %s\n", id, body.Sprite)
 			if err := client.BodyPart.UpdateOneID(id).SetSprite(body.Sprite).Exec(ctx); err != nil {
 				log.Fatal(err)
 			}

@@ -20,7 +20,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 	"github.com/withtally/synceth/engine"
 )
 
@@ -56,7 +56,14 @@ type Ethereum struct {
 // Reads information from Ethereum and Optimism blockchains
 // and attempts to persist information about DOPE, PAPER, HUSTLERS, and GEAR
 func NewEthereumIndexer(ctx context.Context, entClient *ent.Client, config EthConfig) *Ethereum {
-	ctx, log := logger.LogFor(ctx)
+
+	// Tagged logger
+	ctx, log := logger.LogFor(
+		ctx,
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("Method", "NewEthereumIndexer")
+		},
+	)
 
 	retryableHTTPClient := retryablehttp.NewClient()
 	retryableHTTPClient.Logger = nil
@@ -66,7 +73,7 @@ func NewEthereumIndexer(ctx context.Context, entClient *ent.Client, config EthCo
 	}
 
 	if err := svgrender.InitRenderer(); err != nil {
-		log.Fatal().Msg("initializing svg-renderer")
+		log.Fatal().Msg("Initializing svg-renderer")
 	}
 
 	log.Info().Msgf("Starting client for %v", c)
@@ -103,6 +110,13 @@ func eventLogCommitter(
 	l types.Log,
 	committer func(tx *ent.Tx) error,
 ) func(tx *ent.Tx) error {
+	ctx, log := logger.LogFor(
+		ctx,
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("Method", "eventLogCommitter")
+		},
+	)
+
 	return func(tx *ent.Tx) error {
 		id := fmt.Sprintf("%s-%s-%d", c.Address.Hex(), l.TxHash.Hex(), l.Index)
 		// There's a unique index on the event table, so
@@ -136,13 +150,27 @@ func eventLogCommitter(
 
 			return fmt.Errorf("%v - eventLogCommitter: getting event log %s: %w", c.Name, id, err)
 		}
-		log.Warn().Msgf("%v – eventLogCommitter: duplicate event log %s", c.Name, id)
+		log.Warn().
+			Str("Contract", c.Name).
+			Str("Event Log ID", id).
+			Msg("Duplicate event log")
+
 		return committer(tx)
 	}
 }
 
 func (e *Ethereum) Sync(ctx context.Context) {
-	ctx, log := logger.LogFor(ctx)
+	// Tagged logger
+	ctx, log := logger.LogFor(
+		ctx,
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("Method", "Sync")
+		},
+	)
+
+	// log.Debug().
+	// 	Int("Number of Contracts", len(e.contracts)).
+	// 	Msg("Starting sync loop.")
 
 	defer e.ticker.Stop()
 
@@ -165,7 +193,10 @@ func (e *Ethereum) Sync(ctx context.Context) {
 					defer wg.Done()
 					syncErr := syncContract(ctx, contract, e, &numUpdates)
 					if syncErr != nil {
-						log.Fatal().Err(syncErr).Msgf("syncContract failed %s", contract.Name)
+						log.Fatal().
+							Err(syncErr).
+							Str("Contract", contract.Name).
+							Msg("syncContract failed")
 					}
 				}(contract)
 			}
@@ -174,7 +205,7 @@ func (e *Ethereum) Sync(ctx context.Context) {
 
 			if numUpdates > 0 {
 				if err := e.ent.RefreshSearchIndex(ctx); err != nil {
-					log.Err(err).Msgf("Refreshing search index.")
+					log.Err(err).Msg("Refreshing search index.")
 				}
 			}
 			numUpdates = 0
@@ -188,15 +219,29 @@ func (e *Ethereum) Sync(ctx context.Context) {
 func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdates *int) error {
 	_from := contract.StartBlock
 
+	ctx, log := logger.LogFor(
+		ctx,
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("Method", "syncContract")
+		},
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("Contract Name", contract.Name)
+		},
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("Contract Address", contract.Address.Hex())
+		},
+		func(zctx *zerolog.Context) zerolog.Context {
+			return zctx.Str("Block", fmt.Sprint(_from))
+		},
+	)
+
 	for {
 		_to := Min(e.latest, _from+blockLimit)
 
 		if _from > _to {
-			// No new blocks
+			// waiting for new blocks
 			break
 		}
-
-		log.Info().Msgf("Indexing %s from %d to %d.", contract.Name, _from, _to)
 
 		logs, err := e.eth.FilterLogs(ctx, ethereum.FilterQuery{
 			FromBlock: new(big.Int).SetUint64(_from),
@@ -227,8 +272,8 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 		}
 
 		_from = _to + 1
-		log.Debug().
-			Msgf("%v - Processed %v", contract.Name, _to)
+		// log.Debug().
+		// 	Msgf("%v - Processed %v", contract.Name, _to)
 
 		// Because we can have quite a few transactions to commit, this code
 		// can cause deadlocks. We chunk these into batches of 100 to avoid them.
@@ -237,36 +282,35 @@ func syncContract(ctx context.Context, contract *Contract, e *Ethereum, numUpdat
 		// and ensure it uses an Ent upsert operation.
 		txChunks := chunkTx(committers, txLimit)
 
-		log.Debug().Msgf("%v - %v Chunks with %v total transactions", contract.Name, len(txChunks), len(committers))
 		for _, committerChunk := range txChunks {
 			if err := ent.WithTx(ctx, e.ent, func(tx *ent.Tx) error {
-				log.Debug().Msgf(
-					"%v - block %v Committing %v changes",
-					contract.Name,
-					_from,
-					len(committerChunk))
+				log.Debug().
+					Msgf("Committing %v changes", len(committerChunk))
+
 				for _, c := range committerChunk {
 					if err := c(tx); err != nil {
-						log.Fatal().Err(err).Msgf("%s - FAIL committing transactions", contract.Name)
+						log.Fatal().
+							Err(err).
+							Msgf("Failed to commit transctions")
 						return err
 					}
 				}
-				log.Debug().Msgf(
-					"%v - block %v COMMITTED %v changes",
-					contract.Name,
-					_from,
-					len(committerChunk))
+
 				*numUpdates += len(committerChunk)
 				return nil
 			}); err != nil {
-				log.Err(err).Msgf("%s - FAIL Indexing contract", contract.Name)
+				log.Err(err).Msgf("FAIL Indexing contract")
 				return err
 			}
+			log.Debug().
+				Int("Changes", len(committers)).
+				Int("Chunks", len(txChunks)).
+				Msg("Committed changes")
 		}
 
 		// Update sync state only when we've successfully processed
 		// all the transactions above.
-		log.Debug().Msgf("%v - Updating sync state %v", contract.Name, _from)
+		log.Debug().Msgf("Saving %v SyncState as block %v", contract.Name, fmt.Sprint(_from))
 		if err := dbprovider.Ent().SyncState.
 			Create().
 			SetID(contract.Address.Hex()).

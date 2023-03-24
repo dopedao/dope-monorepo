@@ -5,6 +5,7 @@ package jobs
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math/big"
 	"sync"
@@ -36,8 +37,8 @@ func GearClaims() {
 	}
 
 	log.Default().Println("Getting all DOPE NFTs from database")
-	dopes, err := client.Dope.Query().All(ctx)
-	if err != nil {
+	dopes, dopeFindErr := client.Dope.Query().All(ctx)
+	if dopeFindErr != nil {
 		log.Fatal("Getting ethereum dopes.") //nolint:gocritic
 	}
 
@@ -55,6 +56,7 @@ func GearClaims() {
 			if err != nil {
 				log.Fatalf("Getting initiator balance: %+v.", err)
 			}
+			fmt.Printf("Dope %s is opened: %t", dope.ID, opened)
 			client.Dope.UpdateOneID(dope.ID).SetOpened(opened).ExecX(ctx)
 
 			<-sem

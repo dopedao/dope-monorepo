@@ -35,6 +35,9 @@ func init() {
 	dbConnection, drvErr = sql.Open(dialect.Postgres, connStr)
 	logger.LogFatalOnErr(drvErr, "Connecting to db")
 
+	dbConnection.DB().SetMaxIdleConns(10)
+	dbConnection.DB().SetMaxOpenConns(100)
+
 	// Load Ent client
 	entClient = ent.NewClient(ent.Driver(dbConnection))
 

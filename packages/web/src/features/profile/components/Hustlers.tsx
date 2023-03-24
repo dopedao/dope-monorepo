@@ -119,41 +119,45 @@ const Hustlers = ({ searchValue }: { searchValue?: string | null }) => {
 
               return (
                 <ProfileCard key={id}>
-                  <ProfileCardHeader>
-                    {formattedType} #{id}
-                  </ProfileCardHeader>
-                  <PanelBody>
-                    {svg && (
-                      <AspectRatio ratio={1}>
-                        <Link href={`/hustlers/${id}`} passHref>
-                          <Image
-                            alt={name || 'Hustler'}
-                            borderRadius="md"
-                            src={svg}
-                            cursor="pointer"
-                          />
-                        </Link>
-                      </AspectRatio>
-                    )}
-                    <Table variant="small">
-                      <Tr>
-                        <Td>Name:</Td>
-                        <Td>{name?.trim().length !== 0 ? name : `Hustler #${id}`}</Td>
-                      </Tr>
-                      {title && (
-                        <Tr>
-                          <Td>Title:</Td>
-                          <Td>{title}</Td>
-                        </Tr>
-                      )}
-                      {/* For spacing if no OG title */}
-                      {!title && (
-                        <Tr>
-                          <Td colSpan={2}>&nbsp;</Td>
-                        </Tr>
-                      )}
-                    </Table>
-                  </PanelBody>
+                  <Link href={`/hustlers/${id}`} passHref>
+                    <a>
+                      <ProfileCardHeader>
+                        <a>
+                          {formattedType} #{id}
+                        </a>
+                      </ProfileCardHeader>
+                      <PanelBody>
+                        {svg && (
+                          <AspectRatio ratio={1}>
+                            <Image
+                              alt={name || 'Hustler'}
+                              borderRadius="md"
+                              src={svg}
+                              cursor="pointer"
+                            />
+                          </AspectRatio>
+                        )}
+                        <Table variant="small">
+                          <Tr>
+                            <Td>Name:</Td>
+                            <Td>{name?.trim().length !== 0 ? name : `Hustler #${id}`}</Td>
+                          </Tr>
+                          {title && (
+                            <Tr>
+                              <Td>Title:</Td>
+                              <Td>{title}</Td>
+                            </Tr>
+                          )}
+                          {/* For spacing if no OG title */}
+                          {!title && (
+                            <Tr>
+                              <Td colSpan={2}>&nbsp;</Td>
+                            </Tr>
+                          )}
+                        </Table>
+                      </PanelBody>
+                    </a>
+                  </Link>
                   <HustlerFooter id={id} />
                 </ProfileCard>
               );

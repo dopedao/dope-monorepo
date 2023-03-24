@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func makeGetRequest(url string) []byte {
+func MakeGetRequest(url string) []byte {
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("accept", "application/json")
 
@@ -24,7 +24,7 @@ func makeGetRequest(url string) []byte {
 	return body
 }
 
-func makePostRequest(url string, payload []byte) []byte {
+func MakePostRequest(url string, payload []byte) []byte {
 	req, _ := http.NewRequest("POST", url, bytes.NewReader(payload))
 	req.Header.Add("accept", "application/json")
 	req.Header.Add("content-type", "application/json")

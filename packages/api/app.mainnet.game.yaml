@@ -5,7 +5,7 @@ service: game
 main: ./cmd/gameServer
 
 env_variables:
-  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2
+  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/5
   NETWORK: mainnet
   # This is not a secret, as it only identifies our Firebase project
   # Firebase security rules should be used if we use other services.
@@ -18,7 +18,7 @@ manual_scaling:
 # Need this to connect to CloudSQL or DB connection will fail
 # https://cloud.google.com/sql/docs/mysql/connect-app-engine-flexible
 beta_settings:
-  cloud_sql_instances: dopewars-live:us-central1:dopewars
+  cloud_sql_instances: dopewars-live:us-central1:dopewars-new
 
 resources:
   cpu: 1

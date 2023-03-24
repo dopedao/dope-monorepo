@@ -9,10 +9,23 @@ import (
 )
 
 var _ = g.Namespace("db", func() {
-	g.Desc("bootstrap", "Boostraps the database using ENT models")
+	g.Desc("bootstrap", "Boostraps the database using ENT models. DOES NOT SET EVERYTHING SEE COMMENTS ON THIS METHOD")
 	g.Add("bootstrap", func(c *g.Context) error {
+		fmt.Println("BOOTSTRAPPING DATABASE")
 		b.Bootstrap()
 		g.Run("paper:seed_wallets", c)
+		g.Run("gear:set_metrics", c)
+		g.Run("gear:sync_claims", c)
+		// WARNING TODO:
+		//
+		// This does not set everything, like the "sprite sheet" for each body_part
+		// in the system. There is a separate script that does that.
+		//
+		// THINGS WILL BREAK IF YOU RUN THIS WITHOUT RUNNING THAT SCRIPT
+		// Meaning, our MMO might not show characters, or the website "flex"
+		// page might not show an animation at all.
+		//
+		// g.Run("hustlers:sync", c)
 		return nil
 	})
 
@@ -25,7 +38,6 @@ var _ = g.Namespace("db", func() {
 		}
 		dbprovider.RunMigration(c)
 		dbprovider.RefreshMaterializedViews(c)
-		fmt.Println("BOOTSTRAPPING DATABASE")
 		g.Run("db:bootstrap", c)
 		return nil
 	})

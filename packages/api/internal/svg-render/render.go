@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/rs/zerolog"
 )
 
 type ImageBounds struct {
@@ -27,6 +29,10 @@ type Rect struct {
 }
 
 func decodeImage(image string, offset string) (DecodedImage, error) {
+	if len(image) == 0 {
+		return DecodedImage{}, fmt.Errorf("empty data")
+	}
+
 	regex := regexp.MustCompile("^0x")
 	data := regex.ReplaceAllString(image, "")
 
@@ -107,7 +113,7 @@ func decodeImage(image string, offset string) (DecodedImage, error) {
 }
 
 func BuildSVG(parts []string, bgColor string,
-	textColor string, title string, subtitle string, zoomWindow [4]*big.Int, resolution int) (string, error) {
+	textColor string, title string, subtitle string, zoomWindow [4]*big.Int, resolution int, log *zerolog.Logger) string {
 	step := 320 / resolution
 
 	w := big.NewInt(320).String()
@@ -132,7 +138,10 @@ func BuildSVG(parts []string, bgColor string,
 
 		decodeImage, err := decodeImage(p, offset)
 		if err != nil {
-			return "", fmt.Errorf("decoding part %v", p)
+			log.Err(err).
+				Str("decoging part", p)
+
+			continue
 		}
 
 		currentX := decodeImage.bounds.left
@@ -158,7 +167,7 @@ func BuildSVG(parts []string, bgColor string,
 	svgWithoutEndTag.WriteString("</svg>")
 	svg := svgWithoutEndTag.String()
 
-	return svg, nil
+	return svg
 }
 
 /* Unused for now

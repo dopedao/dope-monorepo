@@ -18,10 +18,12 @@ import HustlerFlexNavBar from 'features/hustlers/components/HustlerFlexNavBar';
 import HustlerMugShot from 'features/hustlers/components/HustlerMugShot';
 import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
 import LoadingBlock from 'components/LoadingBlock';
+import NakedHustlerWarning from 'features/dope/components/NakedHustlerWarning';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
 import { BigNumber } from 'ethers';
+import { API_URI } from 'utils/constants';
 
 // We receive things like 'FEMALE-BODY-2' from the API
 const getBodyIndexFromMetadata = (bodyStringFromApi?: string) => {
@@ -130,7 +132,7 @@ const Flex = () => {
     <AppWindow padBody={true} navbar={<HustlerFlexNavBar />} scrollable>
       <Head
         title={`Dope Wars Hustler Flex`}
-        ogImage={`https://api.dopewars.gg/hustlers/${hustlerId}/sprites/composite.png`}
+        ogImage={`${API_URI[1]}/hustlers/${hustlerId}/sprites/composite.png`}
       />
       {isLoading && <LoadingBlock />}
       {!isLoading && itemRles && (
@@ -182,33 +184,41 @@ const Flex = () => {
               </Grid>
             </PanelBody>
           </PanelContainer>
-          <PanelContainer>
-            <ProfileCardHeader>Equipped Gear</ProfileCardHeader>
-            <PanelBody
-              css={css`
-                background-color: var(--gray-800);
-                flex: 2;
-              `}
-            >
-              {items?.map(({ id, name, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
-                return (
-                  <DopeItem
-                    key={id}
-                    name={name}
-                    namePrefix={namePrefix}
-                    nameSuffix={nameSuffix}
-                    suffix={suffix}
-                    augmented={augmented}
-                    type={type}
-                    color={DopeLegendColors[tier]}
-                    isExpanded={true}
-                    tier={tier}
-                    showRarity={true}
-                  />
-                );
-              })}
-            </PanelBody>
-          </PanelContainer>
+          {items.length == 0 && (
+            <NakedHustlerWarning />
+          )}
+          {items.length > 0 && (
+            <PanelContainer>
+              <ProfileCardHeader>Equipped Gear</ProfileCardHeader>
+              <PanelBody
+                css={css`
+                  background-color: var(--gray-800);
+                  flex: 2;
+                `}
+              >
+                {items.length > 0 &&
+                  items?.map(
+                    ({ id, name, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
+                      return (
+                        <DopeItem
+                          key={id}
+                          name={name}
+                          namePrefix={namePrefix}
+                          nameSuffix={nameSuffix}
+                          suffix={suffix}
+                          augmented={augmented}
+                          type={type}
+                          color={DopeLegendColors[tier]}
+                          isExpanded={true}
+                          tier={tier}
+                          showRarity={true}
+                        />
+                      );
+                    },
+                  )}
+              </PanelBody>
+            </PanelContainer>
+          )}
           {items?.map(item => {
             return (
               <GearCard

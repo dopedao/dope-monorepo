@@ -8,9 +8,9 @@ export const useFetchData = <TData, TVariables>(
   const { chainId } = useWeb3React();
 
   //   Default to mainnet, contextually update if chainid is supported chain
-  let url = API_URI[1];
+  let url = API_URI[1]+'/query';
   if (chainId == 1 || chainId == 10 || chainId == 42 || chainId == 69) {
-    url = API_URI[chainId];
+    url = API_URI[chainId]+'/query';
   }
 
   return async (variables?: TVariables) => {

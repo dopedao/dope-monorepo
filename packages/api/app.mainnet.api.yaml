@@ -4,5 +4,5 @@ runtime: go118
 main: ./cmd/apiServer
 
 env_variables:
-  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/2
+  PG_CONNSTR: secret://projects/803405501117/secrets/pg-connstr/versions/5
   NETWORK: mainnet

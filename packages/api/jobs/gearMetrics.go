@@ -2,138 +2,160 @@ package jobs
 
 import (
 	"context"
-	"log"
+	"math/big"
 	"math/rand"
+	"os"
 	"sort"
 	"sync"
 	"time"
 
+	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/hashicorp/go-retryablehttp"
+	"github.com/rs/zerolog"
 )
 
-// var componentType = map[item.Type]uint8{
-// 	item.TypeWEAPON:    0,
-// 	item.TypeCLOTHES:   1,
-// 	item.TypeVEHICLE:   2,
-// 	item.TypeWAIST:     3,
-// 	item.TypeFOOT:      4,
-// 	item.TypeHAND:      5,
-// 	item.TypeDRUGS:     6,
-// 	item.TypeNECK:      7,
-// 	item.TypeRING:      8,
-// 	item.TypeACCESSORY: 9,
-// }
+var componentType = map[item.Type]uint8{
+	item.TypeWEAPON:    0,
+	item.TypeCLOTHES:   1,
+	item.TypeVEHICLE:   2,
+	item.TypeWAIST:     3,
+	item.TypeFOOT:      4,
+	item.TypeHAND:      5,
+	item.TypeDRUGS:     6,
+	item.TypeNECK:      7,
+	item.TypeRING:      8,
+	item.TypeACCESSORY: 9,
+}
 
 func GearMetrics() {
 	ctx := context.Background()
-	client := dbprovider.Ent()
+	// Tagged logger
+	// _, log := logger.LogFor(
+	// 	os.Stderr,
+	// 	func(zctx *zerolog.Context) zerolog.Context {
+	// 		return zctx.Str("Job", "GearMetrics")
+	// 	})
+	log := zerolog.New(os.Stderr)
+	dbClient := dbprovider.Ent()
 
-	// retryableHTTPClient := retryablehttp.NewClient()
-	// c, err := rpc.DialHTTPWithClient("https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
-	// if err != nil {
-	// 	log.Fatal("Dialing ethereum rpc.") //nolint:gocritic
-	// }
-
-	// eth := ethclient.NewClient(c)
-
-	// components, err := bindings.NewComponents(common.HexToAddress("0xe03C4eb2a0a797766a5DB708172e04f6A970DC7f"), eth)
-	// if err != nil {
-	// 	log.Fatalf("Creating Components bindings: %+v", err)
-	// }
-
-	// var greatnesses sync.Map
-	// var occurences sync.Map
-
-	// var wg sync.WaitGroup
-	// wg.Add(8000 * 9)
-
-	// for _, dope := range dopes {
-	// 	for _, item := range dope.Edges.Items {
-	// 		go func(dope *ent.Dope, item *ent.Item) {
-	// 			r := rand.Intn(180)
-	// 			time.Sleep(time.Duration(r) * time.Second)
-
-	// 			id, ok := new(big.Int).SetString(dope.ID, 10)
-	// 			if !ok {
-	// 				log.Fatalf("Parsing dope id: %+v", dope.ID)
-	// 			}
-
-	// 			_, greatness, err := components.Seed(nil, id, componentType[item.Type])
-	// 			if err != nil {
-	// 				log.Fatalf("Getting item greatness %+v", dope.ID)
-	// 			}
-
-	// 			greatnesses.Store(item.ID, int(greatness.Int64()))
-	// 			occur, ok := occurences.Load(item.ID)
-	// 			if !ok {
-	// 				occur = 0
-	// 			}
-	// 			occurences.Store(item.ID, occur.(int)+1)
-
-	// 			wg.Done()
-	// 		}(dope, item)
-	// 	}
-	// }
-
-	// wg.Wait()
-
-	// wg.Add(8000 * 9)
-	// occurences.Range(func(key interface{}, value interface{}) bool {
-	// 	go func(key string, value int) {
-	// 		r := rand.Intn(180)
-	// 		time.Sleep(time.Duration(r) * time.Second)
-
-	// 		cur, ok := greatnesses.Load(key)
-	// 		if !ok {
-	// 			log.Fatal("Loading greatness")
-	// 		}
-	// 		client.Item.UpdateOneID(key).SetCount(value).SetGreatness(cur.(int)).ExecX(ctx)
-	// 		println("Updating item", key)
-	// 		wg.Done()
-	// 	}(key.(string), value.(int))
-	// 	return true
-	// })
-
-	// wg.Wait()
-
-	items, err := client.Item.Query().All(ctx)
+	retryableHTTPClient := retryablehttp.NewClient()
+	c, err := rpc.DialHTTPWithClient("https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG", retryableHTTPClient.StandardClient())
 	if err != nil {
-		log.Fatal("getting items")
+		log.Fatal().Err(err).Msg("Dialing ethereum rpc.") //nolint:gocritic
 	}
 
+	eth := ethclient.NewClient(c)
+
+	components, err := bindings.NewComponents(common.HexToAddress("0xe03C4eb2a0a797766a5DB708172e04f6A970DC7f"), eth)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Creating Components bindings")
+	}
+
+	var greatnesses sync.Map
+	var occurrences sync.Map
+
 	var wg sync.WaitGroup
-	wg.Add(len(items))
+
+	log.Info().Msg("Getting dopes")
+	dopes, dopeFindErr := dbClient.Dope.Query().All(ctx)
+	if dopeFindErr != nil {
+		log.Fatal().Err(err).Msg("getting dopes")
+	}
+	log.Info().Msgf("Found %d dopes", len(dopes))
+
+	for _, dope := range dopes {
+		log.Info().Msgf("Getting item greatness for dope %s", dope.ID)
+		for _, item := range dope.Edges.Items {
+			wg.Add(1)
+			go func(dope *ent.Dope, item *ent.Item) {
+				r := rand.Intn(180)
+				time.Sleep(time.Duration(r) * time.Second)
+
+				id, ok := new(big.Int).SetString(dope.ID, 10)
+				if !ok {
+					log.Fatal().Msgf("Parsing dope id: %+v", dope.ID)
+				}
+				log.Debug().Msgf("Getting item greatness for dope %s, item %s", dope.ID, item.ID)
+				_, greatness, err := components.Seed(nil, id, componentType[item.Type])
+				if err != nil {
+					log.Fatal().Msgf("Getting item greatness %+v", dope.ID)
+				}
+
+				greatnesses.Store(item.ID, int(greatness.Int64()))
+				occur, ok := occurrences.Load(item.ID)
+				if !ok {
+					occur = 0
+				}
+				occurrences.Store(item.ID, occur.(int)+1)
+
+				wg.Done()
+			}(dope, item)
+		}
+	}
+	wg.Wait()
+
+	log.Info().Msg("Setting count and greatness for items")
+	occurrences.Range(func(key interface{}, value interface{}) bool {
+		wg.Add(1)
+		log.Debug().Msgf("Setting count and greatness for item %s", key)
+		go func(key string, value int) {
+			r := rand.Intn(180)
+			time.Sleep(time.Duration(r) * time.Second)
+
+			log.Debug().Msgf("Setting count and greatness for item %s", key)
+			cur, ok := greatnesses.Load(key)
+			if !ok {
+				log.Fatal().Msgf("Loading greatness")
+			}
+			dbClient.Item.UpdateOneID(key).SetCount(value).SetGreatness(cur.(int)).ExecX(ctx)
+			println("Updating item", key)
+			wg.Done()
+		}(key.(string), value.(int))
+		return true
+	})
+	wg.Wait()
+
+	items, err := dbClient.Item.Query().All(ctx)
+	if err != nil {
+		log.Fatal().Msgf("getting items")
+	}
+
+	log.Info().Msg("Setting tier for items")
+
+	// Don't want to overload database connections
+	concurrency := 50
+	sem := make(chan bool, concurrency)
+
 	for _, itm := range items {
+		sem <- true
+		log.Debug().Msgf("Setting tier for item %s", itm.ID)
 
 		go func(itm *ent.Item) {
-			r := rand.Intn(200)
-			time.Sleep(time.Duration(r) * time.Second)
+			defer func() { <-sem }()
 
 			switch g := itm.Greatness; {
 			case g > 19:
-				client.Item.UpdateOneID(itm.ID).SetTier(item.TierBLACK_MARKET).ExecX(ctx)
+				dbClient.Item.UpdateOneID(itm.ID).SetTier(item.TierBLACK_MARKET).ExecX(ctx)
 			case g == 19:
-				client.Item.UpdateOneID(itm.ID).SetTier(item.TierCUSTOM).ExecX(ctx)
+				dbClient.Item.UpdateOneID(itm.ID).SetTier(item.TierCUSTOM).ExecX(ctx)
 			case g > 14:
-				client.Item.UpdateOneID(itm.ID).SetTier(item.TierRARE).ExecX(ctx)
+				dbClient.Item.UpdateOneID(itm.ID).SetTier(item.TierRARE).ExecX(ctx)
 			default:
-				client.Item.UpdateOneID(itm.ID).SetTier(item.TierCOMMON).ExecX(ctx)
+				dbClient.Item.UpdateOneID(itm.ID).SetTier(item.TierCOMMON).ExecX(ctx)
 			}
-			wg.Done()
 		}(itm)
 	}
 
-	wg.Wait()
-
-	dopes, err := client.Dope.Query().WithItems().All(ctx)
-	if err != nil {
-		log.Fatalf("Getting dopes: %+v", err)
-	}
-
+	log.Info().Msg("Setting rank and score for dopes")
 	for _, dope := range dopes {
 		score := 0
+		log.Debug().Msgf("Setting rank and score for dope %s", dope.ID)
 		for _, itm := range dope.Edges.Items {
 
 			switch itm.Tier {
@@ -153,8 +175,8 @@ func GearMetrics() {
 	})
 
 	for i, dope := range dopes {
-		client.Dope.UpdateOneID(dope.ID).SetRank(i).SetScore(dope.Score).ExecX(ctx)
+		dbClient.Dope.UpdateOneID(dope.ID).SetRank(i).SetScore(dope.Score).ExecX(ctx)
 		println("Updating dope:", dope.ID)
 	}
-	log.Default().Println("DONE: GearMetrics")
+	log.Info().Msg("DONE: GearMetrics")
 }
