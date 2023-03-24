@@ -255,7 +255,7 @@ export default class GameScene extends Scene {
 
         this.initiateItemEntities(data);
 
-        this.initializeGame(data);
+        this.initializeGame();
     });
 
     this.loadingSpinner = this.add.reactDom(loadingSpinner);
