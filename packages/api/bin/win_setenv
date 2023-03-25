@@ -16,7 +16,7 @@ conf=
 default_gcloud_cred_path="C:/Users/$user/.config/gcloud/application_default_credentials.json"
 default_firebase_path="C:/Users/$user/Desktop/dope-monorepo/firebase-adminsdk.json"
 default_game_server_port=6060
-default_web_api_port=7070
+default_web_api_port=8080
 # This is not a secret, as it only identifies our Firebase project
 # Firebase security rules should be used if we use other services.
 # Sensitive things are protected via Service Account permissions.

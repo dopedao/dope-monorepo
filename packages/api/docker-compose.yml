@@ -74,6 +74,8 @@ services:
       - dopenet
     volumes:
       - db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
 
   redis:
     image: redis:7.0.2
