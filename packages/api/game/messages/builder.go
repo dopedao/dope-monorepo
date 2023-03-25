@@ -2,6 +2,7 @@ package messages
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/dopedao/dope-monorepo/packages/api/game/events"
 )
@@ -29,6 +30,10 @@ func (mb *MessageBuilder) Data(unserialized any) *MessageBuilder {
 		return mb
 	}
 
+	if mb.baseMessage == nil {
+		mb.baseMessage = &BaseMessage{}
+	}
+
 	mb.baseMessage.Data = d
 
 	return mb
@@ -53,7 +58,13 @@ type BroadcastBuilder struct {
 }
 
 func NewBroadcast() *BroadcastBuilder {
-	return &BroadcastBuilder{}
+	return &BroadcastBuilder{
+		broadcast: &BroadcastMessage{
+			Message: BaseMessage{
+				Data: []byte{},
+			},
+		},
+	}
 }
 
 func (bb *BroadcastBuilder) Event(event events.Event) *BroadcastBuilder {
@@ -63,10 +74,18 @@ func (bb *BroadcastBuilder) Event(event events.Event) *BroadcastBuilder {
 }
 
 func (bb *BroadcastBuilder) Data(unserialized any) *BroadcastBuilder {
+	if bb == nil || bb.broadcast == nil {
+		log.Println("BroadcastBuilder or Broadcast is nil")
+		return bb
+	}
+
+	if bb.broadcast.Message.Data == nil {
+		bb.broadcast.Message.Data = []byte{}
+	}
+
 	d, err := json.Marshal(unserialized)
 	if err != nil {
 		bb.err = err
-
 		return bb
 	}
 
