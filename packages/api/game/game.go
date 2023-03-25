@@ -139,8 +139,8 @@ func (g *Game) HandleGameMessages(ctx context.Context, client *ent.Client, conn 
 				whitelisted := false
 
 				// whitelist if og, enable in case of events
-				// hustlerId, _ := strconv.ParseInt(data.HustlerId, 10, 32)
-				// whitelisted = hustlerId <= 500
+				hustlerId, _ := strconv.ParseInt(data.HustlerId, 10, 32)
+				whitelisted = hustlerId <= 500
 
 				if !whitelisted {
 					for _, addr := range WHITELISTED_WALLETS {
