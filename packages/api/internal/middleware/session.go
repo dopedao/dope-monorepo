@@ -12,9 +12,8 @@ import (
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
-
+	"github.com/aquilax/truncate"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/gorilla/sessions"
 	"github.com/jiulongw/siwe-go"
 )
@@ -64,32 +63,18 @@ func SessionFor(ctx context.Context) SessionContext {
 func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 	_, log := logger.LogFor(ctx)
 
-	log.Debug().Msg("authentication starts")
+	log.Debug().
+		Str("Client", fmt.Sprintf("%v", client)).
+		Str("Context", fmt.Sprintf("%v", ctx)).
+		Msg("Start Auth")
 
-	sc := SessionFor(ctx)
-	session, err := sc.Get(Key)
+	jwtIDToken, err := Token(ctx)
 	if err != nil {
-		log.Err(err).Msgf("get session key error")
+		log.Err(err).Msg("JWT session IDToken not found")
 		return false
 	}
 
-	// Retrieve the session cookie from the session
-	sessionCookie, ok := session.Values["wallet"]
-	if !ok {
-		log.Debug().Msg("session cookie not found in session")
-		return false
-	}
-
-	// Convert sessionCookie from interface{} to string
-	sessionCookieStr, ok := sessionCookie.(string)
-	if !ok {
-		log.Debug().Msg("session cookie is not a string")
-		return false
-	}
-
-	log.Debug().Msgf("sessionCookie = %v\n ", sessionCookieStr)
-
-	if err := FirebaseVerify(ctx, client, sessionCookieStr); err != nil {
+	if err := FirebaseVerify(ctx, client, jwtIDToken); err != nil {
 		log.Err(err).Msgf("verify error")
 		return false
 	}
@@ -97,16 +82,19 @@ func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 	return true
 }
 
-// wallet address
-func SetWallet(ctx context.Context, wallet string) error {
+// Store WalletAddress and JWT Token from firebase in session.
+func SetWalletAndToken(ctx context.Context, walletAddress string, jwtToken string) error {
 	sc := SessionFor(ctx)
+	_, log := logger.LogFor(ctx)
+	log.Debug().Str("Wallet", walletAddress).Msg("SetWallet")
+
 	session, err := sc.Get(Key)
 	if err != nil {
 		return err
 	}
 
-	//hack: make address eip-55 compliant
-	session.Values["wallet"] = common.HexToAddress(wallet).Hex()
+	session.Values["wallet"] = walletAddress
+	session.Values["token"] = jwtToken
 
 	if err := sc.Save(session); err != nil {
 		return err
@@ -142,7 +130,10 @@ func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (stri
 		return "", err
 	}
 
-	log.Debug().Msg(fmt.Sprintf("token = %v", token))
+	log.Debug().
+		Str("Claims", fmt.Sprintf("%v", claims)).
+		// Str("Token", token).
+		Msg("Got token")
 
 	if apikey == "" {
 		return "", fmt.Errorf("no api key provided")
@@ -163,7 +154,6 @@ func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (stri
 	}
 
 	body := bytes.NewBuffer(data)
-
 	req, err := http.NewRequest(http.MethodPost, url, body)
 	if err != nil {
 		return "", err
@@ -181,6 +171,9 @@ func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (stri
 	if err != nil {
 		return "", err
 	}
+	log.Debug().
+		Str("data", string(data)).
+		Msg("data")
 
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("failed to sign in user [%v] [%v]", resp.StatusCode, string(data))
@@ -229,14 +222,41 @@ func FirebaseVerify(ctx context.Context, client *auth.Client, sessionCookie stri
 	return nil
 }
 
+// Session "wallet" should contain wallet address of user
 func Wallet(ctx context.Context) (string, error) {
+	_, log := logger.LogFor(ctx)
+
 	sc := SessionFor(ctx)
 	session, err := sc.Get(Key)
 	if err != nil {
 		return "", err
 	}
 
-	token := session.Values["wallet"]
+	walletAddress := session.Values["wallet"]
+	log.Debug().
+		Str("wallet", fmt.Sprintf("%v", walletAddress)).
+		Msg("middleware.Wallet")
+
+	return walletAddress.(string), nil
+}
+
+// Returns stored JWT IDToken from session
+func Token(ctx context.Context) (string, error) {
+	_, log := logger.LogFor(ctx)
+
+	sc := SessionFor(ctx)
+	session, err := sc.Get(Key)
+	if err != nil {
+		return "", err
+	}
+
+	token := session.Values["token"]
+
+	truncatedIDToken := truncate.Truncate(token.(string), 10, "...", truncate.PositionEnd)
+	log.Debug().
+		Str("Session Token", truncatedIDToken).
+		Msg("middleware.Token")
+
 	if token == nil {
 		return "", errors.New("unauthorized")
 	}
