@@ -10,7 +10,7 @@ import Hustler, { Direction } from '../Hustler';
 import Player from './Player';
 
 export default class PlayerController {
-  private mainKeys!: {[key: string]: Phaser.Input.Keyboard.Key};
+  private mainKeys!: { [key: string]: Phaser.Input.Keyboard.Key };
   private arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
   private _player: Player;
 
@@ -24,12 +24,26 @@ export default class PlayerController {
   constructor(player: Player) {
     this._player = player;
 
-    this.arrows = player.scene.input.keyboard.createCursorKeys();
-    this.mainKeys = player.scene.input.keyboard.addKeys(ControlsManager.getInstance().playerKeys) as {[key: string]: Phaser.Input.Keyboard.Key};
-    ControlsManager.getInstance().emitter.on(ControlsEvents.PLAYER_KEYS_UPDATED, (newKeys: PlayerKeys) => {
-      Object.values(this.mainKeys).forEach((key: Phaser.Input.Keyboard.Key) => this.player.scene.input.keyboard.removeKey(key));
-      this.mainKeys = player.scene.input.keyboard.addKeys(newKeys) as {[key: string]: Phaser.Input.Keyboard.Key};
-    });
+    const kb = player.scene.input.keyboard;
+    if (!kb) { return }
+
+    this.arrows = kb.createCursorKeys();
+    this.mainKeys = kb.addKeys(
+      ControlsManager.getInstance().playerKeys,
+    ) as { [key: string]: Phaser.Input.Keyboard.Key };
+    ControlsManager.getInstance().emitter.on(
+      ControlsEvents.PLAYER_KEYS_UPDATED,
+      (newKeys: PlayerKeys) => {
+        for (const key of Object.values(this.mainKeys)) {
+          if (key) {
+            this?.player?.scene?.input?.keyboard?.removeKey(key);
+          }
+        }
+        this.mainKeys = kb?.addKeys(newKeys) as {
+          [key: string]: Phaser.Input.Keyboard.Key;
+        };
+      },
+    );
   }
 
   update() {
@@ -45,7 +59,9 @@ export default class PlayerController {
     // get rid of previous velocity if pathfinder is not active
     if (!this.player.navigator.target) this.player.setVelocity(0);
 
-    const joyStick: VirtualJoyStick | undefined = (this._player.scene.scene.get('UIScene') as UIScene).joyStick;
+    const joyStick: VirtualJoyStick | undefined = (
+      this._player.scene.scene.get('UIScene') as UIScene
+    ).joyStick;
 
     let willMoveFlag = false;
     if (this.mainKeys.up.isDown || this.arrows.up.isDown || joyStick?.up) {

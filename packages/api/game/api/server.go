@@ -25,9 +25,9 @@ var (
 )
 
 func NewServer(ctx context.Context, network string) (http.Handler, error) {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 
-	log.Debug().Msg("Starting Game Server [NEW SERVER]")
+	log.Info().Msg("Starting Game Server [NEW SERVER]")
 
 	r := mux.NewRouter()
 	r.Use(middleware.Session(middleware.Store))

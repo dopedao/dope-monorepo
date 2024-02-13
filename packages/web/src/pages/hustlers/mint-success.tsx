@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
-import { Alert, Button, Image, HStack } from '@chakra-ui/react';
+import { useAccount } from 'wagmi';
+import { Box, Alert, Button, Image, HStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import styled from '@emotion/styled';
 import { media } from 'ui/styles/mixins';
 import { getRandomNumber } from 'utils/utils';
 import Head from 'components/Head';
 import WebAmpPlayer from 'components/WebAmpPlayer';
-import { useController, useHustler } from 'hooks/contracts';
+import { useAddressFromContract, useController, useHustler } from 'hooks/contracts';
 
 const MASTHEADS = [
   'dope.svg',
@@ -197,10 +197,11 @@ const ScreenSaver = styled.div<{ image: string }>`
 `;
 
 const MintSuccess = () => {
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
   const [hasTransfered, setHasTransfered] = useState(false);
   const hustler = useHustler();
   const controller = useController();
+  const controllerAddress = useAddressFromContract(controller);
   const [gangstaParty, setGangstaParty] = useState(false);
 
   const image = gangstaParty ? 'bridge_with_hustlers.png' : 'bridge_no_hustlers.png';
@@ -210,14 +211,14 @@ const MintSuccess = () => {
   }, []);
 
   // TransferSingle(operator, from, to, id, value)
-  const filter = hustler.filters.TransferSingle(controller.address, controller.address, account);
+  // const filter = hustler.filters.TransferSingle(controllerAddress, controllerAddress, account);
 
-  useEffect(() => {
-    hustler.on(filter, listener);
-    return () => {
-      hustler.off(filter, listener);
-    };
-  }, [hustler, listener, filter]);
+  // useEffect(() => {
+  //   hustler.on(filter, listener);
+  //   return () => {
+  //     hustler.off(filter, listener);
+  //   };
+  // }, [hustler, listener, filter]);
 
   return (
     <>
@@ -232,9 +233,9 @@ const MintSuccess = () => {
                   return (
                     <li key={`plug-${index}`}>
                       <a href={plug.link} target={plug.name}>
-                        {plug.prefix ? <div className="prefix">&quot;{plug.prefix}&quot;</div> : ''}
+                        {plug.prefix ? <Box className="prefix">&quot;{plug.prefix}&quot;</Box> : ''}
                         {plug.name}
-                        {plug.suffix ? <div className="suffix">&quot;{plug.suffix}&quot;</div> : ''}
+                        {plug.suffix ? <Box className="suffix">&quot;{plug.suffix}&quot;</Box> : ''}
                       </a>
                     </li>
                   );
@@ -251,7 +252,7 @@ const MintSuccess = () => {
             </MastheadContainer>
             <AlertContainer>
               <Alert status="success">
-                <div>
+                <Box>
                   {hasTransfered ? (
                     <p>Your Hustler has made its way to the Optimism network!</p>
                   ) : (
@@ -259,7 +260,7 @@ const MintSuccess = () => {
                       Your Hustler is making their way to the Optimism network.
                       <br />
                       <br />
-                      It could take up to 15 minutes for that to happen. In the meantime, lets get
+                      It could take up a few minutes for that to happen. In the meantime, lets get
                       it crackin homie…
                     </p>
                   )}
@@ -270,7 +271,7 @@ const MintSuccess = () => {
                   >
                     Gangsta Party
                   </Button>
-                </div>
+                </Box>
               </Alert>
             </AlertContainer>
           </>
@@ -285,13 +286,11 @@ const MintSuccess = () => {
         width="100%"
         justifyContent="end"
       >
-        <Link href="/inventory" passHref>
-          <a target="your-squad" rel="noreferrer">
-            <Button>Peep Your Squad</Button>
-          </a>
+        <Link href="/swap-meet/inventory" passHref target="your-squad" rel="noreferrer">
+          <Button>Peep Your Squad</Button>
         </Link>
-        <Link href="/dope" passHref>
-          <Button variant="primary">Initiate Another Hustler</Button>
+        <Link href="/" passHref>
+          <Button variant="primary">Mint Another Hustler</Button>
         </Link>
       </HStack>
     </>

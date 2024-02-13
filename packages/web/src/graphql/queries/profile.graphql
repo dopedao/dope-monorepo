@@ -1,5 +1,5 @@
-query ProfileDopes($where: DopeWhereInput, $first: Int, $after: Cursor) {
-  dopes(where: $where, first: $first, after: $after) {
+query ProfileDopes($where: DopeWhereInput, $orderBy: DopeOrder, $first: Int, $after: Cursor) {
+  dopes(where: $where, first: $first, after: $after, orderBy: $orderBy) {
     totalCount
     edges {
       node {
@@ -9,6 +9,7 @@ query ProfileDopes($where: DopeWhereInput, $first: Int, $after: Cursor) {
         score
         claimed
         opened
+        bestAskPriceEth
         items {
           id
           fullname
@@ -28,8 +29,8 @@ query ProfileDopes($where: DopeWhereInput, $first: Int, $after: Cursor) {
   }
 }
 
-query ProfileHustlers($where: HustlerWhereInput, $first: Int, $after: Cursor) {
-  hustlers(where: $where, first: $first, after: $after) {
+query ProfileHustlers($where: HustlerWhereInput, $orderBy: HustlerOrder, $first: Int, $after: Cursor) {
+  hustlers(where: $where, first: $first, after: $after, orderBy: $orderBy) {
     totalCount
     edges {
       node {
@@ -38,6 +39,7 @@ query ProfileHustlers($where: HustlerWhereInput, $first: Int, $after: Cursor) {
         svg
         title
         type
+        bestAskPriceEth
       }
     }
     pageInfo {
@@ -55,6 +57,7 @@ query ProfileGear($where: WalletItemsWhereInput, $first: Int, $after: Cursor) {
         id
         balance
         item {
+          bestAskPriceEth
           id
           count
           fullname

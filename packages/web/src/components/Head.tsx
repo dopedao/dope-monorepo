@@ -30,6 +30,9 @@ const Head = ({ title, description, url, ogImage }: HeadProps) => (
     <meta property="og:image:secure_url" content={ogImage || defaultOGImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    {/* https://nextjs.org/docs/messages/react-hydration-error#common-ios-issues */}
+    <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
+    <meta property="reservoir:title" content="Dope Wars Swap Meet" />
   </NextHead>
 );
 

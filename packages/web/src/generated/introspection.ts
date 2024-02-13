@@ -7,21 +7,21 @@
       const result: PossibleTypesResultData = {
   "possibleTypes": {
     "Node": [
-      "Amount",
       "BodyPart",
       "Dope",
+      "Event",
+      "GameHustler",
+      "GameHustlerItem",
+      "GameHustlerQuest",
+      "GameHustlerRelation",
       "Hustler",
       "Item",
-      "Listing",
+      "Search",
+      "SyncState",
       "Wallet",
       "WalletItems"
     ],
     "SearchResult": [
-      "Dope",
-      "Hustler",
-      "Item"
-    ],
-    "Token": [
       "Dope",
       "Hustler",
       "Item"

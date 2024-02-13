@@ -1,4 +1,4 @@
-import { HStack, Spacer, Button, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, HStack, Spacer, Button, SimpleGrid, Text } from "@chakra-ui/react";
 import ControlsManager from "game/utils/ControlsManager";
 import React, { useEffect } from "react";
 
@@ -45,7 +45,7 @@ const Controls = () => {
     }, [controlsManager, selectedKey]);
 
     return (
-        <div>
+        <Box>
             <Text fontSize="2xl" paddingBottom="0px">
                 Player
             </Text>
@@ -62,7 +62,7 @@ const Controls = () => {
                 <Key keyName="Chat" keyCode={controlsManager.chatKey} selectedKey={selectedKey} onSelect={setSelectedKey} />
                 <Key keyName="Settings" keyCode={controlsManager.settingsKey} selectedKey={selectedKey} onSelect={setSelectedKey} />
             </SimpleGrid>
-        </div>
+        </Box>
     )
 }
 

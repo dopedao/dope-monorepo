@@ -6,7 +6,10 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "jsxImportSource": "@emotion/react",
+    // https://github.com/chakra-ui/chakra-ui/issues/7526#issuecomment-1639639156
+    "types": [
+      "@emotion/react/types/css-prop"
+    ],
     "lib": [
       "dom",
       "dom.iterable",
@@ -18,7 +21,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "es5",
+    "target": "es2022",
     "incremental": true
   },
   "include": [

@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Image } from '@chakra-ui/react';
+import { Box, Image } from '@chakra-ui/react';
 
 type IconProps = {
   icon?: string;
@@ -10,7 +10,7 @@ type IconProps = {
 
 const DesktopWindowTitleButton = ({ icon, title, clickAction, children }: IconProps) => {
   return (
-    <div
+    <Box
       onClick={() => clickAction()}
       title={title}
       css={css`
@@ -34,7 +34,7 @@ const DesktopWindowTitleButton = ({ icon, title, clickAction, children }: IconPr
     >
       {icon && <Image src={`/images/icon/${icon}.svg`} alt={icon} width={16} height={16} />}
       {children}
-    </div>
+    </Box>
   );
 };
 

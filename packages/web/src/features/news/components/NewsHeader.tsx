@@ -89,7 +89,7 @@ const NewsHeader = ({
 
       <Box textAlign="right" paddingRight="20px">
         <Flex height="100%" align="center" justify="center" gap="0">
-          <div>
+          <Box>
             <Text fontSize="md" paddingBottom="0px" textTransform="uppercase">
               {new Date().getHours() > 12 ? 'Evening' : 'Morning'} EDITION
             </Text>
@@ -98,7 +98,7 @@ const NewsHeader = ({
               paddingBottom={0}
               textTransform="uppercase"
             >{`${$paper} $paper`}</Text>
-          </div>
+          </Box>
         </Flex>
       </Box>
     </Flex>

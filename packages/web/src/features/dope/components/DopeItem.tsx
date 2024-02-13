@@ -1,24 +1,13 @@
 import { css } from '@emotion/react';
-
-export type ItemProps = {
-  name: string;
-  namePrefix?: string | null;
-  nameSuffix?: string | null;
-  suffix?: string | null;
-  augmented?: boolean | null;
-  type: string;
-  color?: string;
-  tier?: string;
-  isExpanded: boolean;
-  showRarity: boolean;
-};
+import { Box } from '@chakra-ui/react';
+import { Item } from 'generated/graphql';
 
 type BulletProps = {
   color?: string;
 };
 
 const Bullet = ({ color }: BulletProps) => (
-  <div
+  <Box
     css={css`
       height: 10px;
       width: 10px;
@@ -29,22 +18,31 @@ const Bullet = ({ color }: BulletProps) => (
       // necessary when 'align-items: top' to ensure proper alignment with text
       margin-top: 4px;
     `}
-  ></div>
+  />
 );
 
-const Item = ({
+export type ItemProps = Pick<
+  Item,
+  'name' | 'namePrefix' | 'nameSuffix' | 'suffix' | 'augmented' | 'type' | 'tier'
+> & {
+  color?: string;
+  isExpanded: boolean;
+  showRarity: boolean;
+};
+
+const DopeItem = ({
   name,
   namePrefix,
   nameSuffix,
   suffix,
   augmented,
   type,
-  color,
   tier,
+  color,
   isExpanded,
   showRarity,
 }: ItemProps) => (
-  <div
+  <Box
     css={css`
       display: ${isExpanded ? 'flex' : 'inline-block'};
       align-items: top;
@@ -59,12 +57,11 @@ const Item = ({
     `}
   >
     <Bullet color={color} />
-    <div
+    <Box
       css={css`
         color: ${color || '#fff'};
       `}
     >
-      {name}
       {isExpanded && (
         <>
           <span
@@ -74,20 +71,21 @@ const Item = ({
           >
             {augmented ? ' +1' : ''}
           </span>
-          <div
+          <Box
             css={css`
               color: #888;
               padding-right: 4px;
             `}
           >
+            {name}
             {namePrefix ? `${namePrefix} ${nameSuffix} ` : ' '}
             {suffix}
-          </div>
+          </Box>
         </>
       )}
-    </div>
+    </Box>
     {isExpanded && (
-      <div
+      <Box
         css={css`
           color: #888;
           margin-left: auto;
@@ -99,9 +97,9 @@ const Item = ({
         {`${
           showRarity && tier?.toLowerCase() !== 'common' ? tier?.toString().replace('_', ' ') : ''
         } ${type}`}
-      </div>
+      </Box>
     )}
-  </div>
+  </Box>
 );
 
-export default Item;
+export default DopeItem;

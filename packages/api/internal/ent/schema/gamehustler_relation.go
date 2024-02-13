@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -26,6 +25,6 @@ func (GameHustlerRelation) Edges() []ent.Edge {
 			From("hustler", GameHustler.Type).
 			Ref("relations").
 			Unique().
-			Annotations(entgql.Bind()),
+			Annotations(),
 	}
 }

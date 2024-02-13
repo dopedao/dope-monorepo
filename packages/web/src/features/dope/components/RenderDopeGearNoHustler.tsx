@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { AspectRatio } from '@chakra-ui/layout';
-import { BigNumber } from 'ethers';
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { hexColorToBase16 } from 'utils/utils';
@@ -12,7 +11,7 @@ type Metadata = {
   image: string;
 };
 
-const RenderDope = ({ itemIds }: { itemIds?: BigNumber[] }) => {
+const RenderDope = ({ itemIds }: { itemIds?: bigint[] }) => {
   const bgColor = DEFAULT_BG_COLORS[1];
   const [json, setJson] = useState<Metadata>();
   const [itemRles, setItemRles] = useState<string[]>([]);

@@ -1,25 +1,11 @@
 query DopeListing($where: DopeWhereInput) {
-  dopes(where: $where) {
+  dopes(where: { bestAskPriceEthGT: 0 }) {
     totalCount
     edges {
       cursor
       node {
         id
-        listings {
-          wyvernOrder {
-            maker
-            v
-            r
-            s
-            makerRelayerFee
-            makerProtocolFee
-            currentPrice
-            expirationTime
-            listingTime
-            salt
-            calldata
-          }
-        }
+        bestAskPriceEth
       }
     }
   }

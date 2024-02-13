@@ -1,5 +1,5 @@
 overwrite: true
-schema: ${NEXT_PUBLIC_DOPEWARS_API:https://testnet.api.dopewars.gg/query}
+schema: ${NEXT_PUBLIC_API_URL}/query
 documents: "src/**/*.graphql"
 generates:
   src/generated/graphql.ts:
@@ -9,6 +9,7 @@ generates:
       - "typescript-react-query"
     config:
       addInfiniteQuery: true
+      reactQueryVersion: 5
       fetcher:
         func: hooks/fetcher#useFetchData
         isReactHook: true

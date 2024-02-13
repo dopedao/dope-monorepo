@@ -3,15 +3,14 @@ import Section from './Section';
 import Dopes from './Dopes';
 import Gear from './Gear';
 import Hustlers from './Hustlers';
+import Listings from './Listings';
 import { useDebounce } from 'usehooks-ts';
-import { ChangeEvent, useState, useEffect } from 'react';
-import useQueryParam from 'hooks/use-query-param';
-const SECTIONS = ['Hustlers', 'Gear', 'Dope'];
+import { ChangeEvent, useState } from 'react';
+import useQueryParam from 'hooks/useQueryParam';
 
 const Profile = () => {
-  const [section, setSection] = useQueryParam('section', SECTIONS[0]);
-  const [searchValue, setSearchValue] = useQueryParam('q', '');
-  const debouncedSearchValue = useDebounce<string>(searchValue, 250);
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebounce<string>(searchValue, 1500);
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -53,15 +52,10 @@ const Profile = () => {
           )}
         </InputGroup>
       </Stack>
-      <Accordion
-        allowToggle
-        defaultIndex={SECTIONS.findIndex(val => val === section)}
-        onChange={idx => {
-          if (idx == -1) return;
-          const sectionIdx = Array.isArray(idx) ? idx[0] : idx;
-          setSection(SECTIONS[sectionIdx]);
-        }}
-      >
+      <Accordion allowToggle defaultIndex={0}>
+        <Section>
+          <Listings />
+        </Section>
         <Section>
           <Hustlers searchValue={debouncedSearchValue} />
         </Section>

@@ -16,7 +16,7 @@ func TestEquipmentSlot(t *testing.T) {
 		t.Fatalf("Connecting eth rpc: %+v", err)
 	}
 
-	item, err := equipmentSlot(ctx, eth, "0", hustlerAddr, weaponSlot, big.NewInt(1063637))
+	item, err := equipmentSlot(ctx, eth, "0", weaponSlot, big.NewInt(1063637))
 	if err != nil {
 		t.Fatalf("Getting equipment slot: %+v", err)
 	}

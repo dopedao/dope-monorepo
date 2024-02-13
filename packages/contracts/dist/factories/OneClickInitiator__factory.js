@@ -178,10 +178,10 @@ var OneClickInitiator__factory = /** @class */ (function () {
     function OneClickInitiator__factory() {
     }
     OneClickInitiator__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    OneClickInitiator__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    OneClickInitiator__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     OneClickInitiator__factory.abi = _abi;
     return OneClickInitiator__factory;

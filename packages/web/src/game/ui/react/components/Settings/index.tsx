@@ -9,7 +9,7 @@ import { ethers } from "ethers";
 import Hustlers from "./Hustlers";
 import Controls from "./Controls";
 import Music from "./Music";
-
+import { Box } from '@chakra-ui/react';
 
 interface Props {
     game: GameScene;
@@ -65,14 +65,14 @@ export default function Settings(props: Props) {
                     borderColor: "black",
                 }}>
                     {
-                        openedPage ? <div>
+                        openedPage ? <Box>
                             <Center>
                                 <Heading>
                                     {openedPage.name}
                                 </Heading>
                             </Center>
                             {<openedPage.component />}
-                        </div> : <VStack>
+                        </Box> : <VStack>
                         <Heading>
                             Settings
                         </Heading>

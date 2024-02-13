@@ -184,12 +184,12 @@ export default class HustlerModel {
     // instantiate a new gameobject
     if (this.sprites[category]) {
       const sprite = this.sprites[category];
-      if ((this as any)[field] != undefined) {
+      if ((this as any)[field] !== undefined) {
         if (!sprite.visible) sprite.setVisible(true);
 
         sprite.setTexture(
           (this.BASE_MAP[category] as { [key: number]: string })[(this as any)[field]],
-          this.hustler.anims.currentFrame.index,
+          this.hustler.anims.currentFrame?.index, // Added null check for currentFrame
         );
       }
       // if the sprite type is undefined, then just set the gameobjects visibility to false
@@ -202,7 +202,7 @@ export default class HustlerModel {
           this.hustler.x,
           this.hustler.y,
           (this.BASE_MAP[category] as { [key: number]: string })[(this as any)[field]],
-          this.hustler.anims.currentFrame.index,
+          this.hustler.anims.currentFrame?.index,
         )
         .setScale(this.hustler.scaleX, this.hustler.scaleY);
     }
@@ -217,7 +217,7 @@ export default class HustlerModel {
             this.hustler.x,
             this.hustler.y,
             this.BASE_MAP[CharacterCategories.Clothes][c],
-            this.hustler.anims.currentFrame.index,
+            this.hustler.anims.currentFrame?.index,
           )
           .setScale(this.hustler.scaleX, this.hustler.scaleY),
       );
@@ -257,13 +257,13 @@ export default class HustlerModel {
       );
 
     // Face
-    if (this.hair != undefined)
+    if (this.hair !== undefined)
       this.sprites[CharacterCategories.Hair] = this.hustler.scene.add.sprite(
         this.hustler.x,
         this.hustler.y,
         this.BASE_MAP[CharacterCategories.Hair][this.hair],
       );
-    if (this.beard != undefined)
+    if (this.beard !== undefined)
       this.sprites[CharacterCategories.Beard] = this.hustler.scene.add.sprite(
         this.hustler.x,
         this.hustler.y,
@@ -271,39 +271,39 @@ export default class HustlerModel {
       );
 
     // Accessories
-    if (this.feet != undefined)
+    if (this.feet !== undefined)
       this.sprites[CharacterCategories.Feet] = this.hustler.scene.add.sprite(
         this.hustler.x,
         this.hustler.y,
         this.BASE_MAP[CharacterCategories.Feet][this.feet],
       );
-    if (this.hands != undefined)
+    if (this.hands !== undefined)
       this.sprites[CharacterCategories.Hands] = this.hustler.scene.add.sprite(
         this.hustler.x,
         this.hustler.y,
         this.BASE_MAP[CharacterCategories.Hands][this.hands],
       );
-    // if (this.mask != undefined)
+    // if (this.mask !== undefined)
     //     this.sprites[CharacterCategories.Mask] = this.hustler.scene.add.sprite(this.hustler.x, this.hustler.y, this.BASE_MAP[CharacterCategories.Mask][this.mask]);
-    if (this.waist != undefined)
+    if (this.waist !== undefined)
       this.sprites[CharacterCategories.Waist] = this.hustler.scene.add.sprite(
         this.hustler.x,
         this.hustler.y,
         this.BASE_MAP[CharacterCategories.Waist][this.waist],
       );
-    if (this.necklace != undefined)
+    if (this.necklace !== undefined)
       this.sprites[CharacterCategories.Necklace] = this.hustler.scene.add.sprite(
         this.hustler.x,
         this.hustler.y,
         this.BASE_MAP[CharacterCategories.Necklace][this.necklace],
       );
-    if (this.ring != undefined)
+    if (this.ring !== undefined)
       this.sprites[CharacterCategories.Ring] = this.hustler.scene.add.sprite(
         this.hustler.x,
         this.hustler.y,
         this.BASE_MAP[CharacterCategories.Ring][this.ring],
       );
-    if (this.weapon != undefined)
+    if (this.weapon !== undefined)
       this.sprites[CharacterCategories.Weapons] = this.hustler.scene.add.sprite(
         this.hustler.x,
         this.hustler.y,
@@ -341,7 +341,7 @@ export default class HustlerModel {
   // cancel sprites animation
   stopSpritesAnim(delay: boolean = true) {
     const stop = (sprite: Phaser.GameObjects.Sprite) => {
-      sprite.anims.currentAnim && !sprite.anims.currentFrame.isLast
+      sprite.anims.currentAnim && !sprite.anims.currentFrame?.isLast
         ? sprite.anims.setCurrentFrame(sprite.anims.currentAnim.getLastFrame())
         : null;
 

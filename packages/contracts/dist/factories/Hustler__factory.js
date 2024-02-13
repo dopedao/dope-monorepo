@@ -1015,10 +1015,10 @@ var Hustler__factory = /** @class */ (function () {
     function Hustler__factory() {
     }
     Hustler__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    Hustler__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    Hustler__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     Hustler__factory.abi = _abi;
     return Hustler__factory;

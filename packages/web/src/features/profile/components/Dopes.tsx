@@ -1,10 +1,18 @@
-import { FC, useMemo } from 'react';
-import { Button, HStack } from '@chakra-ui/react';
-import { useWeb3React } from '@web3-react/core';
-
+import { useMemo } from 'react';
+import { Button, HStack, Text } from '@chakra-ui/react';
+import { useAccount } from 'wagmi';
+import { REFETCH_INTERVAL } from 'utils/constants';
 import DopeCard from 'features/dope/components/DopeCard';
+import Dialog from 'components/Dialog';
 
-import { Dope, Item, useInfiniteProfileDopesQuery } from 'generated/graphql';
+import {
+  Dope,
+  DopeOrder,
+  DopeOrderField,
+  Item,
+  OrderDirection,
+  useInfiniteProfileDopesQuery,
+} from 'generated/graphql';
 
 import CardContainer from './CardContainer';
 import SectionContent from './SectionContent';
@@ -34,7 +42,7 @@ type DopeData = {
 };
 
 const Dopes = ({ searchValue }: { searchValue: string }) => {
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileDopesQuery(
     {
       where: {
@@ -52,17 +60,24 @@ const Dopes = ({ searchValue }: { searchValue: string }) => {
           },
         ],
       },
-      first: 50,
+      orderBy: {
+        field: DopeOrderField.BestAskPrice,
+        direction: OrderDirection.Asc,
+      },
+      first: 100,
     },
     {
+      queryKey: ['profile-dopes', account, searchValue],
+      initialPageParam: { after: null },
       getNextPageParam: lastPage => {
         if (lastPage.dopes.pageInfo.hasNextPage) {
-          return {
-            after: lastPage.dopes.pageInfo.endCursor,
-          };
+          return { after: lastPage.dopes.pageInfo.endCursor };
         }
-        return false;
+        return null;
       },
+      // refresh faster since it's hard to invalidate this data
+      // will update the ui faster and feel snappier
+      refetchInterval: REFETCH_INTERVAL / 3,
     },
   );
 
@@ -82,7 +97,7 @@ const Dopes = ({ searchValue }: { searchValue: string }) => {
           ...result.dopes,
           ...page.dopes.edges.reduce((result, edge) => {
             if (!edge?.node) return result;
-            return [...result, edge.node];
+            return result.concat(edge.node as ProfileDope);
           }, [] as ProfileDope[]),
         ],
       };
@@ -109,7 +124,13 @@ const Dopes = ({ searchValue }: { searchValue: string }) => {
             </CardContainer>
           </>
         ) : (
-          <span>No DOPE found</span>
+          <Dialog backgroundCss="">
+            <Text fontSize="medium">No DOPE in the connected wallet.</Text>
+            <Text>
+              If you&apos;ve recently transferred something it might take a few moments for it to
+              show here.
+            </Text>
+          </Dialog>
         )}
       </SectionContent>
     </>

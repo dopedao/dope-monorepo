@@ -859,10 +859,10 @@ var Paper__factory = /** @class */ (function () {
     function Paper__factory() {
     }
     Paper__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    Paper__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    Paper__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     Paper__factory.abi = _abi;
     return Paper__factory;

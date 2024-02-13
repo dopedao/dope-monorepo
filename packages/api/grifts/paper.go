@@ -10,7 +10,8 @@ import (
 var _ = g.Namespace("paper", func() {
 	g.Desc("seed_wallets", "Inserts Wallet records into the DB for each Ethereum address that has ever received PAPER")
 	g.Add("seed_wallets", func(c *g.Context) error {
-		err := jobs.SeedPaperWallets()
+		spw := jobs.SeedPaperWallets{}
+		err := spw.Run()
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
@@ -19,17 +20,20 @@ var _ = g.Namespace("paper", func() {
 
 	g.Desc("sync_balances", "Syncs PAPER Balances for all Wallets")
 	g.Add("sync_balances", func(c *g.Context) error {
-		err := jobs.SeedPaperWallets()
+		sb := jobs.SeedPaperWallets{}
+		err := sb.Run()
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
-		jobs.PaperBalances()
+		pb := jobs.PaperBalances{}
+		pb.Run()
 		return nil
 	})
 
 	g.Desc("sync_claims", "Syncs PAPER Claim status for DOPE NFTs")
 	g.Add("sync_claims", func(c *g.Context) error {
-		jobs.PaperClaims()
+		pc := jobs.PaperClaims{}
+		pc.Run()
 		return nil
 	})
 

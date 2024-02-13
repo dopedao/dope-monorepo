@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
+import HustlerSpriteSheetWalk from 'features/hustlers/components/HustlerSpriteSheetWalk';
 import DesktopWindow from 'components/DesktopWindow';
 import { Box } from '@chakra-ui/react';
 

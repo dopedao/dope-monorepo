@@ -9,8 +9,11 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-func ensureWalletExists(ctx context.Context, tx *ent.Tx, addr common.Address) error {
-	if err := tx.Wallet.Create().
+func ensureWalletExists(
+	ctx context.Context,
+	addr common.Address) error {
+
+	if err := dbClient.Wallet.Create().
 		SetID(addr.Hex()).
 		OnConflictColumns(wallet.FieldID).
 		DoNothing().

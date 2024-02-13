@@ -3,7 +3,7 @@ import Container from 'features/swap-meet/components/Container';
 
 const LoadingState = () => (
   <Container>
-    <LoadingBlock />
+    <LoadingBlock maxRows={5} />
   </Container>
 );
 

@@ -13,8 +13,7 @@ import (
 
 func SvgHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		_, log := logger.LogFor(ctx)
+		log := logger.Log
 
 		vars := mux.Vars(r)
 		id := vars["id"]

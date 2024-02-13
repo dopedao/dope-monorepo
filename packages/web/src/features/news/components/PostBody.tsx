@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
+import { Box } from '@chakra-ui/react';
 
 type PostBodyProps = {
   content: string;
 };
 
 const PostBody = ({ content }: PostBodyProps) => (
-  <div className="markdownContainer markdown">
-    <div dangerouslySetInnerHTML={{ __html: content }} />
-  </div>
+  <Box className="markdownContainer markdown">
+    <Box dangerouslySetInnerHTML={{ __html: content }} />
+  </Box>
 );
 
 export default PostBody;

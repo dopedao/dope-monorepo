@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { ReactNode } from 'react';
+import { Box } from '@chakra-ui/react';
 
 const AppWindowNavBar = ({
   children,
@@ -9,7 +10,7 @@ const AppWindowNavBar = ({
   showBorder?: boolean;
 }) => {
   return (
-    <div
+    <Box
       id="app-title-bar_nav-items"
       css={css`
         position: relative;
@@ -34,7 +35,7 @@ const AppWindowNavBar = ({
           white-space: nowrap;
           padding: 0px 24px;
         }
-        a.active {
+        .active {
           text-decoration: none;
           background: #fff;
           color: #000;
@@ -72,7 +73,7 @@ const AppWindowNavBar = ({
       `}
     >
       {children}
-    </div>
+    </Box>
   );
 };
 

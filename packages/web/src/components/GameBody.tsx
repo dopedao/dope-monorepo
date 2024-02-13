@@ -1,15 +1,18 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { IonPhaser } from '@ion-phaser/react';
-import DesktopWindow from 'components/DesktopWindow';
-import Phaser from 'phaser';
-import { useGame } from 'hooks/useGame';
+import { Box } from '@chakra-ui/react';
 import { defaultGameConfig } from 'game/constants/GameConfig';
-import { useWeb3React } from '@web3-react/core';
-import ConnectWallet from './ConnectWallet';
+import { IonPhaser } from '@ion-phaser/react';
+import { useGame } from 'hooks/useGame';
+import { useAccount } from 'wagmi';
+import Account from './web3account/Account';
+import DesktopWindow from 'components/DesktopWindow';
 import DialogSwitchNetwork from './DialogSwitchNetwork';
+import Phaser from 'phaser';
+import React, { useState, useRef, useEffect } from 'react';
+import { useContextualChainId } from 'hooks/web3';
 
 export default function GameBody(props: { gameConfig?: Phaser.Types.Core.GameConfig }) {
-  const { account, chainId } = useWeb3React();
+  const chainId = useContextualChainId();
+  const { address: account } = useAccount();
   const gameRef = useRef<HTMLDivElement>(null);
 
   const game = useGame(
@@ -58,11 +61,17 @@ export default function GameBody(props: { gameConfig?: Phaser.Types.Core.GameCon
         }
       }}
     >
-      {!account ? <ConnectWallet /> : onProperNetwork ? <div
-        id="game-parent"
-        style={{ overflow: 'hidden', width: '100%', height: '100%' }}
-        ref={gameRef}
-      ></div> : <DialogSwitchNetwork networkName="Ethereum" />}
+      {!account ? (
+        <Account />
+      ) : onProperNetwork ? (
+        <Box
+          id="game-parent"
+          style={{ overflow: 'hidden', width: '100%', height: '100%' }}
+          ref={gameRef}
+        />
+      ) : (
+        <DialogSwitchNetwork networkName="Ethereum" />
+      )}
     </DesktopWindow>
   );
 }

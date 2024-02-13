@@ -1,6 +1,6 @@
-import { Button, Center, ChakraProvider, VStack } from '@chakra-ui/react';
+import { Box, Button, Center, ChakraProvider, VStack } from '@chakra-ui/react';
 import DesktopWindow from 'components/DesktopWindow';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import theme from 'ui/styles/theme';
 
 const queryClient = new QueryClient({
@@ -15,7 +15,7 @@ const queryClient = new QueryClient({
 export default function ConnectionLostWindow() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div
+      <Box
         style={{
           position: 'absolute',
           top: '50%',
@@ -27,7 +27,7 @@ export default function ConnectionLostWindow() {
       >
         <ChakraProvider theme={theme}>
           <DesktopWindow title="You've been disconnected">
-            <div style={{ backgroundColor: '#FF3F3F', height: '100%' }}>
+            <Box style={{ backgroundColor: '#FF3F3F', height: '100%' }}>
               <VStack height="100%" align="center" justify="center" spacing="4">
                 <h1
                   style={{
@@ -45,10 +45,10 @@ export default function ConnectionLostWindow() {
                   Reconnect
                 </Button>
               </VStack>
-            </div>
+            </Box>
           </DesktopWindow>
         </ChakraProvider>
-      </div>
+      </Box>
     </QueryClientProvider>
   );
 }

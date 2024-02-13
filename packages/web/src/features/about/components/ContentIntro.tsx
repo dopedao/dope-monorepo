@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import MarkdownText from 'components/MarkdownText';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
+import { Box } from '@chakra-ui/react';
 
 const ContentIntro = () => {
   const content = `
@@ -33,12 +34,12 @@ Dope Wars is also an experiment in decentralized project finance and governance 
         }
       `}
     >
-      <div
+      <Box
         css={css`
           background-image: url(/images/game/map/nyc-hustler-walk.gif);
           background-size: 600%;
         `}
-      ></div>
+      ></Box>
       <MarkdownText text={content} />
     </StackedResponsiveContainer>
   );

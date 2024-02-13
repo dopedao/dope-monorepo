@@ -1,17 +1,10 @@
-import { useWeb3React } from '@web3-react/core';
-
-import { API_URI } from 'utils/constants';
+import { MAINNET_API_URL } from 'utils/constants';
+import { useContextualChainId } from 'hooks/web3';
 
 export const useFetchData = <TData, TVariables>(
   query: string,
 ): ((variables?: TVariables) => Promise<TData>) => {
-  const { chainId } = useWeb3React();
-
-  //   Default to mainnet, contextually update if chainid is supported chain
-  let url = API_URI[1]+'/query';
-  if (chainId == 1 || chainId == 10 || chainId == 42 || chainId == 69) {
-    url = API_URI[chainId]+'/query';
-  }
+  const url = `${MAINNET_API_URL}/query`;
 
   return async (variables?: TVariables) => {
     const res = await fetch(url, {
@@ -29,6 +22,7 @@ export const useFetchData = <TData, TVariables>(
 
     if (json.errors) {
       const { message } = json.errors[0] || 'Error..';
+      console.error(message);
       throw new Error(message);
     }
 

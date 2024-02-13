@@ -1,51 +1,36 @@
 import { useMemo } from 'react';
-import { Stack, Image, HStack, Button, Table, Tr, Td } from '@chakra-ui/react';
-import { AspectRatio } from '@chakra-ui/layout';
-import { useWeb3React } from '@web3-react/core';
-import Link from 'next/link';
-
-import PanelBody from 'components/PanelBody';
-import { Hustler, HustlerType, useInfiniteProfileHustlersQuery } from 'generated/graphql';
+import { HStack, Button, Text } from '@chakra-ui/react';
+import { useAccount } from 'wagmi';
+import { Hustler, HustlerHustlerType, useInfiniteProfileHustlersQuery } from 'generated/graphql';
+import Dialog from 'components/Dialog';
 
 import ItemCount from './ItemCount';
-import ProfileCardHeader from './ProfileCardHeader';
-import ProfileCard from './ProfileCard';
 import SectionContent from './SectionContent';
 import SectionHeader from './SectionHeader';
 import CardContainer from './CardContainer';
 import LoadingBlock from 'components/LoadingBlock';
-import PanelFooter from 'components/PanelFooter';
 
-type ProfileHustler = Pick<Hustler, 'id' | 'name' | 'svg' | 'title' | 'type'>;
+import HustlerProfileCard from 'features/hustlers/components/HustlerProfileCard';
+
+import { NETWORK, OPT_CHAIN_ID, REFETCH_INTERVAL } from 'utils/constants';
+const chainId = parseInt(OPT_CHAIN_ID);
+// @ts-ignore
+const contractAddress = NETWORK[chainId].contracts.hustlers;
+
+// type ProfileHustler = Pick<Hustler, 'id' | 'name' | 'svg' | 'title' | 'type' | 'bestAskPriceEth'>;
+
+type ProfileHustler = Partial<Hustler>;
 
 type HustlerData = {
   hustlers: ProfileHustler[];
   totalCount: number;
 };
 
-const formatType = (type: HustlerType): string => {
-  if (type === HustlerType.OriginalGangsta) return 'OG';
-
-  return 'Hustler';
-};
-
-const HustlerFooter = ({ id }: { id: string }) => (
-  <PanelFooter>
-    <div></div>
-    <Link href={`/hustlers/${id}`} passHref>
-      <Button>Flex</Button>
-    </Link>
-    <Link href={`/hustlers/${id}/customize`} passHref>
-      <Button variant="primary">Customize</Button>
-    </Link>
-  </PanelFooter>
-);
-
 const Hustlers = ({ searchValue }: { searchValue?: string | null }) => {
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
 
   // If we don't do this unnamed hustlers won't show up
-  if (searchValue?.trim.length === 0) {
+  if (searchValue?.trim().length === 0) {
     searchValue = null;
   }
 
@@ -65,14 +50,17 @@ const Hustlers = ({ searchValue }: { searchValue?: string | null }) => {
       first: 50,
     },
     {
+      queryKey: ['profile-hustlers', account, searchValue],
+      initialPageParam: { after: null },
       getNextPageParam: lastPage => {
         if (lastPage.hustlers.pageInfo.hasNextPage) {
-          return {
-            after: lastPage.hustlers.pageInfo.endCursor,
-          };
+          return { after: lastPage.hustlers.pageInfo.endCursor };
         }
-        return false;
+        return null;
       },
+      // refresh faster since it's hard to invalidate this data
+      // will update the ui faster and feel snappier
+      refetchInterval: REFETCH_INTERVAL / 3,
     },
   );
 
@@ -93,7 +81,7 @@ const Hustlers = ({ searchValue }: { searchValue?: string | null }) => {
           ...page.hustlers.edges.reduce((result, edge) => {
             if (!edge?.node) return result;
 
-            return [...result, edge.node];
+            return result.concat(edge.node);
           }, [] as ProfileHustler[]),
         ],
       };
@@ -114,59 +102,28 @@ const Hustlers = ({ searchValue }: { searchValue?: string | null }) => {
       >
         {hustlerData.hustlers.length ? (
           <CardContainer>
-            {hustlerData.hustlers.map(({ id, name, svg, title, type }) => {
-              const formattedType = formatType(type);
-
-              return (
-                <ProfileCard key={id}>
-                  <Link href={`/hustlers/${id}`} passHref>
-                    <a>
-                      <ProfileCardHeader>
-                        <a>
-                          {formattedType} #{id}
-                        </a>
-                      </ProfileCardHeader>
-                      <PanelBody>
-                        {svg && (
-                          <AspectRatio ratio={1}>
-                            <Image
-                              alt={name || 'Hustler'}
-                              borderRadius="md"
-                              src={svg}
-                              cursor="pointer"
-                            />
-                          </AspectRatio>
-                        )}
-                        <Table variant="small">
-                          <Tr>
-                            <Td>Name:</Td>
-                            <Td>{name?.trim().length !== 0 ? name : `Hustler #${id}`}</Td>
-                          </Tr>
-                          {title && (
-                            <Tr>
-                              <Td>Title:</Td>
-                              <Td>{title}</Td>
-                            </Tr>
-                          )}
-                          {/* For spacing if no OG title */}
-                          {!title && (
-                            <Tr>
-                              <Td colSpan={2}>&nbsp;</Td>
-                            </Tr>
-                          )}
-                        </Table>
-                      </PanelBody>
-                    </a>
-                  </Link>
-                  <HustlerFooter id={id} />
-                </ProfileCard>
-              );
-            })}
+            {hustlerData.hustlers
+              // listed items most expensive first, then by id
+              .sort((a, b) => {
+                if (a.bestAskPriceEth !== b.bestAskPriceEth) {
+                  return (b.bestAskPriceEth ?? 0) - (a.bestAskPriceEth ?? 0);
+                }
+                return parseInt(a.id ?? '', 10) - parseInt(b.id ?? '', 10);
+              })
+              .map(hustler => {
+                return <HustlerProfileCard key={hustler.id} hustler={hustler} showOwnerDetails />;
+              })}
             {isFetching && hustlerData.hustlers.length && <LoadingBlock maxRows={1} />}
             {hasNextPage && <Button onClick={() => fetchNextPage()}>Load more</Button>}
           </CardContainer>
         ) : (
-          <span>No Hustlers found</span>
+          <Dialog backgroundCss="">
+            <Text fontSize="medium">No HUSTLERS in the connected wallet.</Text>
+            <Text>
+              If you&apos;ve recently transferred something it might take a few moments for it to
+              show here.
+            </Text>
+          </Dialog>
         )}
       </SectionContent>
     </>

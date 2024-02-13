@@ -19,6 +19,7 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
 	svgrender "github.com/dopedao/dope-monorepo/packages/api/internal/svg-render"
+	"github.com/dopedao/dope-monorepo/packages/api/web/coingecko"
 	"github.com/dopedao/dope-monorepo/packages/api/web/hustler"
 	"github.com/dopedao/dope-monorepo/packages/api/web/verify"
 	"github.com/dopedao/dope-monorepo/packages/api/web/wallet"
@@ -27,7 +28,7 @@ import (
 // Launch a new HTTP API server to handle web requests
 // for database queries, sprite sheets, authentication, etc.
 func NewServer(ctx context.Context, static *storage.BucketHandle) (http.Handler, error) {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 	log.Debug().Msg("Starting web server")
 
 	entClient := dbprovider.Ent()
@@ -46,17 +47,19 @@ func NewServer(ctx context.Context, static *storage.BucketHandle) (http.Handler,
 		_, _ = w.Write([]byte(`{"success":true}`))
 	})
 
-	// GraphQL playground
+	// GraphQL
 	graphServer := handler.NewDefaultServer(graph.NewSchema(entClient))
 	r.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", graphServer)
+
+	// Paper coingecko pricing
+	r.HandleFunc("/currency-prices", coingecko.HandlePaperPrice())
 
 	// Game integration endpoints
 	r.HandleFunc("/wallets/{address}/hustlers", wallet.HandleHustlers(entClient))
 	r.HandleFunc("/hustlers/{id}/sprites", hustler.SpritesHandler(entClient))
 	r.HandleFunc("/hustlers/{id}/sprites/composite.png", hustler.SpritesCompositeHandler(entClient, static))
 
-	// World Wide Webb integration
 	// https://worldwidewebb.notion.site/Integration-Guide-101cbdbfefad415ead7b41369ce66858
 	r.HandleFunc("/collection/{id}.png", hustler.SpritesCompositeHandler(entClient, static))
 	r.HandleFunc("/address/{address}", wallet.HandleHustlers(entClient))

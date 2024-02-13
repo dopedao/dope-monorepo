@@ -23,7 +23,7 @@ export default class IntroScene extends Phaser.Scene {
     create() {
         this.background = this.add.image(this.sys.game.canvas.width / 2, this.sys.game.canvas.height / 2, 'background');
         
-        const comp = this.add.reactDom(IntroStepper, {
+        const comp = this.add.reactDom(IntroStepper as any, {
             hustlerData: this.hustlerData
         });
 

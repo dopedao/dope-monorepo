@@ -206,10 +206,10 @@ var MetadataBuilder__factory = /** @class */ (function () {
     function MetadataBuilder__factory() {
     }
     MetadataBuilder__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    MetadataBuilder__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    MetadataBuilder__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     MetadataBuilder__factory.abi = _abi;
     return MetadataBuilder__factory;

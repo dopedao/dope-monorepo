@@ -50,14 +50,11 @@ const decodeImage = (image: string, offset?: string): DecodedImage => {
   };
 };
 
-export const buildIconSVG = (
-  parts: string[],
-  resolution: number = 64,
-): string => {
+export const buildIconSVG = (parts: string[], resolution = 64): string => {
   const step = 320 / resolution;
   const svgWithoutEndTag = parts.reduce((result, part, i) => {
     let offset = undefined;
-    if (resolution === 160 && i != 0) {
+    if (resolution === 160 && i !== 0) {
       offset = '00331D331D';
     }
     const svgRects: string[] = [];
@@ -66,7 +63,7 @@ export const buildIconSVG = (
     let currentX = bounds.left;
     let currentY = bounds.top;
 
-    rects.forEach(rect => {
+    for (const rect of rects) {
       const [length, colorIndex] = rect;
       const Color = palettes[paletteIndex][colorIndex].substring(2);
 
@@ -84,7 +81,7 @@ export const buildIconSVG = (
         currentX = bounds.left;
         currentY++;
       }
-    });
+    }
     result += svgRects.join('');
     return result;
   }, `<svg width="320px" height="320px" viewBox="230 245 240 290">`);
@@ -98,28 +95,28 @@ export const buildIconSVG = (
  * @param bgColor The  background color
  */
 export const buildSVG = (
-  parts: string[],
+  parts: (string | undefined)[],
   bgColor: string,
   textColor: string,
   title: string,
   subtitle: string,
   zoomWindow: ZoomWindow,
-  resolution: number = 64,
-  htmlId: string = 'dynamicBuiltSvg',
+  resolution = 64,
+  htmlId = 'dynamicBuiltSvg',
 ): string => {
   const step = 320 / resolution;
   const svgWithoutEndTag = parts.reduce((result, part, i) => {
     let offset = undefined;
-    if (resolution === 160 && i != 0) {
+    if (resolution === 160 && i !== 0) {
       offset = '00331D331D';
     }
     const svgRects: string[] = [];
-    const { bounds, rects, paletteIndex } = decodeImage(part, offset);
+    const { bounds, rects, paletteIndex } = decodeImage(part ?? '', offset);
 
     let currentX = bounds.left;
     let currentY = bounds.top;
 
-    rects.forEach(rect => {
+    for (const rect of rects) {
       const [length, colorIndex] = rect;
       const Color = palettes[paletteIndex][colorIndex].substring(2);
 
@@ -137,10 +134,10 @@ export const buildSVG = (
         currentX = bounds.left;
         currentY++;
       }
-    });
+    }
     result += svgRects.join('');
     return result;
-  }, `<svg id=${htmlId} width="100%" height="100%" viewBox="${zoomWindow[0].toString()} ${zoomWindow[1].toString()} ${zoomWindow[2].gt(0) ? zoomWindow[2].toString() : '320'} ${zoomWindow[3].gt(0) ? zoomWindow[3].toString() : '320'}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><style xmlns="http://www.w3.org/2000/svg">.base { fill: ${textColor}; font-family: Dope; font-size: 14px; }</style><rect width="100%" height="100%" fill="${bgColor}" /><text xmlns="http://www.w3.org/2000/svg" x="160" y="25" with="320" text-anchor="middle" class="base">${title}</text><text xmlns="http://www.w3.org/2000/svg" x="160" y="303" with="320" text-anchor="middle" class="base">${subtitle}</text>`);
+  }, `<svg id=${htmlId} width="100%" height="100%" viewBox="${zoomWindow[0].toString()} ${zoomWindow[1].toString()} ${zoomWindow[2] > 0 ? zoomWindow[2].toString() : '320'} ${zoomWindow[3] > 0 ? zoomWindow[3].toString() : '320'}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><style xmlns="http://www.w3.org/2000/svg">.base { fill: ${textColor}; font-family: Dope; font-size: 14px; }</style><rect width="100%" height="100%" fill="${bgColor}" /><text xmlns="http://www.w3.org/2000/svg" x="160" y="25" with="320" text-anchor="middle" class="base">${title}</text><text xmlns="http://www.w3.org/2000/svg" x="160" y="303" with="320" text-anchor="middle" class="base">${subtitle}</text>`);
 
   return `${svgWithoutEndTag}</svg>`;
 };

@@ -2,59 +2,78 @@ package indexer
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 
-	"entgo.io/ent/dialect/sql"
-	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
-	"github.com/dopedao/dope-monorepo/packages/api/internal/middleware"
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"github.com/rs/cors"
 )
 
-// Launch a new Indexer HTTP Server because this is hosted on GCP
-// App Engine Standard Edition.
-//
-// The Indexer reads info about DOPE NFT assets to place in a Postgres Database.
-func NewServer(ctx context.Context, drv *sql.Driver, network string) (http.Handler, error) {
-	_, log := logger.LogFor(ctx)
+func NewServer(ctx context.Context, network string) (http.Handler, error) {
+	log := logger.Log.With().Str("method", "NewServer").Logger()
 	log.Debug().Msg("Starting Indexer")
 
-	dbClient := ent.NewClient(ent.Driver(drv))
-
 	ctx, cancel := context.WithCancel(ctx)
-	started := false
+	started := true
+	startIndexer(ctx)
 
-	r := mux.NewRouter()
-	r.Use(middleware.Session(middleware.Store))
+	r := gin.Default()
 
-	// Exposes HTTP endpoints for `/_ah/start` and `/_ah/stop` for App Engine autoscaling
-	// https://cloud.google.com/appengine/docs/standard/go/how-instances-are-managed#startup
-	r.HandleFunc("/_ah/start", func(w http.ResponseWriter, r *http.Request) {
+	r.GET("/", func(c *gin.Context) {
 		if started {
-			w.WriteHeader(200)
-			_, _ = w.Write([]byte(`{"success":true}`))
+			c.JSON(200, gin.H{"indexer_running": true})
+			return
+		} else {
+			c.JSON(503, gin.H{"indexer_running": false})
 			return
 		}
-
-		started = true
-		for _, c := range Config[network] {
-			switch c := c.(type) {
-			case EthConfig:
-				log.Debug().Msgf("Starting %v", c)
-				eth := NewEthereumIndexer(ctx, dbClient, c)
-				go eth.Sync(ctx)
-			}
-		}
-		w.WriteHeader(200)
-		_, _ = w.Write([]byte(`{"success":true}`))
 	})
 
-	r.HandleFunc("/_ah/stop", func(w http.ResponseWriter, r *http.Request) {
+	r.GET("/_ah/start", func(c *gin.Context) {
+		if started {
+			c.JSON(200, gin.H{"success": true})
+			return
+		}
+		started = true
+		startIndexer(ctx)
+		c.JSON(200, gin.H{"success": true})
+	})
+
+	r.GET("/_ah/stop", func(c *gin.Context) {
 		cancel()
-		w.WriteHeader(200)
-		_, _ = w.Write([]byte(`{"success":true}`))
+		c.JSON(200, gin.H{"success": true})
+	})
+
+	r.GET("/_ah/restart", func(c *gin.Context) {
+		cancel()
+		startIndexer(ctx)
+		c.JSON(200, gin.H{"success": true})
+	})
+
+	r.GET("/stats", func(c *gin.Context) {
+		syncStates := dbprovider.Ent().SyncState.Query().AllX(ctx)
+		jsonData, err := json.Marshal(syncStates)
+		if err != nil {
+			c.JSON(500, gin.H{"success": false})
+			return
+		}
+		c.Data(200, "application/json", jsonData)
 	})
 
 	return cors.AllowAll().Handler(r), nil
+}
+
+func startIndexer(ctx context.Context) {
+	log := logger.Log
+	for _, c := range Config[envcfg.Network] {
+		switch c := c.(type) {
+		case EthConfig:
+			log.Debug().Msgf("Starting %v", c)
+			eth := NewEthereumIndexer(ctx, dbprovider.Ent(), c)
+			go eth.Sync(ctx)
+		}
+	}
 }

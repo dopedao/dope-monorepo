@@ -2,6 +2,7 @@ import UIScene from 'game/scenes/UI';
 import TextBox from 'phaser3-rex-plugins/templates/ui/textbox/TextBox';
 import { CreateSpeechBubbleShape, getBBcodeText } from 'game/ui/rex/RexUtils';
 import Palette from 'game/constants/Palette';
+import { th } from 'date-fns/locale';
 
 interface TextBoxConfig {
   wrapWidth: number;
@@ -73,11 +74,11 @@ export default class SpeechBubbleTextBox extends TextBox {
     if (this.isLastPage) {
       return;
     }
-
-    var icon = this.getElement('action')!.setActive(true);
+    const ele = this.getElement('action')! as any;
+    const icon = ele.setActive(true);
     this.resetChildVisibleState(icon);
     (icon as any).y -= 30;
-    var tween = this.scene.tweens.add({
+    this.scene.tweens.add({
       targets: icon,
       y: '+=30', // '+=100'
       ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'
@@ -88,7 +89,8 @@ export default class SpeechBubbleTextBox extends TextBox {
   }
 
   onPointerDown() {
-    var icon = this.getElement('action')!.setActive(false);
+    const ele = this.getElement('action')! as any;
+    const icon = ele.setActive(false);
     this.resetChildVisibleState(icon);
     if (this.isTyping) {
       this.stop(true);

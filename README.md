@@ -1,6 +1,58 @@
 # dope-monorepo
 
-DOPE DAO contains the web app for https://dopewars.gg and Solidity contracts for generating Hustlers based on `DOPE` NFT tokens and items.
+This repo contains the web app for <https://dopewars.gg> and Solidity contracts for generating Hustlers based on `DOPE` NFT tokens and items.
+
+## Packages
+
+### api
+
+The [API](packages/api) is written in Go and contains logic for indexing data from the blockchain, gathering sales information from the Reservoir API, and serving a GraphQL backend that provides information for the `web` service. More information about the API can be found in that directory's [README](packages/api/README.md).
+
+### contracts
+
+The [contracts](packages/contracts) is the suite of Solidity contracts.
+
+### web
+
+The [web](packages/web) is the frontend for interacting with the web app. More information exists in that [README](packages/web/README.md).
+
+## Quickstart
+
+### Install dependencies
+
+```sh
+pnpm
+```
+
+### Run webserver and api for development
+
+```sh
+pnpm dev
+```
+
+## Run web, api, and indexer for dev
+
+```sh
+pnpm dev_all
+```
+
+### Build all javascript packages
+
+```sh
+pnpm build
+```
+
+### Run Linter
+
+```sh
+pnpm lint
+```
+
+### Run Prettier
+
+```sh
+pnpm format
+```
 
 ## Testing
 
@@ -10,49 +62,3 @@ You can [claim Loot tokens for that network using this contract](https://kovan.e
 * Switch MetaMask to the `Kovan Test Network`
 * Ensure you have tokens in your wallet by [using the Paradigm faucet](https://faucet.paradigm.xyz/)
 * Claim tokens using the contract address above.
-
-## Packages
-
-### api
-
-The [API](packages/api) is written in Go and hosted on Google Cloud Platform. More information about the API can be found in that directory's README.
-
-### contracts
-
-The [contracts](packages/contracts) is the suite of Solidity contracts.
-
-### web
-
-The [web](packages/webapp) is the frontend for interacting with the web app.
-
-## Quickstart
-
-### Install dependencies
-
-```sh
-yarn
-```
-
-### Run webserver for development
-
-```sh
-yarn web:dev
-```
-
-### Build all javascript packages
-
-```sh
-yarn build
-```
-
-### Run Linter
-
-```sh
-yarn lint
-```
-
-### Run Prettier
-
-```sh
-yarn format
-```

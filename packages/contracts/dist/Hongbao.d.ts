@@ -1,26 +1,16 @@
-import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, ContractTransaction, Overrides, PayableOverrides, PopulatedTransaction, Signer, utils } from "ethers";
-import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
-import { Listener, Provider } from "@ethersproject/providers";
-import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
-export interface HongbaoInterface extends utils.Interface {
-    functions: {
-        "claim(uint256,bytes32[])": FunctionFragment;
-        "claimed(bytes32)": FunctionFragment;
-        "mint()": FunctionFragment;
-        "owner()": FunctionFragment;
-        "renounceOwnership()": FunctionFragment;
-        "root()": FunctionFragment;
-        "transferMaintainerOwner(address)": FunctionFragment;
-        "transferOwnership(address)": FunctionFragment;
-    };
+import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
+import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "./common";
+export interface HongbaoInterface extends Interface {
+    getFunction(nameOrSignature: "claim" | "claimed" | "mint" | "owner" | "renounceOwnership" | "root" | "transferMaintainerOwner" | "transferOwnership"): FunctionFragment;
+    getEvent(nameOrSignatureOrTopic: "Opened" | "OwnershipTransferred"): EventFragment;
     encodeFunctionData(functionFragment: "claim", values: [BigNumberish, BytesLike[]]): string;
     encodeFunctionData(functionFragment: "claimed", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "mint", values?: undefined): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
     encodeFunctionData(functionFragment: "root", values?: undefined): string;
-    encodeFunctionData(functionFragment: "transferMaintainerOwner", values: [string]): string;
-    encodeFunctionData(functionFragment: "transferOwnership", values: [string]): string;
+    encodeFunctionData(functionFragment: "transferMaintainerOwner", values: [AddressLike]): string;
+    encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
     decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "claimed", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -29,135 +19,85 @@ export interface HongbaoInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferMaintainerOwner", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
-    events: {
-        "Opened(uint8,uint256)": EventFragment;
-        "OwnershipTransferred(address,address)": EventFragment;
-    };
-    getEvent(nameOrSignatureOrTopic: "Opened"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
-export declare type OpenedEvent = TypedEvent<[
-    number,
-    BigNumber
-], {
-    typ: number;
-    id: BigNumber;
-}>;
-export declare type OpenedEventFilter = TypedEventFilter<OpenedEvent>;
-export declare type OwnershipTransferredEvent = TypedEvent<[
-    string,
-    string
-], {
-    previousOwner: string;
-    newOwner: string;
-}>;
-export declare type OwnershipTransferredEventFilter = TypedEventFilter<OwnershipTransferredEvent>;
+export declare namespace OpenedEvent {
+    type InputTuple = [typ: BigNumberish, id: BigNumberish];
+    type OutputTuple = [typ: bigint, id: bigint];
+    interface OutputObject {
+        typ: bigint;
+        id: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace OwnershipTransferredEvent {
+    type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+    type OutputTuple = [previousOwner: string, newOwner: string];
+    interface OutputObject {
+        previousOwner: string;
+        newOwner: string;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
 export interface Hongbao extends BaseContract {
-    connect(signerOrProvider: Signer | Provider | string): this;
-    attach(addressOrName: string): this;
-    deployed(): Promise<this>;
+    connect(runner?: ContractRunner | null): Hongbao;
+    waitForDeployment(): Promise<this>;
     interface: HongbaoInterface;
-    queryFilter<TEvent extends TypedEvent>(event: TypedEventFilter<TEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TEvent>>;
-    listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
-    listeners(eventName?: string): Array<Listener>;
-    removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
-    removeAllListeners(eventName?: string): this;
-    off: OnEvent<this>;
-    on: OnEvent<this>;
-    once: OnEvent<this>;
-    removeListener: OnEvent<this>;
-    functions: {
-        claim(amount: BigNumberish, proof: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        claimed(arg0: BytesLike, overrides?: CallOverrides): Promise<[boolean]>;
-        mint(overrides?: PayableOverrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        owner(overrides?: CallOverrides): Promise<[string]>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        root(overrides?: CallOverrides): Promise<[string]>;
-        transferMaintainerOwner(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-    };
-    claim(amount: BigNumberish, proof: BytesLike[], overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    claimed(arg0: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-    mint(overrides?: PayableOverrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    owner(overrides?: CallOverrides): Promise<string>;
-    renounceOwnership(overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    root(overrides?: CallOverrides): Promise<string>;
-    transferMaintainerOwner(newOwner: string, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    transferOwnership(newOwner: string, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    callStatic: {
-        claim(amount: BigNumberish, proof: BytesLike[], overrides?: CallOverrides): Promise<void>;
-        claimed(arg0: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-        mint(overrides?: CallOverrides): Promise<void>;
-        owner(overrides?: CallOverrides): Promise<string>;
-        renounceOwnership(overrides?: CallOverrides): Promise<void>;
-        root(overrides?: CallOverrides): Promise<string>;
-        transferMaintainerOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
-        transferOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
-    };
+    queryFilter<TCEvent extends TypedContractEvent>(event: TCEvent, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    queryFilter<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    on<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+    listeners(eventName?: string): Promise<Array<Listener>>;
+    removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+    claim: TypedContractMethod<[
+        amount: BigNumberish,
+        proof: BytesLike[]
+    ], [
+        void
+    ], "nonpayable">;
+    claimed: TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+    mint: TypedContractMethod<[], [void], "payable">;
+    owner: TypedContractMethod<[], [string], "view">;
+    renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+    root: TypedContractMethod<[], [string], "view">;
+    transferMaintainerOwner: TypedContractMethod<[
+        newOwner: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
+    transferOwnership: TypedContractMethod<[
+        newOwner: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+    getFunction(nameOrSignature: "claim"): TypedContractMethod<[
+        amount: BigNumberish,
+        proof: BytesLike[]
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "claimed"): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+    getFunction(nameOrSignature: "mint"): TypedContractMethod<[], [void], "payable">;
+    getFunction(nameOrSignature: "owner"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
+    getFunction(nameOrSignature: "root"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "transferMaintainerOwner"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+    getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+    getEvent(key: "Opened"): TypedContractEvent<OpenedEvent.InputTuple, OpenedEvent.OutputTuple, OpenedEvent.OutputObject>;
+    getEvent(key: "OwnershipTransferred"): TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
     filters: {
-        "Opened(uint8,uint256)"(typ?: null, id?: null): OpenedEventFilter;
-        Opened(typ?: null, id?: null): OpenedEventFilter;
-        "OwnershipTransferred(address,address)"(previousOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
-        OwnershipTransferred(previousOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
-    };
-    estimateGas: {
-        claim(amount: BigNumberish, proof: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        claimed(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-        mint(overrides?: PayableOverrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        owner(overrides?: CallOverrides): Promise<BigNumber>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        root(overrides?: CallOverrides): Promise<BigNumber>;
-        transferMaintainerOwner(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-    };
-    populateTransaction: {
-        claim(amount: BigNumberish, proof: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        claimed(arg0: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        mint(overrides?: PayableOverrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        transferMaintainerOwner(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
+        "Opened(uint8,uint256)": TypedContractEvent<OpenedEvent.InputTuple, OpenedEvent.OutputTuple, OpenedEvent.OutputObject>;
+        Opened: TypedContractEvent<OpenedEvent.InputTuple, OpenedEvent.OutputTuple, OpenedEvent.OutputObject>;
+        "OwnershipTransferred(address,address)": TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+        OwnershipTransferred: TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
     };
 }

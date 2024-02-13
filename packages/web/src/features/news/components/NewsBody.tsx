@@ -60,7 +60,7 @@ const NewsBody = ({ posts, hasMore }: DopePostBodyProps) => {
           <LeftPosts flex={3} padding="0 10px">
             {leftPosts.map((post, index) => {
               return (
-                <NewsClipping key={post.slug} post={post} titleSize={index == 0 ? 'xl' : 'md'} />
+                <NewsClipping key={post.slug} post={post} titleSize={index === 0 ? 'xl' : 'md'} />
               );
             })}
           </LeftPosts>
@@ -83,7 +83,7 @@ const NewsBody = ({ posts, hasMore }: DopePostBodyProps) => {
               <NewsClipping
                 key={post.slug}
                 post={post}
-                titleSize={index == 0 && !isTabletOrMobile ? 'md' : 'xl'}
+                titleSize={index === 0 && !isTabletOrMobile ? 'md' : 'xl'}
               />
             );
           })}

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+pnpm concurrently --names "WEB,API,IDX" \
+  -c "bgBlue.bold,bgYellow.bold,bgGreen.bold" \
+  "pnpm --filter @dopewars/web dev" \
+  "packages/api/bin/dev_api_server" \
+  "packages/api/bin/dev_indexer"

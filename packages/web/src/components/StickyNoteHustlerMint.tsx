@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { css } from '@emotion/react';
-import { useRouter } from 'next/router';
 import { Link } from '@chakra-ui/layout';
+import { Button } from '@chakra-ui/button';
 import StickyNote from './StickyNote';
 
 const hr = (
@@ -14,14 +14,11 @@ const hr = (
 );
 
 const StickyNoteHustlerMint = () => {
-  const router = useRouter();
-  const currentPageIsGangsta = router.pathname == '/gangsta-party';
-
   return (
     <StickyNote>
       <h3>
-        <Link href="/hustlers/initiate" variation="primary">
-          <a className="primary">👉 Initiate Your Hustler 👈</a>
+        <Link href="/hustlers/mint" className="primary">
+          <Button className="primary">🎉 Mint a Hustler 🎉</Button>
         </Link>
       </h3>
       {hr}
@@ -34,16 +31,6 @@ const StickyNoteHustlerMint = () => {
           Hustler FAQ
         </a>
       </span>
-      {!currentPageIsGangsta && (
-        <>
-          {hr}
-          <span>
-            <Link href="/gangsta-party">
-              <a className="primary">Gangsta Party</a>
-            </Link>
-          </span>
-        </>
-      )}
     </StickyNote>
   );
 };

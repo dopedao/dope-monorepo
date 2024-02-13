@@ -1,3 +1,4 @@
+// @ts-nocheck
 import TilesAnimator from "./TilesAnimator";
 import AnimatedTiles from "./TilesAnimator";
 

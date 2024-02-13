@@ -7,8 +7,8 @@ const WorldPanel = (props: {map: LDtkMapPack}) => {
     const gameScene = props.map.displayLayers[0].scene as GameScene;
 
     return (
-        <div>
-            <div style={{
+        <Box>
+            <Box style={{
                 paddingLeft: '1rem',
             }}>
                 <Text>
@@ -55,7 +55,7 @@ const WorldPanel = (props: {map: LDtkMapPack}) => {
                     <br/>
                     Entities: {props.map.entities.length}
                 </Text>
-            </div>
+            </Box>
             <Accordion>
                 <AccordionItem>
                     <h2>
@@ -124,7 +124,7 @@ const WorldPanel = (props: {map: LDtkMapPack}) => {
                 </AccordionItem>
             </Accordion>
 
-        </div>
+        </Box>
     )
 }
 

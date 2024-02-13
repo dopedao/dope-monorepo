@@ -1,20 +1,21 @@
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { Button } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { formatLargeNumber } from 'utils/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWalletCheckQuery } from 'generated/graphql';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount } from 'wagmi';
 import Dialog from 'components/Dialog';
 import styled from '@emotion/styled';
-import useWeb3Provider from 'hooks/web3';
+import { useConnect } from 'wagmi';
 
 const discordAuthLink =
   'https://discord.com/api/oauth2/authorize?client_id=973336825223598090&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fverify&response_type=code&scope=identify%20guilds';
-const verifyApiLink = process.env.REDIRECT_URI ?? "http://localhost:8080/verify";
+const verifyApiLink = process.env.REDIRECT_URI ?? 'http://localhost:8080/verify';
 
 interface IVerifyResponse {
-  message: string,
-  success: boolean
+  message: string;
+  success: boolean;
 }
 
 // send to own api
@@ -32,10 +33,10 @@ const Container = styled.div`
 `;
 
 const buttonGroupStyle = {
-  "display": "flex",
-  "flex-direction": "row",
-  "justify-content": "space-evenly",
-  "padding-top": "32px"
+  display: 'flex',
+  'flex-direction': 'row',
+  'justify-content': 'space-evenly',
+  'padding-top': '32px',
 };
 
 // state string
@@ -52,47 +53,34 @@ const generateRandomString = () => {
 
 const Verify = () => {
   const [isVerified, setIsVerified] = useState(false);
-  const [respError, setRespError] = useState("")
+  const [respError, setRespError] = useState('');
   const [hasOgHustler, setHasOgHustler] = useState(false);
   const [hustlerCount, setHustlerCount] = useState(0);
   const [dopeCount, setDopeCount] = useState(0);
-  const [paperBalance, setPaperBalance] = useState<BigNumber>(BigNumber.from(0));
+  const [paperBalance, setPaperBalance] = useState<bigint>(BigInt(0));
 
-  const { connect } = useWeb3Provider();
-  const { account } = useWeb3React();
-
-  const onClick = useCallback(
-    async (w: 'MetaMask' | 'WalletConnect') => {
-      try {
-        await connect(w);
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    [connect],
-  );
+  const { connectors, connect } = useConnect();
+  const { address: account } = useAccount();
 
   // Fetch Wallet ownership info from our API
-  const { data, isFetching: isFetchingWalletInfo } = useWalletCheckQuery(
-    {
-      where: {
-        id: account,
-      },
+  const { data, isFetching: isFetchingWalletInfo } = useWalletCheckQuery({
+    where: {
+      id: account,
     },
-  );
+  });
+
+  const dopes = data?.wallets?.edges?.[0]?.node?.dopes;
+  const dn = data?.wallets?.edges?.[0]?.node;
 
   useMemo(() => {
-    if (data?.wallets?.edges![0]?.node?.dopes) {
-      const dn = data.wallets.edges[0].node;
-      let hasOg = (
-        dn.hustlers.find(h => parseInt(h.id, 10) <= 500) !== undefined
-      );
+    if (dopes) {
+      const hasOg = dn?.hustlers?.find(h => parseInt(h.id, 10) <= 500) !== undefined;
       setHasOgHustler(hasOg);
-      setDopeCount(dn.dopes.length);
-      setHustlerCount(dn.hustlers.length);
-      setPaperBalance(dn.paper);
+      setDopeCount(dn?.dopes?.length ?? 0);
+      setHustlerCount(dn?.hustlers?.length ?? 0);
+      setPaperBalance(dn?.paper);
     }
-  }, [data]);
+  }, [dopes, dn]);
 
   const discordAuthRedirect = () => {
     const state = generateRandomString();
@@ -119,22 +107,22 @@ const Verify = () => {
     }
 
     if (!account) {
-      console.error("Wallet not connected");
+      console.error('Wallet not connected');
       return;
     }
 
     const verifyReq: VerifyRequest = {
       discordtoken: apiToken,
       walletaddress: account!,
-      papercount: parseInt(ethers.utils.formatUnits(paperBalance, 'ether')),
+      papercount: parseInt(ethers.formatUnits(paperBalance, 'ether')),
       dopecount: dopeCount,
       hustlercount: hustlerCount,
-      isog: hasOgHustler
-    }
+      isog: hasOgHustler,
+    };
 
     fetch(verifyApiLink, {
-      method: "POST",
-      body: JSON.stringify(verifyReq)
+      method: 'POST',
+      body: JSON.stringify(verifyReq),
     })
       .then(res => res.json())
       .then(resp => {
@@ -146,62 +134,58 @@ const Verify = () => {
           setIsVerified(true);
         }
       });
-  }, [account, data, dopeCount, hasOgHustler, hustlerCount, paperBalance]);
-
+  }, [account, dopeCount, hasOgHustler, hustlerCount, paperBalance]);
 
   return (
     <Dialog>
       <Container>
         {(!account && (
           <>
-            <h2>
-              Connect Your Ethereum Wallet
-            </h2>
-            <div style={buttonGroupStyle}>
-              <Button onClick={() => onClick('MetaMask')}>MetaMask</Button>
-              <Button onClick={() => onClick('WalletConnect')}>WalletConnect</Button>
-            </div>
+            <h2>Connect Your Ethereum Wallet</h2>
+            <Box style={buttonGroupStyle}>
+              {connectors.map(connector => (
+                <Button key={connector.id} onClick={() => connect({ connector })}>
+                  {connector.name}
+                </Button>
+              ))}
+            </Box>
           </>
         )) ||
           (!isVerified && account && respError.length <= 1 && (
             <>
-              <h2>
-                Welcome to the streets
-              </h2>
-              <p>
-                Click the button below to get verified on Discord.
-              </p>
+              <h2>Welcome to the streets</h2>
+              <p>Click the button below to get verified on Discord.</p>
               <Button onClick={() => discordAuthRedirect()}>Lets go</Button>
             </>
           )) ||
           (isVerified && account && (
             <>
               <h3>Welcome to the fam!</h3>
-              <div>
-                {`Paper: ${paperBalance ? formatLargeNumber(Number(ethers.utils.formatEther(paperBalance))) : 0
-                  }`}
-              </div>
-              <div>{`Hustlers: ${hustlerCount}`}</div>
-              <div>{`OG Hustlers: ${hasOgHustler}`}</div>
-              <div>{`Dope: ${dopeCount}`}</div>
+              <Box>
+                {`Paper: ${
+                  paperBalance ? formatLargeNumber(Number(ethers.formatEther(paperBalance))) : 0
+                }`}
+              </Box>
+              <Box>{`Hustlers: ${hustlerCount}`}</Box>
+              <Box>{`OG Hustlers: ${hasOgHustler}`}</Box>
+              <Box>{`Dope: ${dopeCount}`}</Box>
             </>
           )) ||
-          (respError.includes("guild") && (
+          (respError.includes('guild') && (
             <>
               <h3>Damn!</h3>
-              <div>Looks like you aren&quot;t in the discord server!</div>
+              <Box>Looks like you aren&quot;t in the discord server!</Box>
               <Button onClick={() => window.open('https://discord.gg/8exMVHMe26', '_blank')}>
                 Join
               </Button>
             </>
           )) ||
-          (!respError.includes("guild") && (
+          (!respError.includes('guild') && (
             <>
               <h3>Oops...</h3>
-              <div>{respError}</div>
+              <Box>{respError}</Box>
             </>
-          ))
-        }
+          ))}
       </Container>
     </Dialog>
   );

@@ -1,6 +1,7 @@
 /* eslint-disable react/no-children-prop */
 import { Flex, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Slider, SliderTrack, SliderFilledTrack, SliderThumb } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import { Box } from '@chakra-ui/react';
 
 const Position = (props: {object: any}) => {
     const [x, setX] = useState(props.object.x);
@@ -15,7 +16,7 @@ const Position = (props: {object: any}) => {
 
     return (
         // <VStack>
-        <div>
+        <Box>
             Position XY
             <Flex>
                 <NumberInput maxW='100px' mr='2rem' value={x} onChange={(s, n) => setX(n)}>
@@ -57,7 +58,7 @@ const Position = (props: {object: any}) => {
                     <SliderThumb fontSize='sm' boxSize='32px' children={Math.round(y)} />
                 </Slider>
             </Flex>
-        </div>
+        </Box>
         // </VStack>
     )
 }

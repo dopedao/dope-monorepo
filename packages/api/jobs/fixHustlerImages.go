@@ -12,13 +12,13 @@ package jobs
 import (
 	"context"
 	"math/big"
-	"os"
 
 	"github.com/dopedao/dope-monorepo/packages/api/indexer"
 	"github.com/dopedao/dope-monorepo/packages/api/indexer/processor"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	hustlerModel "github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	svgR "github.com/dopedao/dope-monorepo/packages/api/internal/svg-render"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -29,13 +29,15 @@ import (
 
 var dbClient = dbprovider.Ent()
 
-func FixHustlerImages() {
+type FixHustlerImages struct{}
+
+func (fhi FixHustlerImages) Run() {
 	ctx := context.Background()
-	log := zerolog.New(os.Stderr)
-	hContractBinding := GetHustlerContractBinding(log)
+	logger.Init()
+	hContractBinding := GetHustlerContractBinding(*logger.Log)
 
 	if err := svgR.InitRenderer(); err != nil {
-		log.Fatal().Msg("initializing svg-renderer")
+		logger.Log.Fatal().Msg("initializing svg-renderer")
 	}
 
 	blankHustlers, err := dbClient.Hustler.
@@ -43,12 +45,12 @@ func FixHustlerImages() {
 		Where(hustlerModel.SvgEQ("")).
 		All(ctx)
 	if err != nil {
-		log.Error().
+		logger.Log.Error().
 			Str("Job", "FixHustlerImages").
 			Msgf("Error getting Hustlers with no images %v", err)
 		return
 	}
-	log.Debug().
+	logger.Log.Debug().
 		Str("Job", "FixHustlerImages").
 		Msgf("%v Hustlers with no image in database", len(blankHustlers))
 
@@ -56,26 +58,26 @@ func FixHustlerImages() {
 		h := blankHustlers[i]
 		bigId, ok := new(big.Int).SetString(h.ID, 10)
 
-		log.Info().
+		logger.Log.Info().
 			Str("Job", "FixHustlerImages").
 			Msgf("Fixing image for %v", h.ID)
 
 		if !ok {
-			log.Error().
+			logger.Log.Error().
 				Str("Job", "FixHustlerImages").
 				Msgf("Error converting id to int %v", err)
 			continue
 		}
 
 		hustlerSvg, err := processor.GetHustlerSvg(
-			hContractBinding, bigId, &log)
+			hContractBinding, bigId, logger.Log)
 		if err != nil {
-			log.Error().
+			logger.Log.Error().
 				Str("Job", "FixHustlerImages").
 				Msgf("Error getting offchain render for %v", h.ID)
 		}
 
-		log.Debug().
+		logger.Log.Debug().
 			Str("Job", "FixHustlerImages").
 			Msgf("Persisting %v svg to database", h.ID)
 		dbClient.Hustler.UpdateOneID(h.ID).SetSvg(hustlerSvg).Exec(ctx)

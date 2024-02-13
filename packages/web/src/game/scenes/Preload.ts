@@ -26,7 +26,7 @@ export default class Preload extends Scene {
   preload(): void {
     let totalSize: number;
     this.progressBar = new ProgressBar(this, 0.5, 0.66, manifest.totalSize);
-    let currentFile: string = '';
+    let currentFile = '';
 
     this.load.on(Phaser.Loader.Events.FILE_PROGRESS, (file: Phaser.Loader.File) => {
       const previousLoad = (file as any).previousLoad || 0;
@@ -53,15 +53,15 @@ export default class Preload extends Scene {
           this.load[fileType](key, assetVars['file'], assetVars.frameConfig);
         } else if (fileType === 'image') {
           this.load[fileType]({
-            key, 
-            url: assetVars['file'], 
-            normalMap: assetVars?.['normal']
+            key,
+            url: assetVars['file'],
+            normalMap: assetVars?.['normal'],
           });
         } else if (fileType === 'audio') {
           this.load[fileType](key, assetVars['file'], {
             stream: assetVars?.['stream'] ?? true,
           });
-        // we dont want to load background music, we stream it
+          // we dont want to load background music, we stream it
         } else if (fileType !== 'background_music') {
           // hack to index LoaderPlugin
           (this.load as any)[fileType](key, assetVars['file']);
@@ -69,7 +69,11 @@ export default class Preload extends Scene {
       });
     });
 
-    this.dopewars = this.add.image(this.sys.game.canvas.width / 2,  this.progressBar.y - (this.progressBar.height * 1.5), 'dopewars');
+    this.dopewars = this.add.image(
+      this.sys.game.canvas.width / 2,
+      this.progressBar.y - this.progressBar.height * 1.5,
+      'dopewars',
+    );
     this.dopewars.setScale(0.5);
   }
 
@@ -86,12 +90,13 @@ export default class Preload extends Scene {
       return;
     }
 
-    const address = ethers.utils.getAddress((window?.ethereum as any)?.selectedAddress);
-    fetch(`https://api.dopewars.gg/wallets/${ethers.utils.getAddress(
-      address,
-    )}/hustlers`).then(res => res.json()).then(hustlers => {
-      fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authAuthenticatedPath, { credentials: 'include' })
-        .then(res => {
+    const address = ethers.getAddress((window?.ethereum as any)?.selectedAddress);
+    fetch(`https://api.dopewars.gg/wallets/${ethers.getAddress(address)}/hustlers`)
+      .then(res => res.json())
+      .then(hustlers => {
+        fetch(defaultNetworkConfig.authUri + defaultNetworkConfig.authAuthenticatedPath, {
+          credentials: 'include',
+        }).then(res => {
           let loggedIn = res.status === 200;
 
           res.text().then(text => {
@@ -101,28 +106,31 @@ export default class Preload extends Scene {
             this.startGame(hustlers, loggedIn);
           });
         });
-    });
+      });
   }
 
   startGame(hustlerData?: any, loggedIn?: boolean) {
+    console.log('hustlers = ', hustlerData);
+    console.log('loggedIn = ', loggedIn);
 
-    console.log("hustlers = ", hustlerData);
-    console.log("loggedIn = ", loggedIn);
-
-    const firstTime = (localStorage.getItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`) ?? 'false') !== 'true';
+    const firstTime =
+      (localStorage.getItem(`gameLoyal_${(window.ethereum as any).selectedAddress}`) ?? 'false') !==
+      'true';
     const scene = firstTime ? 'IntroScene' : loggedIn ? 'GameScene' : 'LoginScene';
 
     const startScene = () => {
       this.scene.start(scene, {
         hustlerData,
-        loggedIn
+        loggedIn,
       });
-    }
+    };
 
     if (scene === 'GameScene') {
-      NetworkHandler.getInstance().connect().once(NetworkEvents.CONNECTED, () => {
-        startScene();
-      });
+      NetworkHandler.getInstance()
+        .connect()
+        .once(NetworkEvents.CONNECTED, () => {
+          startScene();
+        });
       return;
     }
 

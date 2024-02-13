@@ -1,70 +1,61 @@
-import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, ContractTransaction, Overrides, PayableOverrides, PopulatedTransaction, Signer, utils } from "ethers";
-import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
-import { Listener, Provider } from "@ethersproject/providers";
-import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
-export declare type SetMetadataStruct = {
-    color: BytesLike;
-    background: BytesLike;
-    options: BytesLike;
-    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
-    body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
-    order: BigNumberish[];
-    mask: BytesLike;
-    name: string;
-};
-export declare type SetMetadataStructOutput = [
-    string,
-    string,
-    string,
-    [
-        number,
-        number,
-        number,
-        number
-    ],
-    [
-        number,
-        number,
-        number,
-        number
-    ],
-    number[],
-    string,
-    string
-] & {
-    color: string;
-    background: string;
-    options: string;
-    viewbox: [number, number, number, number];
-    body: [number, number, number, number];
-    order: number[];
-    mask: string;
-    name: string;
-};
-export interface InitiatorInterface extends utils.Interface {
-    functions: {
-        "cost()": FunctionFragment;
-        "isOpened(uint256)": FunctionFragment;
-        "mintFromDopeTo(uint256,address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes,uint32)": FunctionFragment;
-        "mintOGFromDopeTo(uint256,address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes,uint32)": FunctionFragment;
-        "open(uint256,address,uint32)": FunctionFragment;
-        "owner()": FunctionFragment;
-        "release()": FunctionFragment;
-        "renounceOwnership()": FunctionFragment;
-        "setRelease(uint256)": FunctionFragment;
-        "transferOwnership(address)": FunctionFragment;
-        "withdraw()": FunctionFragment;
+import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
+import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "./common";
+export declare namespace IHustlerActions {
+    type SetMetadataStruct = {
+        color: BytesLike;
+        background: BytesLike;
+        options: BytesLike;
+        viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+        body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+        order: BigNumberish[];
+        mask: BytesLike;
+        name: string;
     };
+    type SetMetadataStructOutput = [
+        color: string,
+        background: string,
+        options: string,
+        viewbox: [bigint, bigint, bigint, bigint],
+        body: [bigint, bigint, bigint, bigint],
+        order: bigint[],
+        mask: string,
+        name: string
+    ] & {
+        color: string;
+        background: string;
+        options: string;
+        viewbox: [bigint, bigint, bigint, bigint];
+        body: [bigint, bigint, bigint, bigint];
+        order: bigint[];
+        mask: string;
+        name: string;
+    };
+}
+export interface InitiatorInterface extends Interface {
+    getFunction(nameOrSignature: "cost" | "isOpened" | "mintFromDopeTo" | "mintOGFromDopeTo" | "open" | "owner" | "release" | "renounceOwnership" | "setRelease" | "transferOwnership" | "withdraw"): FunctionFragment;
+    getEvent(nameOrSignatureOrTopic: "Opened" | "OwnershipTransferred"): EventFragment;
     encodeFunctionData(functionFragment: "cost", values?: undefined): string;
     encodeFunctionData(functionFragment: "isOpened", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "mintFromDopeTo", values: [BigNumberish, string, SetMetadataStruct, BytesLike, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "mintOGFromDopeTo", values: [BigNumberish, string, SetMetadataStruct, BytesLike, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "open", values: [BigNumberish, string, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "mintFromDopeTo", values: [
+        BigNumberish,
+        AddressLike,
+        IHustlerActions.SetMetadataStruct,
+        BytesLike,
+        BigNumberish
+    ]): string;
+    encodeFunctionData(functionFragment: "mintOGFromDopeTo", values: [
+        BigNumberish,
+        AddressLike,
+        IHustlerActions.SetMetadataStruct,
+        BytesLike,
+        BigNumberish
+    ]): string;
+    encodeFunctionData(functionFragment: "open", values: [BigNumberish, AddressLike, BigNumberish]): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
     encodeFunctionData(functionFragment: "release", values?: undefined): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
     encodeFunctionData(functionFragment: "setRelease", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "transferOwnership", values: [string]): string;
+    encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
     decodeFunctionResult(functionFragment: "cost", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "isOpened", data: BytesLike): Result;
@@ -77,162 +68,124 @@ export interface InitiatorInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "setRelease", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
-    events: {
-        "Opened(uint256)": EventFragment;
-        "OwnershipTransferred(address,address)": EventFragment;
-    };
-    getEvent(nameOrSignatureOrTopic: "Opened"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
-export declare type OpenedEvent = TypedEvent<[BigNumber], {
-    id: BigNumber;
-}>;
-export declare type OpenedEventFilter = TypedEventFilter<OpenedEvent>;
-export declare type OwnershipTransferredEvent = TypedEvent<[
-    string,
-    string
-], {
-    previousOwner: string;
-    newOwner: string;
-}>;
-export declare type OwnershipTransferredEventFilter = TypedEventFilter<OwnershipTransferredEvent>;
+export declare namespace OpenedEvent {
+    type InputTuple = [id: BigNumberish];
+    type OutputTuple = [id: bigint];
+    interface OutputObject {
+        id: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace OwnershipTransferredEvent {
+    type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+    type OutputTuple = [previousOwner: string, newOwner: string];
+    interface OutputObject {
+        previousOwner: string;
+        newOwner: string;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
 export interface Initiator extends BaseContract {
-    connect(signerOrProvider: Signer | Provider | string): this;
-    attach(addressOrName: string): this;
-    deployed(): Promise<this>;
+    connect(runner?: ContractRunner | null): Initiator;
+    waitForDeployment(): Promise<this>;
     interface: InitiatorInterface;
-    queryFilter<TEvent extends TypedEvent>(event: TypedEventFilter<TEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TEvent>>;
-    listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
-    listeners(eventName?: string): Array<Listener>;
-    removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
-    removeAllListeners(eventName?: string): this;
-    off: OnEvent<this>;
-    on: OnEvent<this>;
-    once: OnEvent<this>;
-    removeListener: OnEvent<this>;
-    functions: {
-        cost(overrides?: CallOverrides): Promise<[BigNumber]>;
-        isOpened(id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
-        mintFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        mintOGFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: PayableOverrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        open(id: BigNumberish, to: string, gasLimit: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        owner(overrides?: CallOverrides): Promise<[string]>;
-        release(overrides?: CallOverrides): Promise<[BigNumber]>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        setRelease(_release: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        withdraw(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-    };
-    cost(overrides?: CallOverrides): Promise<BigNumber>;
-    isOpened(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
-    mintFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    mintOGFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: PayableOverrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    open(id: BigNumberish, to: string, gasLimit: BigNumberish, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    owner(overrides?: CallOverrides): Promise<string>;
-    release(overrides?: CallOverrides): Promise<BigNumber>;
-    renounceOwnership(overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    setRelease(_release: BigNumberish, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    transferOwnership(newOwner: string, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    withdraw(overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    callStatic: {
-        cost(overrides?: CallOverrides): Promise<BigNumber>;
-        isOpened(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
-        mintFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: CallOverrides): Promise<void>;
-        mintOGFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: CallOverrides): Promise<void>;
-        open(id: BigNumberish, to: string, gasLimit: BigNumberish, overrides?: CallOverrides): Promise<void>;
-        owner(overrides?: CallOverrides): Promise<string>;
-        release(overrides?: CallOverrides): Promise<BigNumber>;
-        renounceOwnership(overrides?: CallOverrides): Promise<void>;
-        setRelease(_release: BigNumberish, overrides?: CallOverrides): Promise<void>;
-        transferOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
-        withdraw(overrides?: CallOverrides): Promise<void>;
-    };
+    queryFilter<TCEvent extends TypedContractEvent>(event: TCEvent, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    queryFilter<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    on<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+    listeners(eventName?: string): Promise<Array<Listener>>;
+    removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+    cost: TypedContractMethod<[], [bigint], "view">;
+    isOpened: TypedContractMethod<[id: BigNumberish], [boolean], "view">;
+    mintFromDopeTo: TypedContractMethod<[
+        id: BigNumberish,
+        to: AddressLike,
+        meta: IHustlerActions.SetMetadataStruct,
+        data: BytesLike,
+        gasLimit: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    mintOGFromDopeTo: TypedContractMethod<[
+        id: BigNumberish,
+        to: AddressLike,
+        meta: IHustlerActions.SetMetadataStruct,
+        data: BytesLike,
+        gasLimit: BigNumberish
+    ], [
+        void
+    ], "payable">;
+    open: TypedContractMethod<[
+        id: BigNumberish,
+        to: AddressLike,
+        gasLimit: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    owner: TypedContractMethod<[], [string], "view">;
+    release: TypedContractMethod<[], [bigint], "view">;
+    renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+    setRelease: TypedContractMethod<[
+        _release: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    transferOwnership: TypedContractMethod<[
+        newOwner: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
+    withdraw: TypedContractMethod<[], [void], "nonpayable">;
+    getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+    getFunction(nameOrSignature: "cost"): TypedContractMethod<[], [bigint], "view">;
+    getFunction(nameOrSignature: "isOpened"): TypedContractMethod<[id: BigNumberish], [boolean], "view">;
+    getFunction(nameOrSignature: "mintFromDopeTo"): TypedContractMethod<[
+        id: BigNumberish,
+        to: AddressLike,
+        meta: IHustlerActions.SetMetadataStruct,
+        data: BytesLike,
+        gasLimit: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "mintOGFromDopeTo"): TypedContractMethod<[
+        id: BigNumberish,
+        to: AddressLike,
+        meta: IHustlerActions.SetMetadataStruct,
+        data: BytesLike,
+        gasLimit: BigNumberish
+    ], [
+        void
+    ], "payable">;
+    getFunction(nameOrSignature: "open"): TypedContractMethod<[
+        id: BigNumberish,
+        to: AddressLike,
+        gasLimit: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "owner"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "release"): TypedContractMethod<[], [bigint], "view">;
+    getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
+    getFunction(nameOrSignature: "setRelease"): TypedContractMethod<[_release: BigNumberish], [void], "nonpayable">;
+    getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+    getFunction(nameOrSignature: "withdraw"): TypedContractMethod<[], [void], "nonpayable">;
+    getEvent(key: "Opened"): TypedContractEvent<OpenedEvent.InputTuple, OpenedEvent.OutputTuple, OpenedEvent.OutputObject>;
+    getEvent(key: "OwnershipTransferred"): TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
     filters: {
-        "Opened(uint256)"(id?: null): OpenedEventFilter;
-        Opened(id?: null): OpenedEventFilter;
-        "OwnershipTransferred(address,address)"(previousOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
-        OwnershipTransferred(previousOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
-    };
-    estimateGas: {
-        cost(overrides?: CallOverrides): Promise<BigNumber>;
-        isOpened(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        mintFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        mintOGFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: PayableOverrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        open(id: BigNumberish, to: string, gasLimit: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        owner(overrides?: CallOverrides): Promise<BigNumber>;
-        release(overrides?: CallOverrides): Promise<BigNumber>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        setRelease(_release: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        withdraw(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-    };
-    populateTransaction: {
-        cost(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        isOpened(id: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        mintFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        mintOGFromDopeTo(id: BigNumberish, to: string, meta: SetMetadataStruct, data: BytesLike, gasLimit: BigNumberish, overrides?: PayableOverrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        open(id: BigNumberish, to: string, gasLimit: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        release(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        setRelease(_release: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        withdraw(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
+        "Opened(uint256)": TypedContractEvent<OpenedEvent.InputTuple, OpenedEvent.OutputTuple, OpenedEvent.OutputObject>;
+        Opened: TypedContractEvent<OpenedEvent.InputTuple, OpenedEvent.OutputTuple, OpenedEvent.OutputObject>;
+        "OwnershipTransferred(address,address)": TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+        OwnershipTransferred: TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
     };
 }

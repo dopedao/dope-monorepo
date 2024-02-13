@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { getBreakpointWidth } from 'ui/styles/breakpoints';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount } from 'wagmi';
 import AppWindowFooter from 'components/AppWindowFooter';
-import ConnectWallet from 'components/ConnectWallet';
+import Account from 'components/web3account/Account';
 import DesktopWindow from 'components/DesktopWindow';
-import { SearchFilterProvider } from 'components/SearchFilter';
+import { NoSSR } from './NoSSR';
 
 export interface AppWindowProps {
   background?: string;
@@ -57,21 +57,21 @@ export default function AppWindow({
   fullScreen,
   background,
 }: AppWindowProps) {
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
 
   return (
-    <SearchFilterProvider>
-      <DesktopWindow
-        title={title || 'DOPE WARS'}
-        titleChildren={navbar}
-        width={width}
-        height={height}
-        onlyFullScreen={onlyFullScreen}
-        fullScreen={fullScreen}
-        background={background}
-      >
+    <DesktopWindow
+      title={title || 'DOPE WARS'}
+      titleChildren={navbar}
+      width={width}
+      height={height}
+      onlyFullScreen={onlyFullScreen}
+      fullScreen={fullScreen}
+      background={background}
+    >
+      <NoSSR>
         {requiresWalletConnection && !account ? (
-          <ConnectWallet />
+          <Account />
         ) : (
           <AppWindowBody
             className="appWindowBody"
@@ -82,8 +82,8 @@ export default function AppWindow({
             {children}
           </AppWindowBody>
         )}
-        <AppWindowFooter>{footer}</AppWindowFooter>
-      </DesktopWindow>
-    </SearchFilterProvider>
+      </NoSSR>
+      <AppWindowFooter>{footer}</AppWindowFooter>
+    </DesktopWindow>
   );
 }

@@ -4,157 +4,182 @@ import (
 	"context"
 	"fmt"
 	"math/big"
+	"time"
 
+	"github.com/dopedao/dope-monorepo/packages/api/indexer/utils"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
-	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/wallet"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
+
+// This ensures we don't hammer the RPC for checking claims since below
+// contains a dumb loop
+var skipClaimsDuration = 10 * time.Minute
 
 type PaperProcessor struct {
 	bindings.BasePaperProcessor
 }
 
 func (p *PaperProcessor) ProcessTransfer(ctx context.Context, e bindings.PaperTransfer) (func(tx *ent.Tx) error, error) {
-	ctx, log := logger.LogFor(ctx)
+	log := logger.Log.With().Str("PaperProcessor", "ProcessTransfer").Logger()
+
+	blockTimeStamp, err := utils.EthBlockCache.GetTimestampByNumber(context.Background(),
+		p.Eth,
+		new(big.Int).SetUint64(e.Raw.BlockNumber))
+	if err != nil {
+		return nil, fmt.Errorf("PAPER getting block %d: %w", e.Raw.BlockNumber, err)
+	}
+	blockTime := time.Unix(int64(blockTimeStamp), 0)
 
 	log.Debug().
-		Str("From", e.From.Hex()).
-		Str("to", e.To.Hex()).
-		Str("Amount", e.Value.String()).
-		Msg("PAPER transfer")
+		Int("Amount", int(e.Value.Int64())).
+		Str("Wallet From", e.From.Hex()).
+		Str("Wallet To", e.To.Hex())
+
+	err = ensureWalletExists(ctx, e.From)
+	if err != nil {
+		return nil, err
+	}
+	fromWalletBal, fromShouldUpdate, fromErr := checkBalanceForWalletWithTimeout(
+		ctx, p, e, e.From, blockTime, &log)
+	if fromErr != nil {
+		return nil, fromErr
+	}
+
+	err = ensureWalletExists(ctx, e.To)
+	if err != nil {
+		return nil, err
+	}
+	toWalletBal, toShouldUpdate, toErr := checkBalanceForWalletWithTimeout(
+		ctx, p, e, e.To, blockTime, &log)
+	if toErr != nil {
+		return nil, toErr
+	}
 
 	return func(tx *ent.Tx) error {
-		if e.To != (common.Address{}) {
-
-			bal, err := p.Contract.BalanceOf(nil, e.To)
+		// Set balances for everything except the null address
+		// from the paper contract.
+		if e.From != (common.Address{}) && fromShouldUpdate {
+			err = updatePaperBalanceForWallet(
+				ctx, tx, p, e, e.From, fromWalletBal, blockTime)
 			if err != nil {
-				return fmt.Errorf("PAPER getting to wallet %s balance at txn %s: %w", e.To.Hex(), e.Raw.TxHash.Hex(), err)
-			}
-
-			if err := tx.Wallet.Create().
-				SetID(e.To.Hex()).
-				SetPaper(schema.BigInt{Int: bal}).
-				OnConflictColumns(wallet.FieldID).
-				SetPaper(schema.BigInt{Int: bal}).
-				Exec(ctx); err != nil {
-				return fmt.Errorf("PAPER update to wallet %s at txn %s: %w", e.To.Hex(), e.Raw.TxHash.Hex(), err)
+				return err
 			}
 		}
-
-		if e.From != (common.Address{}) {
-			log.Debug().Msgf("PAPER transfer from %s", e.From.Hex())
-			bal, err := p.Contract.BalanceOf(nil, e.From)
+		if e.To != (common.Address{}) && toShouldUpdate {
+			err = updatePaperBalanceForWallet(
+				ctx, tx, p, e, e.To, toWalletBal, blockTime)
 			if err != nil {
-				return fmt.Errorf("PAPER getting from wallet %s balance at txn %s: %w", e.From.Hex(), e.Raw.TxHash.Hex(), err)
-			}
-
-			if err := tx.Wallet.Create().
-				SetID(e.From.Hex()).
-				SetPaper(schema.BigInt{Int: bal}).
-				OnConflictColumns(wallet.FieldID).
-				SetPaper(schema.BigInt{Int: bal}).
-				Exec(ctx); err != nil {
-				return fmt.Errorf("PAPER update from wallet %s at txn %s: %w", e.From.Hex(), e.Raw.TxHash.Hex(), err)
+				return err
 			}
 		}
-
-		// PAPER Mint.
-		//
-		// Could be from claimAllForOwner, claimRangeForOwner,
-		// or claimById. (or other?)
-		//
-		// We don't know which, so we just update all DOPEs owned by address
-		// to set their claim status.
-		if e.From == (common.Address{}) {
-			// We have other scripts to handle this in a more comprehensive fashion
-			// so fire and forget here. We can monitor the logs for errors.
-			go func() {
-				err := handlePaperMint(ctx, e, p)
-				if err != nil {
-					log.Err(err).Msg("PAPER mint handler error")
-				}
-			}()
-		}
-
 		return nil
 	}, nil
 }
 
-var paperClaimIndexedWalletAddresses = map[string]bool{}
-
-func handlePaperMint(
+func checkBalanceForWalletWithTimeout(
 	ctx context.Context,
-	e bindings.PaperTransfer,
 	p *PaperProcessor,
-) error {
-	log.Debug().Msgf("PAPER MINT from %s", e.From.Hex())
+	e bindings.PaperTransfer,
+	walletAddress common.Address,
+	blockTime time.Time,
+	log *zerolog.Logger) (*big.Int, bool, error) {
 
-	if paperClaimIndexedWalletAddresses[e.To.Hex()] {
-		fmt.Printf("SKIPPING %v\n", e.To.Hex())
-		return nil
-	} else {
-		// We check all DOPES for this address below,
-		// so we don't need to do it more than once
-		paperClaimIndexedWalletAddresses[e.To.Hex()] = true
+	ctxWithTimeout, cancel := context.WithTimeout(ctx, 1*time.Second)
+	defer cancel()
+
+	// Create a channel to receive the result
+	result := make(chan struct {
+		*big.Int
+		bool
+		error
+	}, 1)
+
+	go func() {
+		bal, ok, err := checkBalanceForWallet(ctxWithTimeout, p, e, walletAddress, blockTime, log)
+		result <- struct {
+			*big.Int
+			bool
+			error
+		}{bal, ok, err}
+	}()
+
+	// Wait for the result or timeout
+	select {
+	case <-ctxWithTimeout.Done():
+		// Not the end of the world right now if balance isn't updated
+		// properly when updating a ton of them at once during initialization.
+		//
+		// We'll just get it next time.
+		log.Warn().Msgf("checkBalanceForWalletWithTimeout timed out for wallet %s", walletAddress.Hex())
+		return nil, false, nil
+		// return nil, false, fmt.Errorf("checkBalanceForWalletWithTimeout timed out for wallet %s", walletAddress.Hex())
+	case res := <-result:
+		return res.Int, res.bool, res.error
 	}
+}
 
-	// "Loot" is a throwback to the original Loot project.
-	// We didn't do lots of planning naming this stuff.
-	loot, err := p.Contract.Loot(nil)
+func checkBalanceForWallet(
+	ctx context.Context,
+	p *PaperProcessor,
+	e bindings.PaperTransfer,
+	walletAddress common.Address,
+	blockTime time.Time,
+	log *zerolog.Logger) (*big.Int, bool, error) {
+	bal := big.NewInt(0)
+
+	// Only update if the balance is different &
+	// block time is newer than last_set_paper_balance_at
+	dbWallet, err := dbClient.Wallet.Get(ctx, walletAddress.Hex())
 	if err != nil {
-		return fmt.Errorf("PAPER getting DOPE NFT address: %w", err)
+		return bal, false, fmt.Errorf("PAPER getting wallet %s from db: %w", walletAddress.Hex(), err)
 	}
-	// Get contract bindings for DOPE
-	dope, err := bindings.NewDope(loot, p.Eth)
+
+	if dbWallet.LastSetPaperBalanceAt.After(blockTime) {
+		return bal, false, nil
+	}
+	log.Debug().Msgf("✅ Checking PAPER balance for %v", walletAddress.Hex())
+
+	paperBalance, err := p.Contract.BalanceOf(nil, walletAddress)
+	log.Debug().Msgf("📜 PAPER balance for %v is %v", walletAddress.Hex(), paperBalance.String())
 	if err != nil {
-		return fmt.Errorf("PAPER initializing dope contract: %w", err)
+		return bal, false, fmt.Errorf("PAPER getting from wallet %s balance at txn %s: %w", e.From.Hex(), e.Raw.TxHash.Hex(), err)
 	}
-	// Find out how many DOPEs are owned by the address
-	bal, err := dope.BalanceOf(nil, e.To)
+	// Skip tx if the balance is the same
+	if dbWallet.Paper.Int.Cmp(paperBalance) == 0 {
+		return bal, false, nil
+	}
+	return bal, true, nil
+}
+
+func updatePaperBalanceForWallet(
+	ctx context.Context,
+	tx *ent.Tx,
+	p *PaperProcessor,
+	e bindings.PaperTransfer,
+	walletAddress common.Address,
+	paperBalance *big.Int,
+	blockTime time.Time) error {
+	log := logger.Log.With().Str("PaperProcessor", "updatePaperBalanceForWallet").Logger()
+
+	log.Debug().
+		Str("Wallet", walletAddress.Hex()).
+		Str("Paper Balance", paperBalance.String()).
+		Msg("Setting PAPER balance")
+
+	err := tx.Wallet.Create().
+		SetID(walletAddress.Hex()).
+		SetPaper(schema.BigInt{Int: paperBalance}).
+		SetLastSetPaperBalanceAt(blockTime).
+		OnConflictColumns(wallet.FieldID).
+		SetPaper(schema.BigInt{Int: paperBalance}).
+		Exec(ctx)
 	if err != nil {
-		return fmt.Errorf("PAPER getting dope balance: %w", err)
-	}
-
-	// Loop all DOPEs owned by address.
-	for i := 0; i < int(bal.Int64()); i++ {
-		// log.Debug().
-		// 	Str("wallet address", e.To.Hex()).
-		// 	Str("balance", bal.String()).
-		// 	Int("index", i).
-		// 	Msg("")
-
-		// This is slow because it has to make a contract call to get token ID
-		id, err := dope.TokenOfOwnerByIndex(nil, e.To, big.NewInt(int64(i)))
-
-		if err != nil {
-			return fmt.Errorf("PAPER token of owner by index: %w", err)
-		}
-
-		// If claimed already in our DB skip the rest
-		dbDope, err := dbprovider.Ent().Dope.Get(ctx, id.String())
-		if err == nil && dbDope.Claimed {
-			// log.Debug().Msgf("PAPER ✨already✨ claimed for DOPE %v", id.String())
-			continue
-		} else if err != nil {
-			return fmt.Errorf("PAPER getting dope from db: %w", err)
-		}
-
-		// This is slow because it has to make a contract call
-		claimed, err := p.Contract.ClaimedByTokenId(nil, id)
-		if err != nil {
-			return fmt.Errorf("PAPER claimed by token id: %w", err)
-		}
-
-		if err := dbprovider.Ent().Dope.UpdateOneID(id.String()).SetClaimed(claimed).Exec(ctx); err != nil {
-			return fmt.Errorf("PAPER updating dope claimed status: %w", err)
-		} else {
-			log.Debug().Msgf("💸 NEW PAPER claimed for DOPE %v", id.String())
-		}
+		return fmt.Errorf("PAPER update from wallet %s at txn %s: %w", walletAddress, e.Raw.TxHash.Hex(), err)
 	}
 	return nil
 }

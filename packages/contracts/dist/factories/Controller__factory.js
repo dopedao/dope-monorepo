@@ -533,10 +533,10 @@ var Controller__factory = /** @class */ (function () {
     function Controller__factory() {
     }
     Controller__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    Controller__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    Controller__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     Controller__factory.abi = _abi;
     return Controller__factory;

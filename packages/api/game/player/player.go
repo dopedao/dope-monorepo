@@ -217,7 +217,7 @@ func (p *Player) Serialize() PlayerData {
 }
 
 func (p *Player) ReadPump(ctx context.Context, client *ent.Client) {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 
 	// this will take care of closing the channel
 	// and broadcasting the leave event
@@ -238,15 +238,15 @@ func (p *Player) ReadPump(ctx context.Context, client *ent.Client) {
 		case events.PLAYER_MOVE:
 			handlePlayerMove(p, msg.Data)
 		case events.PLAYER_UPDATE_MAP:
-			handlePlayerUpdateMap(p, msg.Data, &log)
+			handlePlayerUpdateMap(p, msg.Data, log)
 		case events.PLAYER_CHAT_MESSAGE:
-			handlePlayerChatMessage(p, msg.Data, &log)
+			handlePlayerChatMessage(p, msg.Data, log)
 		case events.PLAYER_PICKUP_ITEMENTITY:
-			handlePlayerPickupItemEntity(p, msg.Data, ctx, &log, client)
+			handlePlayerPickupItemEntity(p, msg.Data, ctx, log, client)
 		case events.PLAYER_UPDATE_CITIZEN_STATE:
-			handlePlayerUpdateCitizenState(p, msg.Data, ctx, &log, client)
+			handlePlayerUpdateCitizenState(p, msg.Data, ctx, log, client)
 		case events.PLAYER_CHAT_COMMAND:
-			handlePlayerCommand(p, msg.Data, &log)
+			handlePlayerCommand(p, msg.Data, log)
 		case events.PLAYER_LEAVE:
 			return // see defer
 		}

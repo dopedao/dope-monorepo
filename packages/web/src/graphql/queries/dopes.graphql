@@ -29,26 +29,7 @@ query Dopes(
         opened
         score
         rank
-        lastSale {
-          inputs {
-            amount
-            id
-            type
-          }
-        }
-        listings {
-          id
-          outputs {
-            id
-            type
-            amount
-            token {
-              ... on Dope {
-                id
-              }
-            }
-          }
-        }
+        bestAskPriceEth
         items {
           id
           fullname

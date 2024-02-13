@@ -5,15 +5,18 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { getRandomNumber } from 'utils/utils';
+import { Box } from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
 
-const LoadingBlock = ({ maxRows = 20, color = 'black' }: { maxRows?: number; color?: string }) => {
+const LoadingBlock = ({ maxRows = 10, color = 'black' }: { maxRows?: number; color?: string }) => {
   const randomRowLength = getRandomNumber(2, maxRows);
-  const rows = [];
+  const [rows, setRows] = useState<JSX.Element[]>([]);
 
   const Container = styled.div`
     padding: 16px 0px;
     height: 100%;
     flex-direction: column;
+    clear: both;
     & > div {
       background-color: ${color};
       opacity: 0.1;
@@ -47,16 +50,23 @@ const LoadingBlock = ({ maxRows = 20, color = 'black' }: { maxRows?: number; col
     }
   `;
 
-  for (let i = 0; i < randomRowLength; i++) {
-    rows.push(
-      <div
-        key={`loading-row-${i}`}
-        css={css`
-          animation-duration: ${getRandomNumber(5, 10) / 10}s !important;
-        `}
-      ></div>,
-    );
-  }
+  useEffect(() => {
+    const randomRowLength = getRandomNumber(2, maxRows);
+    const newRows = [];
+
+    for (let i = 0; i < randomRowLength; i++) {
+      newRows.push(
+        <Box
+          key={`loading-row-${i}`}
+          css={css`
+            animation-duration: ${getRandomNumber(5, 10) / 10}s !important;
+          `}
+        ></Box>,
+      );
+    }
+
+    setRows(newRows);
+  }, [maxRows]);
 
   return <Container>{rows}</Container>;
 };

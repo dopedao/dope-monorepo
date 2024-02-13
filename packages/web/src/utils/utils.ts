@@ -29,21 +29,17 @@ export const getRandomArrayElement = (arr: any[]) => {
   return arr[getRandomNumber(0, arr.length - 1)];
 };
 
-export const hexColorToBase16 = (color: string) => color.replace('#', '0x') + 'ff';
+export const hexColorToBase16 = (color: string) => `${color.replace('#', '0x')}ff`;
 
 export const formatLargeNumber = (num: number) => {
-  if (num > 999 && num < 1000000) {
-    return (num / 1000).toFixed(1) + 'K';
-  } else if (num > 1000000) {
-    return (num / 1000000).toFixed(1) + 'M';
-  } else if (num < 900) {
-    return num;
-  }
+  if (num > 999 && num < 1000000) return `${(num / 1000).toFixed(1)}K`;
+  if (num > 1000000) return `${(num / 1000000).toFixed(1)}M`;
+  if (num < 900) return num;
 };
 
 export const getShortAddress = (address: string | undefined | null) => {
-  if (address && address.startsWith('0x')) {
-    return address.substr(0, 4) + '...' + address.substr(address.length - 4);
+  if (address?.startsWith('0x')) {
+    return `${address.substr(0, 4)}...${address.substr(address.length - 4)}`;
   }
   return address;
 };

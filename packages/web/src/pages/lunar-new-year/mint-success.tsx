@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { css } from '@emotion/react';
-import { Button, Stack, Image } from '@chakra-ui/react';
+import { Box, Button, Stack, Image } from '@chakra-ui/react';
 import AppWindowOptimism from 'components/AppWindowOptimism';
 import EventHeader from 'components/lunar_new_year/EventHeader';
 import styled from '@emotion/styled';
@@ -153,7 +153,7 @@ const MintSuccess = () => {
       scrollable={true}
     >
       <Fireworks />
-      <div
+      <Box
         css={css`
           display: flex;
           width: 100%;
@@ -163,7 +163,7 @@ const MintSuccess = () => {
         <EventHeader />
         <MessageContainer>
           <h3>Your gift has been revealed</h3>
-          <div
+          <Box
             css={css`
               display: flex;
               flex-direction: column;
@@ -178,18 +178,18 @@ const MintSuccess = () => {
                 return <Item key={i} id={item.id} />;
               } else {
                 return (
-                  <div key={i}>
+                  <Box key={i}>
                     <ProfileCard>
                       <PanelTitleBar centered>
-                        <div>YOU WON 1000 $PAPER</div>
+                        <Box>YOU WON 1000 $PAPER</Box>
                       </PanelTitleBar>
                       <Image src="/images/desktop/PAPER.png" alt="1000 $PAPER" />
                     </ProfileCard>
-                  </div>
+                  </Box>
                 );
               }
             })}
-            <Link href="/inventory?section=Gear" passHref>
+            <Link href="/swap-meet/inventory?section=Gear" passHref>
               <Button variant="cny">View your gifts</Button>
             </Link>
             <Link href="/lunar-new-year?section=mask" passHref>
@@ -202,9 +202,9 @@ const MintSuccess = () => {
                 Buy a Rare Mask
               </Button>
             </Link>
-          </div>
+          </Box>
         </MessageContainer>
-      </div>
+      </Box>
       <LogoContainer>
         <Image src="/images/Logo-Gold.png" alt="Dope Wars" />
       </LogoContainer>

@@ -2,3 +2,5 @@ pgdata
 tmp
 .grifter
 .env
+.DS_Store
+*.log

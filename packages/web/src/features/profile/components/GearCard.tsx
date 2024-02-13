@@ -1,30 +1,20 @@
-import { css } from '@emotion/react';
-import { Image, Stack } from '@chakra-ui/react';
 import GearEquipFooter from './GearEquipFooter';
 import GearUnEquipFooter from './GearUnEquipFooter';
-import PanelBody from 'components/PanelBody';
 import ProfileCard from 'features/profile/components/ProfileCard';
-import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
 import ItemCount from './ItemCount';
-import { Item, Maybe } from 'generated/graphql';
-import { BigNumberish, utils } from 'ethers';
-import { Table, Tr, Td } from '@chakra-ui/react';
+import { BigNumberish } from 'ethers';
+import { Box } from '@chakra-ui/react';
+import GearCardBody, { GearItem } from 'features/gear/components/GearCardBody';
 
-type GearItem = Pick<Item, 'id' | 'count' | 'fullname' | 'name' | 'svg' | 'suffix' | 'type'> & {
-  base?: Maybe<Pick<Item, 'svg'>>;
-};
+import PanelFooter from 'components/PanelFooter';
+import { AskPrice, SellOrEditListingButton, TransferButton } from 'features/swap-meet/components';
+import { useBestListingPrice } from 'providers/ReservoirListingsProvider';
 
-const getImageSrc = (item: GearItem): string => {
-  if (item.svg) return item.svg;
-  if (item.base?.svg) return item.base.svg;
-  return '/images/icon/dope-smiley.svg';
-};
-
-const getOrigin = (suffix?: string | null): string => {
-  if (!suffix) return '...';
-  const [, origin] = suffix.split('from ');
-  return origin;
-};
+import { NETWORK, OPT_CHAIN_ID } from 'utils/constants';
+import PanelTitleBarFlex from 'components/PanelTitleBarFlex';
+const chainId = parseInt(OPT_CHAIN_ID);
+// @ts-ignore
+const contractAddress = NETWORK[chainId].contracts.swapmeet;
 
 const GearCard = ({
   item,
@@ -39,55 +29,43 @@ const GearCard = ({
   showUnEquipFooter?: boolean;
   hustlerId?: BigNumberish;
 }) => {
+  const { price, currency } = useBestListingPrice(
+    contractAddress,
+    item.id?.toString() ?? '',
+    item.bestAskPriceEth ?? 0,
+  );
+
   return (
     <ProfileCard>
-      <ProfileCardHeader>
-        <div>{item.name}</div>
+      <PanelTitleBarFlex>
+        <Box>{item.name}</Box>
         {balance && balance > 1 && (
-          <div
-            css={css`
-              padding-right: 16px;
-              color: var(--new-year-red);
-            `}
-            title="You have this many in inventory"
-          >
+          <Box title="You have this many in inventory">
             <ItemCount count={balance} />
-          </div>
+          </Box>
         )}
-      </ProfileCardHeader>
-      <PanelBody>
-        <Stack>
-          <Image
-            borderRadius="md"
-            src={getImageSrc(item)}
-            alt={item.name}
-            css={css`
-              ${getImageSrc(item).includes('/icon') ? 'opacity:0.1' : ''}
-            `}
-          />
-          <Table variant="small">
-            <Tr>
-              <Td>Type:</Td>
-              <Td>{item.type}</Td>
-            </Tr>
-            <Tr>
-              <Td>Origin:</Td>
-              <Td>{getOrigin(item.suffix)}</Td>
-            </Tr>
-            <Tr>
-              <Td>Title: </Td>
-              <Td>{item.fullname}</Td>
-            </Tr>
-          </Table>
-        </Stack>
-      </PanelBody>
+        <AskPrice price={price} currency={currency} precision={4} />
+      </PanelTitleBarFlex>
+      <GearCardBody item={item} />
       {showEquipFooter && <GearEquipFooter id={item.id} />}
-      {showUnEquipFooter && hustlerId && 
-        <GearUnEquipFooter 
-          id={item.id} 
-          type={item.type}
-          hustlerId={hustlerId} 
-        />}
+      {showUnEquipFooter && hustlerId && (
+        <GearUnEquipFooter id={item.id} type={item.type} hustlerId={hustlerId} />
+      )}
+      {!showUnEquipFooter && (
+        <PanelFooter>
+          <TransferButton
+            title={item.fullname}
+            chainId={chainId}
+            contractAddress={contractAddress}
+            tokenId={item.id}
+          />
+          <SellOrEditListingButton
+            chainId={chainId}
+            contractAddress={contractAddress}
+            tokenId={item.id}
+          />
+        </PanelFooter>
+      )}
     </ProfileCard>
   );
 };

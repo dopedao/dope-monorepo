@@ -12,7 +12,7 @@ import { ethers } from 'ethers'; // Ethers
 function generateLeaf(address: string, value: string): Buffer {
   return Buffer.from(
     // Hash in appropriate Merkle format
-    ethers.utils.solidityKeccak256(['address', 'uint256'], [address, value]).slice(2),
+    ethers.solidityPackedKeccak256(['address', 'uint256'], [address, value]).slice(2),
     'hex',
   );
 }
@@ -22,8 +22,8 @@ const merkleTree = new MerkleTree(
   // Generate leafs
   Object.entries(config.airdrop).map(([address, tokens]) =>
     generateLeaf(
-      ethers.utils.getAddress(address),
-      ethers.utils.parseUnits(tokens.toString(), config.decimals).toString(),
+      ethers.getAddress(address),
+      ethers.parseUnits(tokens.toString(), config.decimals).toString(),
     ),
   ),
   // Hashing function
@@ -34,8 +34,8 @@ const merkleTree = new MerkleTree(
 export function getProof(address: string, value: string): string[] {
   // Generate hashed leaf from address
   const leaf: Buffer = generateLeaf(
-    ethers.utils.getAddress(address),
-    ethers.utils.parseUnits(value, config.decimals).toString(),
+    ethers.getAddress(address),
+    ethers.parseUnits(value, config.decimals).toString(),
   );
   // Generate airdrop proof
   return merkleTree.getHexProof(leaf);

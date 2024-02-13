@@ -16,6 +16,7 @@ const ItemCount: FC<ItemCountProps> = ({ count }) => {
       justify="center"
       width={8}
       fontSize="xs"
+      opacity={count === 0 ? 0 : 1}
     >
       {count}
     </Flex>

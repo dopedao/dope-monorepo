@@ -8,7 +8,7 @@ const useCurrentPageNumber = () => {
   useEffect(() => {
     if (router.isReady) {
       const pageIndex =
-        typeof router.query.page == 'string' && !Number.isNaN(parseInt(router.query.page))
+        typeof router.query.page === 'string' && !Number.isNaN(parseInt(router.query.page))
           ? parseInt(router.query.page)
           : 1;
 

@@ -9,7 +9,9 @@ import (
 	"math/big"
 	"os"
 	"strings"
+	"sync"
 
+	"github.com/dopedao/dope-monorepo/packages/api/indexer/utils"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
@@ -36,6 +38,7 @@ const (
 var (
 	componentsAddr = common.HexToAddress("0xe03C4eb2a0a797766a5DB708172e04f6A970DC7f")
 	hustlerAddr    = common.HexToAddress("0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E")
+	controllerAddr = common.HexToAddress("0x124760902088dDBFEb8F27210D3B0C645a5c0A8B")
 
 	maskSlot      = big.NewInt(0)
 	viewboxSlot   = big.NewInt(1)
@@ -92,12 +95,7 @@ func (p *HustlerProcessor) Setup(address common.Address, eth interface {
 
 func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.HustlerAddRles) (func(tx *ent.Tx) error, error) {
 	// Tagged logger
-	ctx, log := logger.LogFor(
-		ctx,
-		func(zctx *zerolog.Context) zerolog.Context {
-			return zctx.Str("HustlerProcessor", "ProcessAddRles")
-		},
-	)
+	log := logger.Log.With().Str("HustlerProcessor", "ProcessAddRles").Logger()
 
 	var builders []*ent.BodyPartCreate
 
@@ -128,28 +126,36 @@ func (p *HustlerProcessor) ProcessAddRles(ctx context.Context, e bindings.Hustle
 		Msg("Processing body part")
 
 	return func(tx *ent.Tx) error {
-		n, err := tx.BodyPart.
+		bodyCount, err := tx.BodyPart.
 			Query().
 			Where(bodypart.
 				And(bodypart.TypeEQ(part), bodypart.SexEQ(sex))).
 			Count(ctx)
 
 		if err != nil {
-			return fmt.Errorf("hustler: getting body count: %w", err)
+			return fmt.Errorf("hustler: getting bodyCount: %w", err)
 		}
 
+		// The contract BodyRle method can return an error for things
+		// it doesn't know about. In this instance we log it, and move on.
+		// It might be nice to insert a default option here but not sure
+		// that's necessary at this point in time.
 		for i := 0; i < int(e.Len.Int64()); i++ {
-			id := int64(n + i)
+			id := int64(bodyCount + i)
 			rle, err := p.Contract.BodyRle(nil, e.Part, big.NewInt(id))
 			if err != nil {
-				return fmt.Errorf("hustler: getting body rle part %d, id: %d: %w", e.Part, id, err)
+				log.Warn().
+					Err(err).
+					Msgf("hustler: `getting body rle` part %d, id: %d", e.Part, id)
+				return nil
+			} else {
+				builders = append(builders, tx.BodyPart.Create().
+					SetID(fmt.Sprintf("%s-%s-%d", sex, part, id)).
+					SetRle(hex.EncodeToString(rle)).
+					SetType(part).
+					SetSex(sex),
+				)
 			}
-			builders = append(builders, tx.BodyPart.Create().
-				SetID(fmt.Sprintf("%s-%s-%d", sex, part, id)).
-				SetRle(hex.EncodeToString(rle)).
-				SetType(part).
-				SetSex(sex),
-			)
 		}
 
 		if err := tx.BodyPart.CreateBulk(builders...).Exec(ctx); err != nil {
@@ -165,15 +171,10 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 	e bindings.HustlerMetadataUpdate,
 ) (func(tx *ent.Tx) error, error) {
 
-	ctx, log := logger.LogFor(
-		ctx,
-		func(zctx *zerolog.Context) zerolog.Context {
-			return zctx.Str("HustlerProcessor", "ProcessMetadataUpdate")
-		},
-		func(zctx *zerolog.Context) zerolog.Context {
-			return zctx.Str("hustler_id", e.Id.String())
-		},
-	)
+	log := logger.Log.With().
+		Str("HustlerProcessor", "ProcessMetadataUpdate").
+		Str("hustler_id", e.Id.String()).
+		Logger()
 
 	meta, err := p.Contract.Metadata(nil, e.Id)
 	if err != nil {
@@ -291,7 +292,9 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 		typ = hustler.TypeORIGINAL_GANGSTA
 	}
 
-	block, err := p.Eth.BlockByNumber(ctx, new(big.Int).SetUint64(e.Raw.BlockNumber))
+	blockTime, err := utils.EthBlockCache.GetTimestampByNumber(context.Background(),
+		p.Eth,
+		new(big.Int).SetUint64(e.Raw.BlockNumber))
 	if err != nil {
 		return nil, fmt.Errorf("Eth.ByBlockNumber ProcessMetadataUpdate updating hustler %s metadata: %w", e.Id.String(), err)
 	}
@@ -307,22 +310,29 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 	if (title) != nil {
 		titleStr = *title
 	}
-	log.Debug().
-		Str("bodyParts", string(bodyParts)).
-		Str("viewBox", string(viewbox)).
-		Str("order", string(order)).
-		Str("body_id", bodyID).
-		Str("hair_id", hairID).
-		Str("beard_id", beardIDStr).
-		Str("title", titleStr).
-		Str("name", safeName).
-		Msg("Upsert hustler metadata")
 
 	return func(tx *ent.Tx) error {
-		if err := tx.Hustler.Create().
-			SetID(e.Id.String()).
-			SetType(typ).
-			SetAge(block.Time()).
+
+		err = upsertHustler(ctx, tx, e.Id.String(), "", blockTime)
+		if err != nil {
+			log.Fatal().Err(err).Msg("upsertHustler")
+			return fmt.Errorf("hustler: upsert: %w", err)
+		}
+
+		log.Debug().
+			Str("bodyParts", string(bodyParts)).
+			Str("viewBox", string(viewbox)).
+			Str("order", string(order)).
+			Str("body_id", bodyID).
+			Str("hair_id", hairID).
+			Str("beard_id", beardIDStr).
+			Str("title", titleStr).
+			Str("name", safeName).
+			Str("type", typ.String()).
+			Msg("ProcessMetadataUpdate")
+
+		err := tx.Hustler.UpdateOneID(e.Id.String()).
+			SetAge(blockTime).
 			SetName(safeName).
 			SetBackground(hex.EncodeToString(meta.Background[:])).
 			SetColor(hex.EncodeToString(meta.Color[:])).
@@ -350,15 +360,13 @@ func (p *HustlerProcessor) ProcessMetadataUpdate(
 				int(new(big.Int).SetBytes(order[23:24]).Int64()),
 				int(new(big.Int).SetBytes(order[22:23]).Int64()),
 			}).
-			OnConflictColumns(hustler.FieldID).
-			UpdateNewValues().
-			Exec(ctx); err != nil {
-			log.Debug().Str("indexer", "HUSTLER").
+			Exec(ctx)
+		if err != nil {
+			log.Error().Err(err).Str("indexer", "HUSTLER").
 				Str("name", safeName).
 				Msg("Failed Saving Hustler")
 			return fmt.Errorf("ProcessMetadataUpdate ent tx updating hustler %s metadata: %w", e.Id.String(), err)
 		}
-
 		return nil
 	}, nil
 }
@@ -373,19 +381,18 @@ func (p *HustlerProcessor) ProcessTransferBatch(
 	ctx context.Context,
 	e bindings.HustlerTransferBatch,
 ) (func(tx *ent.Tx) error, error) {
-	ctx, log := logger.LogFor(ctx)
-	log.Debug().Str("indexer", "HUSTLER").Msgf("ProcessTransferBatch %v", e.Ids)
+	log := logger.Log
+	log.Debug().Msgf("ProcessTransferBatch %v", e.Ids)
+
+	if err := ensureWalletExists(ctx, e.To); err != nil {
+		return nil, fmt.Errorf("hustler: %w", err)
+	}
 
 	return func(tx *ent.Tx) error {
-		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
-			return fmt.Errorf("hustler: %w", err)
-		}
-
 		var ids []string
 		for _, id := range e.Ids {
 			ids = append(ids, id.String())
 		}
-
 		// TODO: reset age for non-og
 		if err := tx.Hustler.Update().
 			Where(hustler.IDIn(ids...)).
@@ -402,116 +409,146 @@ func (p *HustlerProcessor) ProcessTransferSingle(
 	ctx context.Context,
 	e bindings.HustlerTransferSingle,
 ) (func(tx *ent.Tx) error, error) {
-	ctx, log := logger.LogFor(ctx)
-	log.Debug().Str("indexer", "HUSTLER").Msgf("ProcessTransferSingle %s", e.Id.String())
 
-	block, blockErr := p.Eth.BlockByNumber(
-		ctx,
-		new(big.Int).SetUint64(e.Raw.BlockNumber))
-	if blockErr != nil {
-		fmtErr := fmt.Errorf(
-			"ProcessTransferSingle updating hustler %s metadata: %w",
-			e.Id.String(),
-			blockErr)
-		return nil, fmtErr
+	// Mints emit 2 processTransferSingle events, one for the mint
+	// to the controller contract and one for the transfer.
+	// Why double the work?
+	if e.To == controllerAddr {
+		return nil, nil
+	}
+
+	log := logger.Log
+	log.Info().
+		Str("tx_hash", e.Raw.TxHash.String()).
+		Uint64("block_num", e.Raw.BlockNumber).
+		Msgf("ProcessTransferSingle %s from %v to %v",
+			e.Id.String(), e.From.Hex(), e.To.Hex())
+
+	blockTime, err := utils.EthBlockCache.GetTimestampByNumber(context.Background(), p.Eth, new(big.Int).SetUint64(e.Raw.BlockNumber))
+	if err != nil {
+		return nil, fmt.Errorf("ProcessTransferSingle %s get blockTime: %w", e.Id.String(), err)
+	}
+
+	if err = ensureWalletExists(ctx, e.To); err != nil {
+		return nil, fmt.Errorf("hustler: %w", err)
+	}
+
+	slots, hustlerSvg, err := ProcessHustlerEquipmentUpdate(
+		ctx, p.Eth, e.Id.String(), new(big.Int).SetUint64(e.Raw.BlockNumber))
+	if err != nil {
+		return nil, fmt.Errorf("hustler: getting equipment: %w", err)
 	}
 
 	return func(tx *ent.Tx) error {
-		if err := ensureWalletExists(ctx, tx, e.To); err != nil {
-			return fmt.Errorf("hustler: %w", err)
+		err = upsertHustler(ctx, tx, e.Id.String(), e.To.String(), blockTime)
+		if err != nil {
+			log.Fatal().Err(err).Msg("upsertHustler")
+			return fmt.Errorf("hustler: upsert: %w", err)
 		}
-
-		if e.From == (common.Address{}) {
-			typ := hustler.TypeREGULAR
-			if e.Id.Cmp(big.NewInt(500)) == -1 {
-				typ = hustler.TypeORIGINAL_GANGSTA
-			}
-
-			if err := tx.Hustler.
-				Create().
-				SetID(e.Id.String()).
-				SetWalletID(e.To.Hex()).
-				SetType(typ).
-				SetAge(block.Time()).
-				OnConflictColumns(hustler.FieldID).
-				UpdateNewValues().
-				Exec(ctx); err != nil {
-				return fmt.Errorf("hustler: create hustler: %w", err)
-			}
-
-			if err := RefreshHustlerEquipment(ctx, p.Eth, tx, e.Id.String(), hustlerAddr, new(big.Int).SetUint64(e.Raw.BlockNumber)); err != nil {
-				return err
-			}
-		}
-
-		if e.To != (common.Address{}) {
-			chain := tx.Hustler.
-				Create().
-				SetID(e.Id.String()).
-				SetWalletID(e.To.Hex())
-
-			typ := hustler.TypeREGULAR
-			if e.Id.Cmp(big.NewInt(500)) == -1 {
-				typ = hustler.TypeORIGINAL_GANGSTA
-				chain = chain.SetAge(OldestHustlerAge) // oldest OG age
-			} else {
-				// Reset age for non-ogs
-				chain = chain.SetAge(block.Time())
-			}
-
-			if err := chain.
-				SetType(typ).
-				OnConflictColumns(hustler.FieldID).
-				UpdateNewValues().
-				Exec(ctx); err != nil {
-				return fmt.Errorf("hustler: update hustler owner: %w", err)
-			}
+		err = UpdateHustlerEquipment(ctx, tx, e.Id.String(), slots, hustlerSvg)
+		if err != nil {
+			log.Fatal().Err(err).Msg("UpdateHustlerEquipment")
+			return err
 		}
 
 		return nil
 	}, nil
 }
 
-func RefreshHustlerEquipment(
+// Ensures hustler exists in the database
+func upsertHustler(
+	ctx context.Context,
+	tx *ent.Tx,
+	hustlerId string,
+	walletId string,
+	blockTime uint64) error {
+	log := logger.Log
+
+	chain := tx.Hustler.
+		Create().
+		SetID(hustlerId)
+
+	if walletId != "" {
+		chain = chain.SetWalletID(walletId)
+	}
+
+	hustlerIdBigInt, _ := new(big.Int).SetString(hustlerId, 10)
+	typ := hustler.TypeREGULAR
+	if hustlerIdBigInt.Cmp(big.NewInt(500)) == -1 {
+		typ = hustler.TypeORIGINAL_GANGSTA
+		chain = chain.SetAge(OldestHustlerAge) // oldest OG age
+	} else {
+		// Reset age for non-ogs
+		chain = chain.SetAge(blockTime)
+	}
+
+	if err := chain.
+		SetType(typ).
+		OnConflictColumns(hustler.FieldID).
+		UpdateNewValues().
+		Exec(ctx); err != nil {
+		log.Fatal().Err(err).Msg("upsertHustler")
+		return fmt.Errorf("hustler: update hustler owner: %w", err)
+	}
+
+	return nil
+}
+
+// Get Hustler information from the blockchain
+// Separated from UpdateHustlerEquipment so we can
+// call that in serially within the context of a transaction
+func ProcessHustlerEquipmentUpdate(
 	ctx context.Context,
 	eth interface {
 		bind.ContractBackend
 		ethereum.ChainStateReader
 		ethereum.TransactionReader
 	},
+	id string,
+	blockNumber *big.Int,
+) (*Slots, string, error) {
+	log := logger.Log
+	log.Debug().Msgf("ProcessHustlerEquipmentUpdate for %s", id)
+
+	slots, err := equipmentSlots(ctx, eth, id, blockNumber)
+	if err != nil {
+		return nil, "", err
+	}
+
+	hustlerContract, err := bindings.NewHustler(hustlerAddr, eth)
+	if err != nil {
+		return nil, "", fmt.Errorf("initialize hustler contract: %w", err)
+	}
+	bigId, ok := new(big.Int).SetString(id, 10)
+	if !ok {
+		return nil, "", fmt.Errorf("casting id to int: %s", id)
+	}
+	// Don't particularly care if this is blank,
+	// the function will log errors for us and we don't
+	// want to stop the process for it
+	hustlerSvg, _ := GetHustlerSvg(hustlerContract, bigId, log)
+
+	return slots, hustlerSvg, nil
+}
+
+// Executes a transaction to update the equipment for a hustler
+// that should be fetched in a separate step for our indexer,
+// since it can be slow, and we can run those processes in parallel,
+// while this one has to be run in serial.
+func UpdateHustlerEquipment(
+	ctx context.Context,
 	tx *ent.Tx,
 	id string,
-	address common.Address,
-	blockNumber *big.Int,
+	slots *Slots,
+	hustlerSvg string,
 ) error {
-	ctx, log := logger.LogFor(ctx)
-	log.Debug().Str("indexer", "HUSTLER").Msgf("RefreshEquipment for %s", id)
-	slots, err := equipmentSlots(ctx, eth, id, address, blockNumber)
-	if err != nil {
-		return err
-	}
-
-	h, err := bindings.NewHustler(address, eth)
-	if err != nil {
-		return fmt.Errorf("initialize hustler contract: %w", err)
-	}
-
-	big, ok := new(big.Int).SetString(id, 10)
-	if !ok {
-		return fmt.Errorf("casting id to int: %s", id)
-	}
+	log := logger.Log
+	log.Debug().Msgf("UpdateHustlerEquipment for %s", id)
 
 	u := tx.Hustler.Update().
 		Where(hustler.IDEQ(id))
 
-	hustlerSvg, err := GetHustlerSvg(h, big, &log)
-	if err == nil {
-		u.SetSvg(hustlerSvg)
-	} else {
-		// we dont want to cancel updating the equipment
-		// just because we cant get the image
-		log.Err(err).Msgf("couldnt get svg of hustler: %v", id)
-	}
+	u.SetSvg(hustlerSvg)
 
 	if slots.Weapon != nil {
 		u = u.SetWeaponID(slots.Weapon.String())
@@ -574,28 +611,53 @@ func RefreshHustlerEquipment(
 	}
 
 	if err := u.Exec(ctx); err != nil {
-		return fmt.Errorf("updating equipment: %w", err)
+		return fmt.Errorf("updating equipment for Hustler %s: %w", id, err)
 	}
 
 	return nil
 }
 
-// Tries to get hustler svg from chain,
-// if it fails, it tries to get it from offchain
-func GetHustlerSvg(h *bindings.Hustler, big *big.Int, log *zerolog.Logger) (string, error) {
+// Serial way to update hustler equipment until i refactor some code
+// in SwapMeet
+func ProcessAndUpdateHustlerEquipment(
+	ctx context.Context,
+	eth interface {
+		bind.ContractBackend
+		ethereum.ChainStateReader
+		ethereum.TransactionReader
+	},
+	tx *ent.Tx,
+	id string,
+	blockNumber *big.Int,
+) error {
+	slots, svg, err := ProcessHustlerEquipmentUpdate(ctx, eth, id, blockNumber)
+	if err != nil {
+		return fmt.Errorf("hustler: getting equipment: %w", err)
+	}
+	err = UpdateHustlerEquipment(ctx, tx, id, slots, svg)
+	if err != nil {
+		return fmt.Errorf("hustler: updating equipment: %w", err)
+	}
+	return nil
+}
+
+// Tries to get hustler svg from on-chain,
+// if it fails, it tries to render it off-chain
+func GetHustlerSvg(h *bindings.Hustler, bigId *big.Int, log *zerolog.Logger) (string, error) {
 
 	// On-chain SVG
-	metadata, err := h.TokenURI(nil, big)
+	metadata, err := h.TokenURI(nil, bigId)
 	if err != nil {
 		log.
 			Err(err).
 			Str("indexer", "HUSTLER").
-			Str("hustler_id", big.String()).
+			Str("hustler_id", bigId.String()).
 			Msg("COULD NOT GET HUSTLER IMAGE FROM TOKENURI.")
 
 		// Off-chain SVG
-		offchainHustlerSvg, err := svgrender.GetOffchainRender(big)
+		offchainHustlerSvg, err := svgrender.GetOffchainRender(bigId)
 		if err != nil {
+			log.Err(err)
 			return "", err
 		}
 
@@ -604,6 +666,7 @@ func GetHustlerSvg(h *bindings.Hustler, big *big.Int, log *zerolog.Logger) (stri
 
 	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(metadata, "data:application/json;base64,"))
 	if err != nil {
+		log.Err(err)
 		return "", fmt.Errorf("decoding metadata: %w", err)
 	}
 
@@ -611,6 +674,7 @@ func GetHustlerSvg(h *bindings.Hustler, big *big.Int, log *zerolog.Logger) (stri
 
 	var parsed Metadata
 	if err := json.Unmarshal([]byte(safeStr), &parsed); err != nil {
+		log.Err(err)
 		return "", fmt.Errorf("hustler unmarshalling metadata: %w", err)
 	}
 
@@ -630,6 +694,16 @@ type Slots struct {
 	Accessory *big.Int
 }
 
+type EquipmentSlotArgs struct {
+	mask      byte
+	slotToGet *big.Int
+	slotToSet **big.Int
+	name      string
+}
+
+// Gets the equipment slots for a hustler from contract storage
+// Each slot has to be read from the contract storage individually
+// and this can be slow, so we do it concurrently where possible.
 func equipmentSlots(
 	ctx context.Context,
 	eth interface {
@@ -637,10 +711,11 @@ func equipmentSlots(
 		ethereum.TransactionReader
 	},
 	id string,
-	address common.Address,
 	blockNumber *big.Int,
 ) (*Slots, error) {
 	slots := &Slots{}
+	log := logger.Log
+	log.Debug().Msgf("Get equipmentSlots for %s", id)
 
 	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(
 		[]string{"uint256", "uint256"},
@@ -652,7 +727,7 @@ func equipmentSlots(
 
 	mask, err := eth.StorageAt(
 		ctx,
-		address,
+		hustlerAddr,
 		common.BytesToHash(
 			new(big.Int).Add(metadataKey, maskSlot).Bytes(),
 		),
@@ -661,84 +736,158 @@ func equipmentSlots(
 		return nil, fmt.Errorf("getting mask from storage: %w", err)
 	}
 
+	var wg sync.WaitGroup
+	errCh := make(chan error, 1)
+
 	// Little endian
-	if mask[31-8]&1 != 0 {
-		slots.Weapon, err = equipmentSlot(ctx, eth, id, address, weaponSlot, blockNumber)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if mask[31-8]&1 != 0 {
+			slots.Weapon, err = equipmentSlot(ctx, eth, id, weaponSlot, blockNumber)
+			if err != nil {
+				errCh <- fmt.Errorf("getting weapon from storage: %w", err)
+				return
+			}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if mask[31-8]&2 != 0 {
+			slots.Clothes, err = equipmentSlot(ctx, eth, id, clothesSlot, blockNumber)
+			if err != nil {
+				errCh <- fmt.Errorf("getting clothes from storage: %w", err)
+				return
+			}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if mask[31-8]&4 != 0 {
+			slots.Vehicle, err = equipmentSlot(ctx, eth, id, vehicleSlot, blockNumber)
+			if err != nil {
+				errCh <- fmt.Errorf("getting vehicle from storage: %w", err)
+				return
+			}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if mask[31-8]&8 != 0 {
+			slots.Waist, err = equipmentSlot(ctx, eth, id, waistSlot, blockNumber)
+			if err != nil {
+				errCh <- fmt.Errorf("getting waist from storage: %w", err)
+				return
+			}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if mask[31-8]&16 != 0 {
+			slots.Foot, err = equipmentSlot(ctx, eth, id, footSlot, blockNumber)
+			if err != nil {
+				errCh <- fmt.Errorf("getting foot from storage: %w", err)
+				return
+			}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if mask[31-8]&32 != 0 {
+			slots.Hand, err = equipmentSlot(ctx, eth, id, handSlot, blockNumber)
+			if err != nil {
+				errCh <- fmt.Errorf("getting hand from storage: %w", err)
+				return
+			}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if mask[31-8]&64 != 0 {
+			slots.Drug, err = equipmentSlot(ctx, eth, id, drugSlot, blockNumber)
+			if err != nil {
+				errCh <- fmt.Errorf("getting drug from storage: %w", err)
+				return
+			}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if mask[31-8]&128 != 0 {
+			slots.Neck, err = equipmentSlot(ctx, eth, id, neckSlot, blockNumber)
+			if err != nil {
+				errCh <- fmt.Errorf("getting neck from storage: %w", err)
+				return
+			}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if mask[31-9]&1 != 0 {
+			slots.Ring, err = equipmentSlot(ctx, eth, id, ringSlot, blockNumber)
+			if err != nil {
+				errCh <- fmt.Errorf("getting ring from storage: %w", err)
+				return
+			}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		wg.Done()
+		if mask[31-9]&2 != 0 {
+			slots.Accessory, err = equipmentSlot(ctx, eth, id, accessorySlot, blockNumber)
+			if err != nil {
+				errCh <- fmt.Errorf("getting accessory from storage: %w", err)
+				return
+			}
+		}
+	}()
+
+	wg.Wait()
+	close(errCh)
+
+	for err := range errCh {
 		if err != nil {
-			return nil, fmt.Errorf("getting weapon from storage: %w", err)
+			return nil, err
 		}
 	}
 
-	if mask[31-8]&2 != 0 {
-		slots.Clothes, err = equipmentSlot(ctx, eth, id, address, clothesSlot, blockNumber)
-		if err != nil {
-			return nil, fmt.Errorf("getting clothes from storage: %w", err)
-		}
-	}
-
-	if mask[31-8]&4 != 0 {
-		slots.Vehicle, err = equipmentSlot(ctx, eth, id, address, vehicleSlot, blockNumber)
-		if err != nil {
-			return nil, fmt.Errorf("getting vehicle from storage: %w", err)
-		}
-	}
-
-	if mask[31-8]&8 != 0 {
-		slots.Waist, err = equipmentSlot(ctx, eth, id, address, waistSlot, blockNumber)
-		if err != nil {
-			return nil, fmt.Errorf("getting waist from storage: %w", err)
-		}
-	}
-
-	if mask[31-8]&16 != 0 {
-		slots.Foot, err = equipmentSlot(ctx, eth, id, address, footSlot, blockNumber)
-		if err != nil {
-			return nil, fmt.Errorf("getting foot from storage: %w", err)
-		}
-	}
-
-	if mask[31-8]&32 != 0 {
-		slots.Hand, err = equipmentSlot(ctx, eth, id, address, handSlot, blockNumber)
-		if err != nil {
-			return nil, fmt.Errorf("getting hand from storage: %w", err)
-		}
-	}
-
-	if mask[31-8]&64 != 0 {
-		slots.Drug, err = equipmentSlot(ctx, eth, id, address, drugSlot, blockNumber)
-		if err != nil {
-			return nil, fmt.Errorf("getting drug from storage: %w", err)
-		}
-	}
-
-	if mask[31-8]&128 != 0 {
-		slots.Neck, err = equipmentSlot(ctx, eth, id, address, neckSlot, blockNumber)
-		if err != nil {
-			return nil, fmt.Errorf("getting neck from storage: %w", err)
-		}
-	}
-
-	if mask[31-9]&1 != 0 {
-		slots.Ring, err = equipmentSlot(ctx, eth, id, address, ringSlot, blockNumber)
-		if err != nil {
-			return nil, fmt.Errorf("getting ring from storage: %w", err)
-		}
-	}
-
-	if mask[31-9]&2 != 0 {
-		slots.Accessory, err = equipmentSlot(ctx, eth, id, address, accessorySlot, blockNumber)
-		if err != nil {
-			return nil, fmt.Errorf("getting accessory from storage: %w", err)
-		}
-	}
+	log.Debug().Msgf("equipmentSlots for %s: %+v", id, slots)
 
 	return slots, nil
 }
 
-func equipmentSlot(ctx context.Context, eth interface {
-	ethereum.ChainStateReader
-	ethereum.TransactionReader
-}, id string, address common.Address, slot *big.Int, blockNumber *big.Int) (*big.Int, error) {
+// Uses eth.StorageAt to get equipment from contract storage
+// This can be slow, especially if we're calling it 9 times
+// for each hustler, so it's smart to call it from a goroutine to speed
+// things up.
+func equipmentSlot(
+	ctx context.Context,
+	eth interface {
+		ethereum.ChainStateReader
+		ethereum.TransactionReader
+	},
+	id string,
+	slot *big.Int,
+	blockNumber *big.Int,
+) (*big.Int, error) {
 	metadataKey := new(big.Int).SetBytes(solsha3.SoliditySHA3(
 		[]string{"uint256", "uint256"},
 		[]interface{}{
@@ -746,10 +895,11 @@ func equipmentSlot(ctx context.Context, eth interface {
 			"19",
 		},
 	))
+	// logger.Log.Debug().Msgf("⏰ storageAt equipmentSlot %v", slot)
 
 	value, err := eth.StorageAt(
 		ctx,
-		address,
+		hustlerAddr,
 		common.BytesToHash(
 			new(big.Int).Add(metadataKey, slot).Bytes(),
 		),

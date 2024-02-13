@@ -1,5 +1,6 @@
 #!/bin/bash
 # A small script to create the .env file needed for docker-compose
+# ON WINDOWS
 
 input_or_default() {
     if [ -z "$1" ]; then

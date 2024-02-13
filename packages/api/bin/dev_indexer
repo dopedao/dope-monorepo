@@ -1,0 +1,11 @@
+#!/bin/sh
+# Runs indexer through jq to pretty print the output
+# Indexer outputs "newline format json" which it can't read itself
+# And go outputs logs to stderr, so we need to redirect that to stdout
+cd "$(dirname "$0")/.."
+
+gow run cmd/indexerEthereum/main.go 2>&1 |
+  while read -r line; do echo "$line" |
+  jq . 2>/dev/null || echo "$line"; done
+
+# go run cmd/indexerEthereum/main.go 2>&1 | while read -r line; do echo "$line" | jq .; done

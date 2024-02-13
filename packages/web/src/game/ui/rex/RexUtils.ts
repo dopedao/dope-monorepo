@@ -14,10 +14,10 @@ export const createTextBox = (
   config: TextBoxConfig,
   icon?: Phaser.GameObjects.GameObject,
 ) => {
-  var wrapWidth = GetValue(config, 'wrapWidth', 0);
-  var fixedWidth = GetValue(config, 'fixedWidth', 0);
-  var fixedHeight = GetValue(config, 'fixedHeight', 0);
-  var textBox = scene.rexUI.add
+  const wrapWidth = GetValue(config, 'wrapWidth', 0);
+  const fixedWidth = GetValue(config, 'fixedWidth', 0);
+  const fixedHeight = GetValue(config, 'fixedHeight', 0);
+  const textBox = scene.rexUI.add
     .textBox({
       anchor: {
         centerX: 'center',
@@ -51,8 +51,9 @@ export const createTextBox = (
     .setInteractive()
     .on(
       'pointerdown',
-      function () {
-        var icon = textBox.getElement('action')!.setActive(false);
+      () => {
+        const ele = textBox.getElement('action')! as any
+        const icon = ele.setActive(false);
         textBox.resetChildVisibleState(icon);
         if (textBox.isTyping) {
           textBox.stop(true);
@@ -68,15 +69,15 @@ export const createTextBox = (
     )
     .on(
       'pageend',
-      function () {
+      () => {
         if (textBox.isLastPage) {
           return;
         }
-
-        var icon = textBox.getElement('action')!.setActive(true);
+        const ele =  textBox.getElement('action')! as any;
+        const icon = ele.setActive(true);
         textBox.resetChildVisibleState(icon);
         (icon as any).y -= 30;
-        var tween = scene.tweens.add({
+        const tween = scene.tweens.add({
           targets: icon,
           y: '+=30', // '+=100'
           ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'
@@ -127,7 +128,7 @@ export const getBBcodeText = (
 
     fixedWidth: fixedWidth,
     fixedHeight: fixedHeight,
-
+    delimiters: [],
     fontSize: fontSize ?? '20px',
     wrap: {
       mode: 'word',
@@ -141,10 +142,10 @@ export const CreateSpeechBubbleShape = (scene: UIScene, fillColor: number, strok
   return scene.rexUI.add.customShapes({
     create: { lines: 1 },
     update: function () {
-      var radius = 15;
-      var indent = 15;
+      const radius = 15;
+      const indent = 15;
 
-      var left = 0,
+      const left = 0,
         right = this.width,
         top = 0,
         bottom = this.height,

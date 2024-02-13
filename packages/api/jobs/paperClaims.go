@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/big"
 	"sync"
+	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
@@ -17,7 +18,9 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-func PaperClaims() {
+type PaperClaims struct{}
+
+func (pc PaperClaims) Run() {
 	ctx := context.Background()
 
 	retryableHTTPClient := retryablehttp.NewClient()
@@ -53,14 +56,17 @@ func PaperClaims() {
 			}
 			claimed, err := paper.ClaimedByTokenId(nil, b)
 			if err != nil {
-				log.Fatalf("Getting paper balance: %+v.", err)
+				log.Fatalf("Getting paper claim: %+v.", err)
 			}
 
-			dbprovider.Ent().
-				Dope.
-				UpdateOneID(dope.ID).
+			dope, err = dope.Update().
 				SetClaimed(claimed).
-				ExecX(ctx)
+				SetLastCheckedPaperClaim(time.Now()).
+				Save(ctx)
+
+			if err != nil {
+				log.Fatalf("Updating dope: %+v.", err)
+			}
 
 			<-sem
 			wg.Done()

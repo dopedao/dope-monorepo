@@ -9,6 +9,7 @@ import (
 	"log"
 	"math/big"
 	"sync"
+	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/internal/contracts/bindings"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
@@ -19,7 +20,9 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-func GearClaims() {
+type GearClaims struct{}
+
+func (gc GearClaims) Run() {
 	ctx := context.Background()
 	client := dbprovider.Ent()
 
@@ -57,7 +60,11 @@ func GearClaims() {
 				log.Fatalf("Getting initiator balance: %+v.", err)
 			}
 			fmt.Printf("Dope %s is opened: %t", dope.ID, opened)
-			client.Dope.UpdateOneID(dope.ID).SetOpened(opened).ExecX(ctx)
+			client.Dope.
+				UpdateOneID(dope.ID).
+				SetOpened(opened).
+				SetLastCheckedGearClaim(time.Now()).
+				ExecX(ctx)
 
 			<-sem
 

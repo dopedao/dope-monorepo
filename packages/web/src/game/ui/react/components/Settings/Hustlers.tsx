@@ -1,4 +1,5 @@
 import {
+  Box,
   SimpleGrid,
   VStack,
   Popover,
@@ -17,7 +18,7 @@ import {
 import { ethers } from 'ethers';
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { API_URI } from 'utils/constants';
+import { MAINNET_API_URL } from 'utils/constants';
 
 const Hustlers = () => {
   const [hustlers, setHustlers] = React.useState<any>();
@@ -26,7 +27,7 @@ const Hustlers = () => {
     if (!(window.ethereum as any)?.selectedAddress) return;
 
     fetch(
-      `${API_URI}/wallets/${ethers.utils.getAddress(
+      `${MAINNET_API_URL}/wallets/${ethers.getAddress(
         (window.ethereum as any).selectedAddress,
       )}/hustlers`,
     )
@@ -35,7 +36,7 @@ const Hustlers = () => {
   }, []);
 
   return (
-    <div>
+    <Box>
       {hustlers ? (
         <SimpleGrid columns={2} spacing={5} paddingBottom="8">
           {hustlers.map((hustler: any, i: number) => (
@@ -84,11 +85,11 @@ const Hustlers = () => {
         </Center>
       )}
       <Center>
-        <Link href={`/inventory`} passHref>
+        <Link href={'/swap-meet/inventory'} passHref>
           <Button variant="primary">Details</Button>
         </Link>
       </Center>
-    </div>
+    </Box>
   );
 };
 

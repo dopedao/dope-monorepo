@@ -176,10 +176,10 @@ var Hongbao__factory = /** @class */ (function () {
     function Hongbao__factory() {
     }
     Hongbao__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    Hongbao__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    Hongbao__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     Hongbao__factory.abi = _abi;
     return Hongbao__factory;

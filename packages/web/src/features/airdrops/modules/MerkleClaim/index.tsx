@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount } from 'wagmi';
 import { getProof } from 'utils/merkleproof';
 import config from 'config'; // Airdrop config
 
@@ -7,7 +7,7 @@ import { useHongbao } from 'hooks/contracts';
 
 const MerkleClaim = () => {
   const hongbao = useHongbao();
-  //   const { account } = useWeb3React();
+  //   const { address: account } = useAccount()
 
   let account = '0x016C8780e5ccB32E5CAA342a926794cE64d9C364';
 

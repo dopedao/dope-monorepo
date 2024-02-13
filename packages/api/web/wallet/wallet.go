@@ -14,7 +14,9 @@ import (
 func HandleHustlers(client *ent.Client) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		ctx, log := logger.LogFor(ctx)
+		log := logger.Log.With().
+			Str("method", "HandleHustlers").
+			Logger()
 
 		vars := mux.Vars(r)
 		address := vars["address"]

@@ -1,112 +1,152 @@
-import { Button, Box, HStack } from '@chakra-ui/react';
-import { media } from 'ui/styles/mixins';
-import { OrderDirection, ItemOrderField, useInfiniteAllItemsQuery } from 'generated/graphql';
-import AppWindow from 'components/AppWindow';
-import DopeWarsExeNav from 'components/DopeWarsExeNav';
+import { Button } from '@chakra-ui/react';
+import Link from 'next/link';
+import {
+  OrderDirection,
+  useInfiniteSearchQuery,
+  SearchOrderField,
+  SearchSearchType,
+  ItemItemType,
+} from 'generated/graphql';
+import { SwapMeetContainer } from 'features/swap-meet/components/SwapMeetContainer';
 import Head from 'components/Head';
 import InfiniteScroll from 'react-infinite-scroller';
 import LoadingBlock from 'components/LoadingBlock';
 import LoadingState from 'features/swap-meet/components/LoadingState';
-import styled from '@emotion/styled';
-import GearCard from 'components/hustler/GearCard';
-
-const Container = styled.div`
-  .gearGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-column-gap: 16px;
-    grid-row-gap: 16px;
-  }
-  padding: 16px;
-`;
+import FilterBar, { FILTER_KEYS, FilterKeyType } from 'features/swap-meet/components/FilterBar';
+import GearCard from 'features/gear/components/GearCard';
+import { useState } from 'react';
+import Container from 'features/swap-meet/components/Container';
+import { REFETCH_INTERVAL } from 'utils/constants';
+import SwapMeet from '.';
 
 const SwapMeetGear = () => {
-  const { data, fetchNextPage, hasNextPage, status } = useInfiniteAllItemsQuery(
+  const filterKeys = FILTER_KEYS.Gear;
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [orderBy, setOrderBy] = useState<SearchOrderField>(SearchOrderField.SalePrice);
+  const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.Asc);
+  const [filterBy, setFilterBy] = useState<FilterKeyType>(filterKeys[1]);
+
+  const handleFilter = () => {
+    switch (filterBy) {
+      case 'All':
+        return {};
+      case 'For Sale':
+        return { salePriceGT: 0, salePriceNEQ: null };
+      case 'Weapon':
+        return { hasItemWith: [{ type: ItemItemType.Weapon }] };
+      case 'Vehicle':
+        return { hasItemWith: [{ type: ItemItemType.Vehicle }] };
+      case 'Drugs':
+        return { hasItemWith: [{ type: ItemItemType.Drugs }] };
+      case 'Clothes':
+        return { hasItemWith: [{ type: ItemItemType.Clothes }] };
+      case 'Hand':
+        return { hasItemWith: [{ type: ItemItemType.Hand }] };
+      case 'Waist':
+        return { hasItemWith: [{ type: ItemItemType.Waist }] };
+      case 'Foot':
+        return { hasItemWith: [{ type: ItemItemType.Foot }] };
+      case 'Neck':
+        return { hasItemWith: [{ type: ItemItemType.Neck }] };
+      case 'Ring':
+        return { hasItemWith: [{ type: ItemItemType.Ring }] };
+      default:
+        return {};
+    }
+  };
+
+  // Need to exclude stuff not for sale (price zero)
+  // if we've sorted by sale price.
+  const handleSort = () => {
+    switch (orderBy) {
+      case SearchOrderField.SalePrice:
+        return { salePriceGT: 0, salePriceNEQ: null };
+      default:
+        return {};
+    }
+  };
+
+  const {
+    data: searchResult,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+  } = useInfiniteSearchQuery(
     {
       first: 25,
       orderBy: {
-        direction: OrderDirection.Desc,
-        field: ItemOrderField.Greatness,
+        field: orderBy,
+        direction: orderDirection,
       },
+      where: {
+        type: SearchSearchType.Item,
+        banned: false,
+        ...handleFilter(),
+        ...handleSort(),
+      },
+      query: searchValue,
     },
     {
+      queryKey: ['swap-meet-gear', searchValue, orderBy, orderDirection, filterBy],
+      initialPageParam: { after: null },
       getNextPageParam: lastPage => {
-        if (lastPage.items.pageInfo.hasNextPage) {
-          return {
-            first: lastPage.items.pageInfo.endCursor,
-          };
+        if (lastPage.search.pageInfo.hasNextPage) {
+          return { after: lastPage.search.pageInfo.endCursor };
         }
-        return false;
+        return null;
       },
+      refetchInterval: REFETCH_INTERVAL,
     },
   );
-  const isLoading = status === 'loading';
 
   return (
-    <AppWindow
-      padBody={false}
-      scrollable={true}
-      height="90vh"
-      navbar={<DopeWarsExeNav />}
-      title="Swap Meet"
-    >
+    <SwapMeetContainer>
       <Head title="Gear" />
-      <HStack
-        margin="0"
-        gridGap={1}
-        width="100%"
-        justifyContent="start"
-        padding="16px"
-        background="white"
-        borderBottom="2px solid black"
+      <FilterBar
+        orderBy={orderBy}
+        setOrderBy={setOrderBy}
+        orderDirection={orderDirection}
+        setOrderDirection={setOrderDirection}
+        filterKeys={filterKeys}
+        filterBy={filterBy}
+        setFilterBy={setFilterBy}
+        setSearchValue={setSearchValue}
       >
-        <a href="https://qx.app/collection/gear" target="quix">
-          <Button variant="primary" fontSize="xs">
-            Search Gear on Quixotic
-          </Button>
-        </a>
-        <a
+        <Link
           href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#a3f12ba573254b0d87b6aeb6a1bfb603"
           target="wiki"
         >
           <Button fontSize="xs">Gear FAQ</Button>
-        </a>
-      </HStack>
-      <Box>
-        {isLoading ? (
-          <LoadingState />
-        ) : (
-          data && (
-            <Container>
-              <InfiniteScroll
-                pageStart={0}
-                loadMore={() =>
-                  fetchNextPage({
-                    pageParam: {
-                      first: 100,
-                      after: data?.pages[data.pages.length - 1].items.pageInfo.endCursor,
-                    },
-                  })
-                }
-                hasMore={hasNextPage}
-                loader={<LoadingBlock key="loading-block-2" />}
-                useWindow={false}
-                className="dopeGrid"
-              >
-                <div className="gearGrid">
-                  {data?.pages.map(group =>
-                    group.items.edges!.map(item => {
-                      if (!item?.node?.id) return null;
-                      return <GearCard key={item.node.id} gear={item.node} />;
-                    }),
-                  )}
-                </div>
-              </InfiniteScroll>
-            </Container>
-          )
-        )}
-      </Box>
-    </AppWindow>
+        </Link>
+      </FilterBar>
+
+      {isLoading ? (
+        <LoadingState />
+      ) : (
+        // <LoadingState />
+        searchResult && (
+          <Container>
+            <InfiniteScroll
+              loadMore={() => fetchNextPage()}
+              hasMore={hasNextPage}
+              loader={<LoadingBlock maxRows={5} key="loading-block-2" />}
+              useWindow={false}
+              className="cardGrid"
+            >
+              {searchResult?.pages.map(group =>
+                group.search.edges?.map(searchResult => {
+                  if (searchResult?.node?.item) {
+                    return (
+                      <GearCard key={searchResult.node.item.id} gear={searchResult.node.item} />
+                    );
+                  }
+                }),
+              )}
+            </InfiniteScroll>
+          </Container>
+        )
+      )}
+    </SwapMeetContainer>
   );
 };
 

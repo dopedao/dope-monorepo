@@ -9,6 +9,7 @@ dist
 *.tgz
 .env
 .env.*
+!.env.example
 .envrc
 .DS_Store
 *.tsbuildinfo

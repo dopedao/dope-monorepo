@@ -21,7 +21,7 @@ import NetworkHandler from 'game/handlers/network/NetworkHandler';
 import Player from 'game/entities/player/Player';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
 import TilesAnimator from 'game/world/TilesAnimator';
-import UIScene, { chakraToastStyle, loadingSpinner, toastStyle } from './UI';
+import UIScene, { chakraToastStyle, loadingSpinner } from './UI';
 
 import {
   NY_BUSHWICK_BASKET,
@@ -258,7 +258,7 @@ export default class GameScene extends Scene {
         this.initializeGame();
     });
 
-    this.loadingSpinner = this.add.reactDom(loadingSpinner);
+    this.loadingSpinner = this.add.reactDom(loadingSpinner as any);
   }
 
   private initiatePlayers(data: any) {

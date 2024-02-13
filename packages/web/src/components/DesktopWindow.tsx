@@ -12,17 +12,17 @@
 import { ReactNode, useEffect, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
 import styled from '@emotion/styled';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount } from 'wagmi';
 import { useWalletQuery } from 'generated/graphql';
 import { media } from 'ui/styles/mixins';
 import { returnBreakpoint } from 'ui/styles/breakpoints';
 import { isTouchDevice } from 'utils/utils';
 import ConditionalWrapper from 'components/ConditionalWrapper';
 import DesktopWindowTitleBar from 'components/DesktopWindowTitleBar';
-import useBrowserWidth from 'hooks/use-browser-width';
-import { useFullScreen } from 'hooks/FullScreenProvider';
+import useBrowserWidth from 'hooks/useBrowserWidth';
+import { useFullScreen } from 'providers/FullScreenProvider';
 
-type Position = {
+export type Position = {
   x: number;
   y: number;
 };
@@ -37,8 +37,6 @@ export type DesktopWindowProps = {
   scrollable?: boolean;
   fullScreenHandler?: (fullScreen: boolean) => void;
   titleChildren?: ReactNode;
-  balance?: string;
-  loadingBalance?: boolean;
   children: ReactNode;
   onResize?: () => void;
   onClose?: () => void;
@@ -77,14 +75,14 @@ const WindowWrapper = styled.div<{
       right: 0;
     `}
     @media (min-width: ${returnBreakpoint('tablet')}) {
-      max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
-      max-height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
+      max-width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
+      max-height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height)};
       margin: 0;
       top: 32px;
       right: 96px;
       left: unset;
-      max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
-      max-height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
+      max-width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
+      max-height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height)};
     }
     @media (min-width: ${returnBreakpoint('laptop')}) {
       top: 32px;
@@ -92,8 +90,8 @@ const WindowWrapper = styled.div<{
       width: 80%;
       margin: auto;
       margin-top: 32px;
-      max-width: ${({ width }) => (typeof width == 'number' ? `${width}px` : width)};
-      max-height: ${({ height }) => (typeof height == 'number' ? `${height}px` : height)};
+      max-width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width)};
+      max-height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height)};
     }
   }
 `;
@@ -105,7 +103,7 @@ const DesktopWindow = ({
   width = 1024,
   height = '90%',
   background,
-  fullScreen,
+  fullScreen = false,
   onlyFullScreen,
   fullScreenHandler,
   titleChildren,
@@ -118,38 +116,23 @@ const DesktopWindow = ({
   posY = 0,
   hideWalletAddress = false,
 }: DesktopWindowProps) => {
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
   const windowRef = useRef<HTMLDivElement>(null);
   const browserWidth = useBrowserWidth();
-  const { data, isFetching: loading } = useWalletQuery(
-    {
-      where: {
-        id: account,
-      },
-    },
-    {
-      enabled: !!account,
-    },
-  );
-  // Controls if window is full-screen or not on desktop.
-  // Small devices should always be full-screen.
-  // const [isFullScreen, setIsFullScreen] = useState(fullScreen || false);
-  const fullScreenHook = useFullScreen();
 
-  const toggleFullScreen = () =>{
-    fullScreenHandler ? fullScreenHandler(!fullScreenHook?.isFullScreen) : fullScreenHook?.setIsFullScreen(!fullScreenHook?.isFullScreen);
-  }
-  const [windowPosition, setWindowPosition] = useState<Position>({
-    x: posX || 0,
-    y: posY || 0,
-  });
+  const { isFullScreen, setIsFullScreen, windowPosition, setWindowPosition } =
+    useFullScreen() || {};
+
+  const toggleFullScreen = () => {
+    if (setIsFullScreen) setIsFullScreen(!isFullScreen);
+  };
 
   const updatePosition = (transformStyle: string) => {
     // pull the current DesktopWindow location from the CSS style on the DOM object
     const transformArr = transformStyle.match(
       /translate\((-?\d+(?:\.\d*)?)px, (-?\d+(?:\.\d*)?)px\)/,
     );
-    if (transformArr && transformArr.length === 3) {
+    if (transformArr && transformArr.length === 3 && setWindowPosition) {
       setWindowPosition({
         x: parseFloat(transformArr[1]),
         y: parseFloat(transformArr[2]),
@@ -157,20 +140,30 @@ const DesktopWindow = ({
     }
   };
 
-  const shouldBeDraggable = !isTouchDevice() && !fullScreenHook?.isFullScreen && browserWidth > 768;
+  const shouldBeDraggable = !isTouchDevice() && !isFullScreen && browserWidth > 768;
 
+  // Ensure react doesnt complain about hydration errors
   useEffect(() => {
-    if (fullScreen)
-      fullScreenHook?.setIsFullScreen(fullScreen);
-  }, [fullScreen, fullScreenHook])
-
-  useEffect(() => {
+    if (fullScreen && setIsFullScreen) setIsFullScreen(fullScreen);
     if (onResize) onResize();
-  }, [fullScreenHook?.isFullScreen, onResize]);
+  }, [onResize, fullScreen, setIsFullScreen]);
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient && fullScreen && setIsFullScreen) {
+      setIsFullScreen(fullScreen);
+    }
+    if (onResize) onResize();
+  }, [fullScreen, isClient, onResize, setIsFullScreen]);
 
   const handleStop = () => {
     const el = document.querySelector('.floating');
-    if (el && el.getAttribute('style')) {
+    if (el?.getAttribute('style')) {
       const transformValue = el.getAttribute('style') || '';
       updatePosition(transformValue);
 
@@ -202,7 +195,7 @@ const DesktopWindow = ({
     >
       <WindowWrapper
         ref={windowRef}
-        className={`desktopWindow ${fullScreenHook?.isFullScreen ? '' : 'floating'}`}
+        className={`desktopWindow ${isClient && shouldBeDraggable ? 'floating' : ''}`}
         height={height}
         width={width}
         background={background && background.length > 0 ? background : '#a8a9ae'}
@@ -213,10 +206,8 @@ const DesktopWindow = ({
           <DesktopWindowTitleBar
             title={title}
             isTouchDevice={isTouchDevice()}
-            isFullScreen={fullScreenHook?.isFullScreen || false}
+            isFullScreen={isFullScreen || false}
             toggleFullScreen={toggleFullScreen}
-            balance={data?.wallets?.edges![0]?.node?.paper}
-            loadingBalance={loading}
             windowRef={windowRef?.current}
             hideWalletAddress={hideWalletAddress}
             onClose={onClose}

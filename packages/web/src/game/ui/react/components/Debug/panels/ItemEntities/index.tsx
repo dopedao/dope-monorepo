@@ -4,14 +4,14 @@ import Position from "../../components/Position"
 
 const ItemEntitiesPanel = (props: {itemEntities: ItemEntity[]}) => {
     return (
-        <div>
-            <div style={{
+        <Box>
+            <Box style={{
                 paddingLeft: '1rem',
             }}>
                 <Text>
                     {props.itemEntities.length}
                 </Text>
-            </div>
+            </Box>
             <Accordion>
                 {
                     props.itemEntities.map((itemEntity, i) => {
@@ -31,7 +31,7 @@ const ItemEntitiesPanel = (props: {itemEntities: ItemEntity[]}) => {
                     })
                 }
             </Accordion>
-        </div>
+        </Box>
     )
 }
 

@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { useWAGMI } from 'hooks/web3';
 import DesktopIcon from 'components/DesktopIcon';
 import IconGrid from 'components/IconGrid';
 import WebAmpPlayer from 'components/WebAmpPlayer';
@@ -16,43 +15,32 @@ const DesktopIconList = () => {
     window.open(url, '_blank')?.focus();
   };
 
-  useWAGMI();
-
   return (
     <>
       {showWebAmp && <WebAmpPlayer onClose={() => setShowWebAmp(false)} />}
       <IconGrid>
-        <DesktopIcon icon="file" label="READ ME FIRST" clickAction={() => openLocalRoute('/about')} />
         <DesktopIcon
           icon="dopewars-exe"
-          label="Swap Meet"
+          label="SWAP MEET"
           clickAction={() => {
             const hasAgreed = window.localStorage.getItem('tos');
             if (hasAgreed === 'true') {
-              openLocalRoute('/inventory');
+              openLocalRoute('/swap-meet');
             } else {
-              ``;
               openLocalRoute('/terms-of-service');
             }
           }}
         />
+        <DesktopIcon icon="file" label="ABOUT.TXT" clickAction={() => openLocalRoute('/about')} />
         <DesktopIcon
-          icon="dope_frenzy"
-          label="DOPE FRENZY"
-          clickAction={ () =>
-            openBrowserTab(
-              'https://dopefrenzy.gg/',
-            )
-          }
+          icon="ryo"
+          label="PLAY RYO"
+          clickAction={() => openBrowserTab('https://rollyourown.preview.cartridge.gg/')}
         />
         <DesktopIcon
-          icon="quixotic_circle"
-          label="Shop DOPE Gear"
-          clickAction={ () =>
-            openBrowserTab(
-              'https://qx.app/collection/gear',
-            )
-          }
+          icon="dope_frenzy"
+          label="PLAY Mean Streets"
+          clickAction={() => openBrowserTab('https://dopefrenzy.gg/')}
         />
         <DesktopIcon
           icon="uniswap-uni-logo"
@@ -63,22 +51,7 @@ const DesktopIconList = () => {
             )
           }
         />
-        <DesktopIcon
-          icon="paper-bill-desktop"
-          label="$PAPER Info"
-          clickAction={() =>
-            openBrowserTab(
-              'https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483',
-            )
-          }
-        />
-        <DesktopIcon
-          icon="newspaper"
-          label="The Daily Dope"
-          clickAction={() => openLocalRoute('/news')}
-        />
         {/* <DesktopIcon icon="todo" label="GAME" clickAction={() => openLocalRoute('/game')} /> */}
-        <DesktopIcon icon="tv" label="Dope TV" clickAction={() => openLocalRoute('/dope-tv')} />
         <DesktopIcon icon="winamp" label="Dope Amp" clickAction={() => setShowWebAmp(true)} />
         <DesktopIcon
           icon="folder"

@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { Button } from '@chakra-ui/button';
 import styled from '@emotion/styled';
+import { Box } from '@chakra-ui/react';
 
 export const DopeLegendColors = {
   BLACK_MARKET: 'rgba(255,252,63)',
@@ -52,7 +53,7 @@ const DopeLegend = ({ toggleVisibility }: DopeLegendProps) => {
   return (
     <DopeLegendContainer>
       <h4>Item Rarity Legend</h4>
-      <div
+      <Box
         css={css`
           flex-grow: 1;
           padding: 8px 16px;
@@ -68,15 +69,15 @@ const DopeLegend = ({ toggleVisibility }: DopeLegendProps) => {
             {DopeLegendLabels[key as 'BLACK_MARKET' | 'COMMON' | 'CUSTOM' | 'RARE']}
           </DopeLegendItem>
         ))}
-      </div>
-      <div
+      </Box>
+      <Box
         css={css`
           text-align: right;
           padding: 8px;
         `}
       >
         <Button onClick={() => toggleVisibility()}>Close</Button>
-      </div>
+      </Box>
     </DopeLegendContainer>
   );
 };

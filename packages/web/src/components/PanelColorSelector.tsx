@@ -30,14 +30,14 @@ const PanelColorSelector = ({
 }: ColorSelectorProps) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: title.replace(' ', '-'),
-    defaultValue: 0,
-    onChange: value => changeCallback && changeCallback(value),
+    defaultValue: '0',
+    onChange: value => changeCallback?.(value),
     value: value,
   });
   const group = getRootProps();
 
   return (
-    <div>
+    <Box>
       <Header>
         <h4>{title}</h4>
       </Header>
@@ -61,12 +61,12 @@ const PanelColorSelector = ({
             <PanelColorChipRadio
               {...getRadioProps({ value: color })}
               value={color}
-              key={index}
+              key={color}
               color={color}
             />
           ))}
       </Box>
-    </div>
+    </Box>
   );
 };
 

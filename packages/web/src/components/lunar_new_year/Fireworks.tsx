@@ -2,7 +2,7 @@ import { getRandomNumber } from 'utils/utils';
 import { Image } from '@chakra-ui/react';
 import { useState, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
-import useInterval from 'hooks/use-interval';
+import useInterval from 'hooks/useInterval';
 
 const Fireworks = () => {
   const containerRef = useRef<HTMLDivElement>(null);

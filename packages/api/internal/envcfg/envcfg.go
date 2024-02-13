@@ -7,30 +7,30 @@ package envcfg
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"sync"
 	"time"
 
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
-	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/spf13/pflag"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
 /* Global config vars */
-var Listen *string
+var (
+	Listen *string
 
-var OpenSeaApiKey string
-var Network string
-var DbotAuthSecret string
-var DbotClientId string
-var DbotGuildId string
-var DbotRedirectUri string
-var RedisAddress string
-var RedisPassword string
+	Network         string
+	DbotAuthSecret  string
+	DbotClientId    string
+	DbotGuildId     string
+	DbotRedirectUri string
+	RedisAddress    string
+	RedisPassword   string
+)
 
 func init() {
 	// Listen to env variable PORT or default to 8080
@@ -38,9 +38,6 @@ func init() {
 	// https://cloud.google.com/appengine/docs/flexible/custom-runtimes/configuring-your-app-with-app-yaml
 	port := EnvSecretOrDefault("PORT", "8080")
 	Network = EnvSecretOrDefault("NETWORK", "mainnet")
-	OpenSeaApiKey = EnvSecretOrDefault(
-		"OPENSEA",
-		"set-a-real-api-key-in-your-env-or-this-will-break")
 	DbotAuthSecret = EnvSecretOrDefault("DBOT_OAUTH_SECRET", "you-cant-talk-to-the-disc-api-without-it") /* !!! NOT the client token !!! */
 	DbotClientId = EnvSecretOrDefault("DBOT_CLIENT_ID", "973336825223598090")
 	DbotGuildId = EnvSecretOrDefault("DBOT_GUILD_ID", "955075782240239676")
@@ -79,17 +76,42 @@ func EnvSecretOrDefault(key, def string) string {
 	return v
 }
 
+// Set GOOGLE_APPLICATION_CREDENTIALS_BASE64 in env
+// to a base64 encoded version of your service account json key.
+//
+// This reads it, decodes it, and give it back so we can access
+// cloud storage and a number of things
+func GoogleCredentialsJsonString() (string, error) {
+	base64creds := EnvSecretOrDefault("GOOGLE_APPLICATION_CREDENTIALS_BASE64", "")
+	if base64creds == "" {
+		return "", fmt.Errorf("GOOGLE_APPLICATION_CREDENTIALS_BASE64 not set in environment")
+	}
+
+	decodedCreds, err := base64.StdEncoding.DecodeString(base64creds)
+	if err != nil {
+		return "", err
+	}
+
+	return string(decodedCreds), nil
+}
+
 var (
 	smOnce sync.Once
 	sm     *secretmanager.Client
 )
+
+func IsRunningLocally() bool {
+	env := EnvSecretOrDefault("APP_ENV", "development")
+	return env == "development"
+}
 
 // GCP Secret Manager Client
 func smClient() *secretmanager.Client {
 	smOnce.Do(func() {
 		c, err := secretmanager.NewClient(context.Background())
 		if err != nil {
-			log.Fatalf("Initializing secretmanager client: %v", err)
+			fmt.Println("Error initializing secretmanager client")
+			panic(err)
 		}
 		sm = c
 	})
@@ -105,9 +127,8 @@ func getSecretFromGcp(secretPath string) string {
 	defer cancel()
 	result, err := smClient().AccessSecretVersion(ctx, &secretmanagerpb.AccessSecretVersionRequest{Name: secretPath})
 	if err != nil {
-		logger.LogFatalOnErr(
-			err,
-			fmt.Sprintf("Accessing GCP Secret %s", secretPath))
+		fmt.Println("Error accessing secret", secretPath)
+		panic(err)
 	}
 
 	return string(result.Payload.Data)

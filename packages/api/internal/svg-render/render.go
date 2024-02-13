@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/rs/zerolog"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 )
 
 type ImageBounds struct {
@@ -113,7 +113,8 @@ func decodeImage(image string, offset string) (DecodedImage, error) {
 }
 
 func BuildSVG(parts []string, bgColor string,
-	textColor string, title string, subtitle string, zoomWindow [4]*big.Int, resolution int, log *zerolog.Logger) string {
+	textColor string, title string, subtitle string, zoomWindow [4]*big.Int, resolution int) string {
+	log := logger.Log
 	step := 320 / resolution
 
 	w := big.NewInt(320).String()

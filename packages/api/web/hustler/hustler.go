@@ -35,7 +35,7 @@ type Sprites struct {
 }
 
 func sprite(ctx context.Context, h *ent.Hustler, slot, sex string) string {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 
 	r := reflect.ValueOf(h.Edges)
 	v := reflect.Indirect(r).FieldByName(slot)
@@ -129,7 +129,7 @@ func sprites(ctx context.Context, id string, client *ent.Client) (*Sprites, erro
 func SpritesHandler(client *ent.Client) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		ctx, log := logger.LogFor(ctx)
+		log := logger.Log
 
 		vars := mux.Vars(r)
 		id := vars["id"]
@@ -168,7 +168,8 @@ func (i *notOpaqueRGBA) Opaque() bool {
 }
 
 func readSprite(ctx context.Context, static *storage.BucketHandle, url string) (image.Image, error) {
-	rdr, err := static.Object(strings.TrimPrefix(url, "https://static.dopewars.gg/")).NewReader(ctx)
+	rdr, err := static.Object(
+		strings.TrimPrefix(url, "https://static.dopewars.gg/")).NewReader(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -180,7 +181,7 @@ func readSprite(ctx context.Context, static *storage.BucketHandle, url string) (
 func SpritesCompositeHandler(client *ent.Client, static *storage.BucketHandle) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		ctx, log := logger.LogFor(ctx)
+		log := logger.Log
 
 		vars := mux.Vars(r)
 		id := vars["id"]

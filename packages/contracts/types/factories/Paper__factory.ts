@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import { Provider } from "@ethersproject/providers";
+import { Contract, Interface, type ContractRunner } from "ethers";
 import type { Paper, PaperInterface } from "../Paper";
 
 const _abi = [
@@ -855,14 +854,14 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
-];
+] as const;
 
 export class Paper__factory {
   static readonly abi = _abi;
   static createInterface(): PaperInterface {
-    return new utils.Interface(_abi) as PaperInterface;
+    return new Interface(_abi) as PaperInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): Paper {
-    return new Contract(address, _abi, signerOrProvider) as Paper;
+  static connect(address: string, runner?: ContractRunner | null): Paper {
+    return new Contract(address, _abi, runner) as unknown as Paper;
   }
 }

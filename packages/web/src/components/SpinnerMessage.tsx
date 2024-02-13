@@ -1,6 +1,6 @@
 import { Spinner } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
+import { Box } from '@chakra-ui/react';
 
 const SpinnerContainer = styled.div`
   border: 0px;
@@ -16,10 +16,10 @@ const SpinnerContainer = styled.div`
 const SpinnerMessage = ({ text }: { text: string }) => {
   return (
     <SpinnerContainer>
-      <div>
+      <Box>
         <Spinner size="xs" />
-      </div>
-      <div>{text}</div>
+      </Box>
+      <Box>{text}</Box>
     </SpinnerContainer>
   );
 };

@@ -61,7 +61,7 @@ type verifyResponse struct {
 func HandleVerifyRequest(redisClient *redis.Client) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		_, log := logger.LogFor(ctx)
+		log := logger.Log
 
 		decoder := json.NewDecoder(r.Body)
 		decoder.DisallowUnknownFields()

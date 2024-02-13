@@ -61,7 +61,7 @@ func SessionFor(ctx context.Context) SessionContext {
 
 // IsAuthenticated.
 func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 
 	log.Debug().
 		Str("Client", fmt.Sprintf("%v", client)).
@@ -85,7 +85,7 @@ func IsAuthenticated(ctx context.Context, client *auth.Client) bool {
 // Store WalletAddress and JWT Token from firebase in session.
 func SetWalletAndToken(ctx context.Context, walletAddress string, jwtToken string) error {
 	sc := SessionFor(ctx)
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 	log.Debug().Str("Wallet", walletAddress).Msg("SetWallet")
 
 	session, err := sc.Get(Key)
@@ -106,7 +106,7 @@ func SetWalletAndToken(ctx context.Context, walletAddress string, jwtToken strin
 // FirebaseAuth authenticate a user.
 func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (string, error) {
 	// Check if the user exists using the wallet address (UID = Wallet)
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 
 	if _, err := client.GetUser(ctx, wallet); err != nil {
 		// User not found create a new user here with ETH UID
@@ -195,7 +195,7 @@ func FirebaseAuth(ctx context.Context, client *auth.Client, wallet string) (stri
 
 // FirebaseInit returns a firebase auth client or an error if it fails.
 func FirebaseInit(ctx context.Context) (*auth.Client, error) {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 	log.Debug().Msg("initialization of firebase")
 
 	app, err := firebase.NewApp(context.Background(), nil)
@@ -209,7 +209,7 @@ func FirebaseInit(ctx context.Context) (*auth.Client, error) {
 // FirebaseVerify verifies whether the custom token exists and not expired.
 func FirebaseVerify(ctx context.Context, client *auth.Client, sessionCookie string) error {
 
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 	log.Debug().Msg("verification")
 
 	if _, err := client.VerifyIDTokenAndCheckRevoked(ctx, sessionCookie); err != nil {
@@ -224,7 +224,7 @@ func FirebaseVerify(ctx context.Context, client *auth.Client, sessionCookie stri
 
 // Session "wallet" should contain wallet address of user
 func Wallet(ctx context.Context) (string, error) {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 
 	sc := SessionFor(ctx)
 	session, err := sc.Get(Key)
@@ -242,7 +242,7 @@ func Wallet(ctx context.Context) (string, error) {
 
 // Returns stored JWT IDToken from session
 func Token(ctx context.Context) (string, error) {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 
 	sc := SessionFor(ctx)
 	session, err := sc.Get(Key)

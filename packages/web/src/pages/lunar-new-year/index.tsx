@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
-import { Image } from '@chakra-ui/react';
+import { Box, Image } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import { useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount } from 'wagmi';
 import AppWindowOptimism from 'components/AppWindowOptimism';
 import Fireworks from 'components/lunar_new_year/Fireworks';
 import HongbaoPanel from 'components/lunar_new_year/HongbaoPanel';
@@ -59,7 +59,7 @@ const LunarNewYear = () => {
   const router = useRouter();
   const { section } = router.query;
   const maskRef = useRef<HTMLDivElement>(null);
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
 
   useEffect(() => {
     if (section && section === 'mask' && maskRef?.current) {
@@ -98,7 +98,7 @@ const LunarNewYear = () => {
           <PanelContainer justifyContent="flex-start">
             <PanelTitleHeader>✨ Free airdrop for all Hustlers ✨</PanelTitleHeader>
             <PanelBody>
-              <div
+              <Box
                 css={css`
                   display: flex;
                   align-items: center;
@@ -112,7 +112,7 @@ const LunarNewYear = () => {
                     width: 80%;
                   `}
                 />
-              </div>
+              </Box>
               <p>
                 To celebrate Year of the Tiger we&apos;re giving every Hustler who claimed gear by
                 January 31st a special accessory airdrop.

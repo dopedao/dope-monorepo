@@ -1,25 +1,22 @@
-import { Button } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
-import { useCallback } from "react";
+import { Button } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { useCallback } from 'react';
+import { useDisconnect } from 'wagmi';
 
-const DisconnectAndQuitButton = (
-  {returnToPath = '/hustlers/quick-buy'}: {returnToPath?: string}
-) => {
-  const { deactivate } = useWeb3React();
+const DisconnectAndQuitButton = ({
+  returnToPath = '/hustlers/mint',
+}: {
+  returnToPath?: string;
+}) => {
+  const { disconnect } = useDisconnect();
   const router = useRouter();
-  
-  const handleQuitButton = useCallback(() => {
-    deactivate();
-    router.replace(returnToPath);
-  }, [deactivate, returnToPath, router]);
 
-  return(
-    <Button 
-      onClick={handleQuitButton}>
-        Cancel Mint
-    </Button>
-  );
-}
+  const handleQuitButton = useCallback(() => {
+    disconnect();
+    router.replace(returnToPath);
+  }, [disconnect, returnToPath, router]);
+
+  return <Button onClick={handleQuitButton}>Cancel Mint</Button>;
+};
 
 export default DisconnectAndQuitButton;

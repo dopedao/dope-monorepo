@@ -93,7 +93,7 @@ const Sell = () => {
         </ContainerHeader>
 
         {rle && (
-          <div
+          <Box
             css={css`
               display: flex;
               justify-content: center;

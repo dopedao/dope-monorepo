@@ -1,117 +1,144 @@
 import { Box, Button, HStack, Image } from '@chakra-ui/react';
-import { media } from 'ui/styles/mixins';
-import { OrderDirection, useInfiniteAllHustlersQuery } from 'generated/graphql';
-import AppWindow from 'components/AppWindow';
-import DopeWarsExeNav from 'components/DopeWarsExeNav';
+import { css } from '@emotion/react';
+import {
+  OrderDirection,
+  useInfiniteSearchQuery,
+  SearchOrderField,
+  SearchSearchType,
+  SearchWhereInput,
+  HustlerHustlerType,
+} from 'generated/graphql';
+import { SwapMeetContainer } from 'features/swap-meet/components/SwapMeetContainer';
 import Head from 'components/Head';
-import HustlerProfileCard from 'components/hustler/HustlerProfileCard';
+import HustlerProfileCard from 'features/hustlers/components/HustlerProfileCard';
 import InfiniteScroll from 'react-infinite-scroller';
+import { useState } from 'react';
 import Link from 'next/link';
 import LoadingBlock from 'components/LoadingBlock';
 import LoadingState from 'features/swap-meet/components/LoadingState';
+import FilterBar, { FILTER_KEYS, FilterKeyType } from 'features/swap-meet/components/FilterBar';
 import styled from '@emotion/styled';
-
-const Container = styled.div`
-  .hustlerGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-column-gap: 16px;
-    grid-row-gap: 16px;
-  }
-  padding: 16px;
-`;
+import Container from 'features/swap-meet/components/Container';
+import { REFETCH_INTERVAL } from 'utils/constants';
 
 const SwapMeetHustlers = () => {
-  const { data, fetchNextPage, hasNextPage, status } = useInfiniteAllHustlersQuery(
+  const filterKeys = FILTER_KEYS.Hustlers;
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [orderBy, setOrderBy] = useState<SearchOrderField>(SearchOrderField.SalePrice);
+  const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.Asc);
+  const [filterBy, setFilterBy] = useState<FilterKeyType>(filterKeys[1]);
+
+  const handleFilter = (): SearchWhereInput => {
+    switch (filterBy) {
+      case 'All':
+        return {};
+      case 'For Sale':
+        return { salePriceGT: 0, salePriceNEQ: null };
+      case 'OG':
+        return { hasHustlerWith: [{ type: HustlerHustlerType.OriginalGangsta }] };
+      default:
+        return {};
+    }
+  };
+
+  // Need to exclude stuff not for sale (price zero)
+  // if we've sorted by sale price.
+  const handleSort = () => {
+    switch (orderBy) {
+      case SearchOrderField.SalePrice:
+        return { salePriceGT: 0, salePriceNEQ: null };
+      default:
+        return {};
+    }
+  };
+
+  const {
+    data: searchResult,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+  } = useInfiniteSearchQuery(
     {
-      first: 18,
+      first: 25,
+      orderBy: {
+        field: orderBy,
+        direction: orderDirection,
+      },
+      where: {
+        type: SearchSearchType.Hustler,
+        banned: false,
+        ...handleFilter(),
+        ...handleSort(),
+      },
+      query: searchValue,
     },
     {
+      queryKey: ['swap-meet-hustlers', searchValue, orderBy, orderDirection, filterBy],
+      initialPageParam: { after: null },
       getNextPageParam: lastPage => {
-        if (lastPage.hustlers.pageInfo.hasNextPage) {
-          return {
-            first: lastPage.hustlers.pageInfo.endCursor,
-          };
+        if (lastPage.search.pageInfo.hasNextPage) {
+          return { after: lastPage.search.pageInfo.endCursor };
         }
-        return false;
+        return null;
       },
+      refetchInterval: REFETCH_INTERVAL,
     },
   );
-  const isLoading = status === 'loading';
+
+  // console.log(orderDirection);
 
   return (
-    <AppWindow
-      padBody={false}
-      scrollable={true}
-      height="90vh"
-      navbar={<DopeWarsExeNav />}
-      title="Swap Meet"
-    >
+    <SwapMeetContainer>
       <Head title="Hustlers" />
-      <HStack
-        justifyContent="start"
-        margin="0"
-        gridGap={1}
-        width="100%"
-        padding="16px"
-        background="white"
-        borderBottom="2px solid black"
+      <FilterBar
+        orderBy={orderBy}
+        setOrderBy={setOrderBy}
+        orderDirection={orderDirection}
+        setOrderDirection={setOrderDirection}
+        filterKeys={filterKeys}
+        filterBy={filterBy}
+        setFilterBy={setFilterBy}
+        setSearchValue={setSearchValue}
       >
-        {/* <Link href="/hustlers/quick-buy" passHref>
+        <Link href="/hustlers/mint" passHref>
           <Button variant="primary" fontSize="xs">
             Mint a Hustler
           </Button>
-        </Link> */}
-        <a
-          href="https://qx.app/collection/hustlers?attributes=attribute%3DClass%3AOriginal+Gangsta&query="
-          target="quix"
-        >
-          <Button variant="primary" fontSize="xs">
-            Buy an OG
-          </Button>
-        </a>
-        <a
+        </Link>
+        <Link
           href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a"
           target="wiki"
         >
           <Button fontSize="xs">Hustler FAQ</Button>
-        </a>
-      </HStack>
-      <Box>
-        {isLoading ? (
-          <LoadingState />
-        ) : (
-          data && (
-            <Container>
-              <InfiniteScroll
-                pageStart={0}
-                loadMore={() =>
-                  fetchNextPage({
-                    pageParam: {
-                      first: 100,
-                      after: data?.pages[data.pages.length - 1].hustlers.pageInfo.endCursor,
-                    },
-                  })
-                }
-                hasMore={hasNextPage}
-                loader={<LoadingBlock key="loading-block-2" />}
-                useWindow={false}
-                className="dopeGrid"
-              >
-                <div className="hustlerGrid">
-                  {data?.pages.map(group =>
-                    group.hustlers.edges!.map(hustler => {
-                      if (!hustler?.node!.svg) return null;
-                      return <HustlerProfileCard key={hustler.node.id} hustler={hustler.node} />;
-                    }),
-                  )}
-                </div>
-              </InfiniteScroll>
-            </Container>
-          )
-        )}
-      </Box>
-    </AppWindow>
+        </Link>
+      </FilterBar>
+
+      {isLoading ? (
+        <LoadingState />
+      ) : (
+        searchResult && (
+          <Container>
+            <InfiniteScroll
+              loadMore={() => fetchNextPage()}
+              hasMore={hasNextPage}
+              loader={<LoadingBlock maxRows={5} key="loading-block-2" />}
+              useWindow={false}
+              className="cardGrid"
+            >
+              {searchResult?.pages.map(group =>
+                group.search.edges?.map(searchResult => {
+                  if (searchResult?.node?.hustler) {
+                    const h = searchResult.node.hustler;
+                    if (!h.svg) return null;
+                    return <HustlerProfileCard key={h.id} hustler={h} />;
+                  }
+                }),
+              )}
+            </InfiniteScroll>
+          </Container>
+        )
+      )}
+    </SwapMeetContainer>
   );
 };
 

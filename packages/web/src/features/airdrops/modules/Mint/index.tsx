@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount } from 'wagmi';
 
 import { useHongbao } from 'hooks/contracts';
 
 const Mint = () => {
   const [value, setValue] = useState(0);
   const hongbao = useHongbao();
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
 
   const mint = useCallback(() => {
     hongbao.mint({ value });

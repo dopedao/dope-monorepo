@@ -59,6 +59,7 @@ export default class ItemEntity extends Phaser.Physics.Matter.Sprite {
           fontFamily: 'Dope',
           fontSize: '30px',
           color: '#9f9fff',
+          delimiters: [],
           // fixedWidth: this.displayWidth * 3,
           // stroke: '#000000',
           // strokeThickness: 5,

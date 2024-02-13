@@ -52,7 +52,7 @@ const questNameStyle: CSSProperties = {
 export default function InventoryComponent(props: InventoryProps) {
   return (
     <ChakraProvider>
-      <div style={inventoryBackgroundStyle}>
+      <Box style={inventoryBackgroundStyle}>
         <Flex width="100%" height="100vh" gap={15}>
           <Box width="35%" style={gridItemStyle}>
             {
@@ -69,7 +69,7 @@ export default function InventoryComponent(props: InventoryProps) {
           </Box>
           <Box width="65%" style={gridItemStyle}></Box>
         </Flex>
-      </div>
+      </Box>
     </ChakraProvider>
   );
 }

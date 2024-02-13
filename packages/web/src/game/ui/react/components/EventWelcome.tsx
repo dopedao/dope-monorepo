@@ -11,14 +11,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import HustlerProfileCard from 'components/hustler/HustlerProfileCard';
-import RenderFromChain from 'components/hustler/RenderFromChain';
+import HustlerProfileCard from 'features/hustlers/components/HustlerProfileCard';
+import RenderFromChain from 'features/hustlers/components/RenderFromChain';
 import { ComponentManager } from 'phaser3-react/src/manager';
 import React, { useEffect, useState } from 'react';
 import theme from 'ui/styles/theme';
-import Image from 'next/image';
 import { CSSProperties } from 'react';
-import Link from 'next/link';
 
 interface Props {
   manager: ComponentManager;
@@ -76,8 +74,8 @@ const Stepper = (props: Props) => {
           <Text>
             However, please note that this is not the final state of the game and that some parts
             are still unfinished and *buggy*, so please don&apos;t expect the best performance and
-            accuracy. After all, this is still just **fun** stress test so don&apos;t be afraid to play
-            around with the game and see what you can do (break)!
+            accuracy. After all, this is still just **fun** stress test so don&apos;t be afraid to
+            play around with the game and see what you can do (break)!
           </Text>
           <Text>Anyway, I&apos;m not gonna bother you anymore so yeah... have fun!</Text>
         </>

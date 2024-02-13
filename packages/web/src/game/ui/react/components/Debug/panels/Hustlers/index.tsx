@@ -38,13 +38,13 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
               <InputLeftAddon children="Name" />
               <Input onChange={e => (hustler.name = e.target.value)} placeholder={hustler.name} />
             </InputGroup>
-            <div>
+            <Box>
               <Position object={hustler} />
-            </div>
+            </Box>
             <br />
             <Accordion allowToggle>
               {hustler instanceof Citizen ? (
-                <div>
+                <Box>
                   <AccordionItem>
                     <h2>
                       <AccordionButton>
@@ -69,11 +69,11 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
                       <br />
                       <br />
                       {hustler.path.map((p, i) => (
-                        <div key={i}>
+                        <Box key={i}>
                           PathPoint #{i}
                           <Position object={p.position} />
                           <br />
-                        </div>
+                        </Box>
                       ))}
                     </AccordionPanel>
                   </AccordionItem>
@@ -88,7 +88,7 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
                     </h2>
                     <AccordionPanel pb={4}>
                       {hustler.conversations.map((c, i) => (
-                        <div key={i}>
+                        <Box key={i}>
                           <Accordion>
                             {c.texts.map((t, i) => (
                               <AccordionItem key={i}>
@@ -112,7 +112,7 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
                                   {/* TODO FIX …error where this is a string but map expects an array */}
                                   {/* {t.choices
                                     ? t.choices.map((c, i) => (
-                                        <div key={i}>
+                                        <Box key={i}>
                                           <InputGroup size="sm">
                                             <InputLeftAddon children="Text" />
                                             <Input
@@ -120,18 +120,18 @@ const HustlersPanel = (props: { hustlers: Hustler[] }) => {
                                               placeholder={c}
                                             />
                                           </InputGroup>
-                                        </div>
+                                        </Box>
                                       ))
                                     : undefined} */}
                                 </AccordionPanel>
                               </AccordionItem>
                             ))}
                           </Accordion>
-                        </div>
+                        </Box>
                       ))}
                     </AccordionPanel>
                   </AccordionItem>
-                </div>
+                </Box>
               ) : undefined}
             </Accordion>
           </AccordionPanel>

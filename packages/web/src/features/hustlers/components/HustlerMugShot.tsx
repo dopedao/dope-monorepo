@@ -2,7 +2,7 @@ import { getRandomDate } from 'utils/utils';
 import { HustlerCustomization } from 'utils/HustlerConfig';
 import { media } from 'ui/styles/mixins';
 import { ZOOM_WINDOWS } from 'utils/HustlerConfig';
-import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
+import RenderFromItemRles from 'features/hustlers/components/RenderFromItemRles';
 import styled from '@emotion/styled';
 
 const HustlerTitle = styled.h1`
@@ -48,7 +48,7 @@ const HustlerMugShot = ({ hustlerConfig, itemRles }: Props) => {
   const renderHustler = (zoomWindowIndex: 0 | 1 | 2 | 3) => {
     if (!itemRles) return;
     return (
-      <RenderFromItemIds
+      <RenderFromItemRles
         bgColor={hustlerConfig.bgColor}
         body={hustlerConfig.body}
         itemRles={itemRles}
@@ -61,7 +61,7 @@ const HustlerMugShot = ({ hustlerConfig, itemRles }: Props) => {
         zoomWindow={ZOOM_WINDOWS[zoomWindowIndex]}
         ogTitle={hustlerConfig.title}
         dopeId={hustlerConfig.dopeId}
-        isVehicle={zoomWindowIndex >= 2}
+        showVehicle={zoomWindowIndex >= 2}
       />
     );
   };

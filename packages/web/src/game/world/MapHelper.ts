@@ -1,3 +1,4 @@
+// @ts-nocheck
 import PixelationPipelinePlugin from 'phaser3-rex-plugins/plugins/pixelationpipeline-plugin';
 import { LDtkMapPack, LdtkReader } from './LDtkParser';
 import PF, { DiagonalMovement } from 'pathfinding';

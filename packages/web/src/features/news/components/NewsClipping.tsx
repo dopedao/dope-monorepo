@@ -31,7 +31,7 @@ const NewsClipping = ({ post, titleSize = 'md', showImage = false }: Props) => {
       marginBottom="4"
     >
       <Link href={`/news/${post.slug}`} passHref>
-        <div>
+        <Box>
           <Text
             as="a"
             css={css`
@@ -57,7 +57,7 @@ const NewsClipping = ({ post, titleSize = 'md', showImage = false }: Props) => {
               `}
             />
           )}
-        </div>
+        </Box>
       </Link>
       <Text
         css={css`

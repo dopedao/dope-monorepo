@@ -10,6 +10,7 @@ export type { MetadataBuilder } from "./MetadataBuilder";
 export type { OneClickInitiator } from "./OneClickInitiator";
 export type { Paper } from "./Paper";
 export type { SwapMeet } from "./SwapMeet";
+export * as factories from "./factories";
 export { Components__factory } from "./factories/Components__factory";
 export { Controller__factory } from "./factories/Controller__factory";
 export { CrossDomainMessenger__factory } from "./factories/CrossDomainMessenger__factory";

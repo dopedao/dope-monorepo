@@ -40,7 +40,7 @@ const DopeCardPreviewButton = ({ isPreviewShown, togglePreview, disabled }: Prev
             css={css`
               margin-right: 4px;
             `}
-            src={iconPath + '/image.svg'}
+            src={`${iconPath}/image.svg`}
             width="12px"
             height="12px"
             alt="Image"
@@ -56,7 +56,7 @@ const DopeCardPreviewButton = ({ isPreviewShown, togglePreview, disabled }: Prev
             margin-right: 4px;
             margin-top: 2px;
           `}
-          src={iconPath + '/close.svg'}
+          src={`${iconPath}/close.svg`}
           width="12px"
           height="12px"
           alt="Close"

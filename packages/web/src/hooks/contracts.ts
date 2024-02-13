@@ -1,128 +1,121 @@
 import { useMemo } from 'react';
-import { useWeb3React } from '@web3-react/core';
+import { useState, useEffect } from 'react';
 import {
   CrossDomainMessenger__factory,
   Controller__factory,
   Paper__factory,
   DopeInitiator__factory,
+  Loot__factory,
   Initiator__factory,
   Hustler__factory,
   SwapMeet__factory,
   Components__factory,
   Hongbao__factory,
   OneClickInitiator__factory,
+  SwapMeet,
 } from '@dopewars/contracts/dist';
-import { ethers, BigNumber } from 'ethers';
-import { NETWORK } from 'utils/constants';
-import { useEthereum, useOptimism } from 'hooks/web3';
+import { JsonRpcSigner, ethers } from 'ethers';
+import { NETWORK, ETH_CHAIN_ID, OPT_CHAIN_ID } from 'utils/constants';
+import { Web3Provider, getEthersProvider, getEthersSigner } from './ethersProvider';
 
-export const useInitiator = () => {
-  const { chainId, provider } = useEthereum();
+const ethChainId = parseInt(ETH_CHAIN_ID);
+const opChainId = parseInt(OPT_CHAIN_ID);
 
-  return useMemo(
-    () => Initiator__factory.connect(NETWORK[chainId].contracts.initiator, provider),
-    [chainId, provider],
-  );
+/**
+ *
+ * The following are convenience methods to use contracts
+ * created by Typechain with the useEthersProvider and
+ * useEthersSigner hooks.
+ *
+ * By default a provider is use unless a signer is passed in.
+ * We are using WAGMI/VIEM most other places and these
+ * should be potentially swapped out at some point, instead
+ * of using an adapter for ethers.
+ *
+ * @param signer should be a signer
+ * @returns A typechain contract instance
+ */
+
+export const useDope = (signer?: JsonRpcSigner | null) => {
+  const sp = signer ? signer : getEthersProvider({ chainId: ethChainId });
+  //@ts-ignore
+  const c = NETWORK[ethChainId].contracts.dope;
+  return useMemo(() => Loot__factory.connect(c, sp), [c, sp]);
 };
 
-export const useOneClickInitiator = () => {
-  const { chainId, provider } = useEthereum();
-
-  return useMemo(
-    () => OneClickInitiator__factory.connect(NETWORK[chainId].contracts.oneclick, provider),
-    [chainId, provider],
-  );
+export const useInitiator = (signer?: JsonRpcSigner | null) => {
+  const sp = signer ? signer : getEthersProvider({ chainId: ethChainId });
+  //@ts-ignore
+  const c = NETWORK[ethChainId].contracts.initiator;
+  return useMemo(() => Initiator__factory.connect(c, sp), [c, sp]);
 };
 
-export const usePaper = () => {
-  let chainId: 1 | 10 | 42 | 69;
-  let provider: ethers.providers.JsonRpcProvider;
-  let { chainId: curChainId, library } = useWeb3React();
-  const { chainId: ethChainId, provider: ethProvider } = useEthereum();
-
-  if (curChainId && [1, 10, 42, 69].includes(curChainId)) {
-    chainId = curChainId as 1 | 10 | 42 | 69;
-    provider = library.getSigner();
-  } else {
-    chainId = ethChainId;
-    provider = ethProvider;
-  }
-
-  return useMemo(
-    () => Paper__factory.connect(NETWORK[chainId].contracts.paper, provider),
-    [chainId, provider],
-  );
+export const usePaper = (signer?: JsonRpcSigner | null) => {
+  const sp = signer ? signer : getEthersProvider({ chainId: ethChainId });
+  //@ts-ignore
+  const pp = NETWORK[ethChainId].contracts.paper;
+  return useMemo(() => Paper__factory.connect(pp, sp), [pp, sp]);
 };
 
 export const useController = () => {
-  const { chainId, provider } = useOptimism();
-
-  return useMemo(
-    () => Controller__factory.connect(NETWORK[chainId].contracts.controller, provider),
-    [chainId, provider],
-  );
+  const provider = getEthersProvider({ chainId: opChainId });
+  //@ts-ignore
+  const c = NETWORK[opChainId].contracts.controller;
+  return useMemo(() => Controller__factory.connect(c, provider), [c, provider]);
 };
 
-export const useSwapMeet = () => {
-  const { chainId, provider } = useOptimism();
-
-  return useMemo(
-    () => SwapMeet__factory.connect(NETWORK[chainId].contracts.swapmeet, provider),
-    [chainId, provider],
-  );
+export const useSwapMeet = (signer?: JsonRpcSigner | null) => {
+  const sp = signer ? signer : getEthersProvider({ chainId: opChainId });
+  //@ts-ignore
+  const c = NETWORK[opChainId].contracts.swapmeet;
+  return useMemo(() => SwapMeet__factory.connect(c, sp), [c, sp]);
 };
 
 export const useCrossDomainMessenger = () => {
-  const { chainId, provider } = useOptimism();
+  const provider = getEthersProvider({ chainId: opChainId });
 
   return useMemo(
     () =>
       CrossDomainMessenger__factory.connect('0x4200000000000000000000000000000000000007', provider),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [chainId, provider],
+    [provider],
   );
 };
 
-export const useHustler = () => {
-  const { chainId, provider } = useOptimism();
-
-  return useMemo(
-    () => Hustler__factory.connect(NETWORK[chainId].contracts.hustlers, provider),
-    [chainId, provider],
-  );
+export const useHustler = (signer?: JsonRpcSigner | null) => {
+  const sp = signer ? signer : getEthersProvider({ chainId: opChainId });
+  //@ts-ignore
+  const h = NETWORK[opChainId].contracts.hustlers;
+  return useMemo(() => Hustler__factory.connect(h, sp), [h, sp]);
 };
 
 export const useHustlerComponents = () => {
-  const { chainId, provider } = useOptimism();
-
-  return useMemo(
-    () => Components__factory.connect(NETWORK[chainId].contracts.components, provider),
-    [chainId, provider],
-  );
+  const provider = getEthersProvider({ chainId: opChainId });
+  //@ts-ignore
+  const c = NETWORK[opChainId].contracts.components;
+  return useMemo(() => Components__factory.connect(c, provider), [c, provider]);
 };
 
-export const useHongbao = () => {
-  const { chainId, provider } = useOptimism();
-
-  return useMemo(
-    () => Hongbao__factory.connect(NETWORK[chainId].contracts.hongbao, provider),
-    [chainId, provider],
-  );
+export const useHongbao = (signer?: JsonRpcSigner | null) => {
+  const sp = signer ? signer : getEthersProvider({ chainId: ethChainId });
+  //@ts-ignore
+  const c = NETWORK[opChainId].contracts.hongbao;
+  return useMemo(() => Hongbao__factory.connect(c, sp), [c, sp]);
 };
 
 export const useFetchMetadata = () => {
   const hustlerComponents = useHustlerComponents();
   const hustler = useHustler();
-  const { provider } = useOptimism();
+  const provider = getEthersProvider({ chainId: opChainId });
 
-  return async function fetchMetadata(id: BigNumber) {
+  return async function fetchMetadata(id: bigint) {
     const ogTitle = await hustlerComponents.title(id);
     const metadata = await hustler.metadata(id);
-    const name = metadata['name'];
-    const color = metadata['color'];
-    const background = metadata['background'];
+    const name = metadata.name;
+    const color = metadata.color;
+    const background = metadata.background;
 
-    const METADATA_KEY = ethers.utils.solidityKeccak256(['uint256', 'uint256'], [id, 19]);
+    const METADATA_KEY = ethers.solidityPackedKeccak256(['uint256', 'uint256'], [id, 19]);
     const VIEWBOX_SLOT = 1;
     const BODY_SLOT = 2;
     const ORDER_SLOT = 3;
@@ -136,6 +129,8 @@ export const useFetchMetadata = () => {
     const NECK_SLOT = 12;
     const RING_SLOT = 13;
     const ACCESSORY_SLOT = 14;
+
+    const hustlerAddr = hustler.getAddress();
 
     try {
       const [
@@ -154,69 +149,32 @@ export const useFetchMetadata = () => {
         accessory,
       ] = await Promise.all([
         provider
-          .getStorageAt(
-            hustler.address,
-            BigNumber.from(METADATA_KEY).add(VIEWBOX_SLOT).toHexString(),
-          )
+          .getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(VIEWBOX_SLOT))
           .then(value => [
-            BigNumber.from(ethers.utils.hexDataSlice(value, 31)),
-            BigNumber.from(ethers.utils.hexDataSlice(value, 30, 31)),
-            BigNumber.from(ethers.utils.hexDataSlice(value, 29, 30)),
-            BigNumber.from(ethers.utils.hexDataSlice(value, 28, 29)),
+            BigInt(ethers.dataSlice(value, 31)),
+            BigInt(ethers.dataSlice(value, 30, 31)),
+            BigInt(ethers.dataSlice(value, 29, 30)),
+            BigInt(ethers.dataSlice(value, 28, 29)),
           ]) as any,
         provider
-          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(BODY_SLOT).toHexString())
+          .getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(BODY_SLOT))
           .then(value => [
-            BigNumber.from(ethers.utils.hexDataSlice(value, 31)),
-            BigNumber.from(ethers.utils.hexDataSlice(value, 30, 31)),
-            BigNumber.from(ethers.utils.hexDataSlice(value, 29, 30)),
-            BigNumber.from(ethers.utils.hexDataSlice(value, 28, 29)),
+            BigInt(ethers.dataSlice(value, 31)),
+            BigInt(ethers.dataSlice(value, 30, 31)),
+            BigInt(ethers.dataSlice(value, 29, 30)),
+            BigInt(ethers.dataSlice(value, 28, 29)),
           ]) as any,
-        provider
-          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(ORDER_SLOT).toHexString())
-          .then(BigNumber.from),
-        provider
-          .getStorageAt(
-            hustler.address,
-            BigNumber.from(METADATA_KEY).add(WEAPON_SLOT).toHexString(),
-          )
-          .then(BigNumber.from),
-        provider
-          .getStorageAt(
-            hustler.address,
-            BigNumber.from(METADATA_KEY).add(CLOTHES_SLOT).toHexString(),
-          )
-          .then(BigNumber.from),
-        provider
-          .getStorageAt(
-            hustler.address,
-            BigNumber.from(METADATA_KEY).add(VEHICLE_SLOT).toHexString(),
-          )
-          .then(BigNumber.from),
-        provider
-          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(WAIST_SLOT).toHexString())
-          .then(BigNumber.from),
-        provider
-          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(FOOT_SLOT).toHexString())
-          .then(BigNumber.from),
-        provider
-          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(HAND_SLOT).toHexString())
-          .then(BigNumber.from),
-        provider
-          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(DRUGS_SLOT).toHexString())
-          .then(BigNumber.from),
-        provider
-          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(NECK_SLOT).toHexString())
-          .then(BigNumber.from),
-        provider
-          .getStorageAt(hustler.address, BigNumber.from(METADATA_KEY).add(RING_SLOT).toHexString())
-          .then(BigNumber.from),
-        provider
-          .getStorageAt(
-            hustler.address,
-            BigNumber.from(METADATA_KEY).add(ACCESSORY_SLOT).toHexString(),
-          )
-          .then(BigNumber.from),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(ORDER_SLOT)),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(WEAPON_SLOT)),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(CLOTHES_SLOT)),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(VEHICLE_SLOT)),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(WAIST_SLOT)),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(FOOT_SLOT)),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(HAND_SLOT)),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(DRUGS_SLOT)),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(NECK_SLOT)),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(RING_SLOT)),
+        provider.getStorage(hustlerAddr, BigInt(METADATA_KEY) + BigInt(ACCESSORY_SLOT)),
       ]);
 
       return {
@@ -242,4 +200,17 @@ export const useFetchMetadata = () => {
       console.error(e);
     }
   };
+};
+
+export const useAddressFromContract = (contract: any) => {
+  const [contractAddress, setContractAddress] = useState('');
+  useEffect(() => {
+    async function effect() {
+      const address = await contract.getAddress();
+      setContractAddress(address);
+    }
+    effect();
+  }, [contract]);
+
+  return contractAddress;
 };

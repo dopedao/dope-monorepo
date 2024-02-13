@@ -1,5 +1,4 @@
 import { extendTheme } from '@chakra-ui/react';
-import { withTheme } from '@emotion/react';
 
 export default extendTheme({
   styles: {
@@ -64,10 +63,22 @@ export default extendTheme({
           fontSize: '1em',
           lineHeight: '1em',
           fontWeight: '400',
+          // for icons
+          svg: {
+            path: {
+              fill: 'black',
+            }
+          },
           _hover: {
             backgroundColor: 'var(--hover-bg)',
             color: '#fff',
             textDecoration: 'none',
+            // for icons
+            svg: {
+              path: {
+                fill: '#fff',
+              }
+            },
           },
           _disabled: {
             _hover: {
@@ -125,10 +136,20 @@ export default extendTheme({
           fontSize: '1em',
           lineHeight: '1em',
           fontWeight: '400',
+          svg: {
+            path: {
+              fill: 'black',
+            }
+          },
           _hover: {
             backgroundColor: '#000',
             color: '#fff',
             textDecoration: 'none',
+            svg: {
+              path: {
+                fill: '#fff',
+              }
+            },
           },
           _disabled: {
             _hover: {

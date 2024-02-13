@@ -926,10 +926,10 @@ var Loot__factory = /** @class */ (function () {
     function Loot__factory() {
     }
     Loot__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    Loot__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    Loot__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     Loot__factory.abi = _abi;
     return Loot__factory;

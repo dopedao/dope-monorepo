@@ -1,18 +1,19 @@
 import { useMemo } from 'react';
-import { Hustler, Item, ItemType } from 'generated/graphql';
+import { Hustler, Item, ItemItemType } from 'generated/graphql';
 import { HustlerSex } from 'utils/HustlerConfig';
+import { HustlerHustlerSex } from 'generated/graphql';
 
 const order = [
-  ItemType.Clothes,
-  ItemType.Waist,
-  ItemType.Foot,
-  ItemType.Hand,
-  ItemType.Drugs,
-  ItemType.Neck,
-  ItemType.Ring,
-  ItemType.Accessory,
-  ItemType.Weapon,
-  ItemType.Vehcile,
+  ItemItemType.Clothes,
+  ItemItemType.Waist,
+  ItemItemType.Foot,
+  ItemItemType.Hand,
+  ItemItemType.Drugs,
+  ItemItemType.Neck,
+  ItemItemType.Ring,
+  ItemItemType.Accessory,
+  ItemItemType.Weapon,
+  ItemItemType.Vehicle,
 ];
 
 type Rles = Pick<Item, 'rles'> & {
@@ -26,14 +27,16 @@ function getRle(sex: HustlerSex, item?: Rles | null) {
 
   if (item.rles && item.rles[sex] !== '') {
     return item.rles[sex];
-  } else if (item.base?.rles && item.base?.rles[sex] !== '') {
+  }
+
+  if (item.base?.rles && item.base?.rles[sex] !== '') {
     return item.base.rles[sex];
   }
 
   return '';
 }
 
-export const useHustlerRles = (
+export const getHustlerRles = (
   hustler?:
     | (Pick<Hustler, 'sex'> & {
         clothes?: Rles | null;
@@ -48,36 +51,36 @@ export const useHustlerRles = (
         weapon?: Rles | null;
       })
     | null,
-) =>
-  useMemo(() => {
-    if (hustler) {
-      const sex = hustler.sex === 'MALE' ? 'male' : 'female';
+) => {
+  console.log('hustlerRles', hustler);
+  if (hustler) {
+    const sex = hustler.sex === HustlerHustlerSex.Male ? 'male' : 'female';
+    console.log('hustlerSex', hustler.sex, sex);
+    return [
+      getRle(sex, hustler.clothes),
+      getRle(sex, hustler.waist),
+      getRle(sex, hustler.foot),
+      getRle(sex, hustler.hand),
+      getRle(sex, hustler.drug),
+      getRle(sex, hustler.neck),
+      getRle(sex, hustler.ring),
+      getRle(sex, hustler.accessory),
+      getRle(sex, hustler.weapon),
+      getRle(sex, hustler.vehicle),
+    ];
+  }
+};
 
-      return [
-        getRle(sex, hustler.clothes),
-        getRle(sex, hustler.waist),
-        getRle(sex, hustler.foot),
-        getRle(sex, hustler.hand),
-        getRle(sex, hustler.drug),
-        getRle(sex, hustler.neck),
-        getRle(sex, hustler.ring),
-        getRle(sex, hustler.accessory),
-        getRle(sex, hustler.weapon),
-        getRle(sex, hustler.vehicle),
-      ];
-    }
-  }, [hustler]);
+type DopeInput = { items?: (Pick<Item, 'type'> & Rles)[] | null } | null;
 
-export const useDopeRles = (
-  sex?: HustlerSex,
-  dope?: {
-    items: (Pick<Item, 'type'> & Rles)[];
-  } | null,
-) =>
+export const useDopeRles = (sex?: HustlerSex, dope?: DopeInput) =>
   useMemo(() => {
     if (sex && dope) {
-      return dope.items
-        ?.sort((a, b) => (order.indexOf(a.type) < order.indexOf(b.type) ? 1 : -1))
-        .reduce((prev, item) => [...prev, getRle(sex, item)], [] as string[]);
+      // vehicle should ALWAYS be last or we will break the svg renderer
+      const sortedItems = dope.items
+        ?.sort((a, b) => (order.indexOf(a.type) > order.indexOf(b.type) ? 1 : -1));
+      const rles = sortedItems?.reduce((prev, item) => prev.concat(getRle(sex, item)), [] as string[]);
+      
+      return rles;
     }
   }, [sex, dope]);

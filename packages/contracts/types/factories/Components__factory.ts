@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import { Provider } from "@ethersproject/providers";
+import { Contract, Interface, type ContractRunner } from "ethers";
 import type { Components, ComponentsInterface } from "../Components";
 
 const _abi = [
@@ -513,17 +512,14 @@ const _abi = [
     stateMutability: "view",
     type: "function",
   },
-];
+] as const;
 
 export class Components__factory {
   static readonly abi = _abi;
   static createInterface(): ComponentsInterface {
-    return new utils.Interface(_abi) as ComponentsInterface;
+    return new Interface(_abi) as ComponentsInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): Components {
-    return new Contract(address, _abi, signerOrProvider) as Components;
+  static connect(address: string, runner?: ContractRunner | null): Components {
+    return new Contract(address, _abi, runner) as unknown as Components;
   }
 }

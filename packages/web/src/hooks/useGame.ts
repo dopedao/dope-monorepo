@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Game, Types } from 'phaser';
-import { toastStyle } from 'game/scenes/UI';
-import { createStandaloneToast, toast } from '@chakra-ui/react';
+import { createStandaloneToast } from '@chakra-ui/react';
 
 export function useGame(
   config: Types.Core.GameConfig,
@@ -22,7 +21,7 @@ export function useGame(
     };
 
     const onAccountsChanged = (accounts: string[]) => {
-      toast({
+      toast.toast({
         title: 'Detected account change. Reloading game...',
         description: `${accounts[0]}`,
         status: 'warning',
@@ -31,7 +30,7 @@ export function useGame(
     };
 
     const onChainChanged = (chainId: string | number) => {
-      toast({
+      toast.toast({
         title: 'Detected chain change. Reloading game...',
         description: `Chain changed to ${chainId}`,
         status: 'warning',

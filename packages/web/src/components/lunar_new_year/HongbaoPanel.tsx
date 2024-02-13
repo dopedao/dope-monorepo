@@ -3,10 +3,10 @@ import { css } from '@emotion/react';
 import { getProof } from 'utils/merkleproof';
 import { Image } from '@chakra-ui/react';
 import { OpenedEvent } from '@dopewars/contracts/dist/Hongbao';
-import { solidityKeccak256 } from 'ethers/lib/utils';
+import { ethers } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHongbao } from 'hooks/contracts';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount } from 'wagmi';
 import config from 'config'; // Airdrop config
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
@@ -15,16 +15,17 @@ import SpinnerMessage from 'components/SpinnerMessage';
 import PanelTitleHeader from 'components/PanelTitleHeader';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Box } from '@chakra-ui/react';
 
 const HongbaoPanel = () => {
   const hongbao = useHongbao();
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
   const router = useRouter();
 
-  // if event.args.typ == 0
-  //      PAPER reward. event.args.value is the numUnopenedEnvelopes
-  // if event.args.typ == 1
-  //      Item reward. event.args.value is the item id
+  // if event.arguments.typ == 0
+  //      PAPER reward. event.arguments.value is the numUnopenedEnvelopes
+  // if event.arguments.typ == 1
+  //      Item reward. event.arguments.value is the item id
   const [claimed, setClaimed] = useState<boolean>();
   const [isClaiming, setIsClaiming] = useState(false);
 
@@ -36,7 +37,9 @@ const HongbaoPanel = () => {
     hongbao
       .claimed(
         Buffer.from(
-          solidityKeccak256(['address', 'uint256'], [account, numUnopenedEnvelopes]).slice(2),
+          ethers
+            .solidityPackedKeccak256(['address', 'uint256'], [account, numUnopenedEnvelopes])
+            .slice(2),
           'hex',
         ),
       )
@@ -52,11 +55,14 @@ const HongbaoPanel = () => {
       });
       const receipt = await tx.wait(1);
 
-      const opens = receipt.logs.reduce<{ typ: number; id: string }[]>((o, log, idx) => {
-        if (idx % 2 == 0) return o;
-        const event = hongbao.interface.parseLog(log) as unknown as OpenedEvent;
+      const opens = receipt?.logs.reduce<{ typ: number; id: string }[]>((o, log, idx) => {
+        if (idx % 2 === 0) return o;
+        const event = hongbao.interface.parseLog({
+          topics: Array.from(log.topics),
+          data: log.data,
+        }) as unknown as OpenedEvent.Event;
         // Set roll to item id
-        return [...o, { typ: event.args.typ, id: event.args.id.toString() }];
+        return [...o, { typ: event.arguments.typ, id: event.arguments.id.toString() }];
       }, []);
 
       router.push(
@@ -96,7 +102,7 @@ const HongbaoPanel = () => {
               </Button>
             )}
             {claimed && (
-              <Link href="/inventory?section=Gear" passHref>
+              <Link href="/swap-meet/inventory?section=Gear" passHref>
                 <Button variant="cny">View your gifts</Button>
               </Link>
             )}
@@ -104,7 +110,7 @@ const HongbaoPanel = () => {
         </>
       )}
       {!eligibleForAirdrop && (
-        <div
+        <Box
           css={css`
             flex: 5;
             height: 100%;
@@ -121,7 +127,7 @@ const HongbaoPanel = () => {
           <br />
           <p>The connected wallet is not eligible for this airdrop.</p>
           <p>Purchase a rare accessory mask below!</p>
-        </div>
+        </Box>
       )}
     </PanelContainer>
   );

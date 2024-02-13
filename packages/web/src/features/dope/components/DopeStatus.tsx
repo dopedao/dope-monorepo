@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
-import { Image } from '@chakra-ui/image';
-import styled from '@emotion/styled';
+import { Image, Box, HStack } from '@chakra-ui/react';
+import StatusContainer from 'components/StatusContainer';
 
 const iconPath = '/images/icon';
 
@@ -13,26 +13,12 @@ type StatusIconProps = {
   status: boolean;
 };
 
-const StatusContainer = styled.div<{ status?: boolean }>`
-  font-size: (--text-small);
-  display: flex;
-  padding: 6px;
-  background-color: ${({ status }) => (status ? '#9BFFCB' : '#DEDEDD')};
-  margin-top: 8px;
-  border-radius: 2px;
-`;
 const DopeStatus = ({ content, status }: RowProps) => (
-  <StatusContainer status={status}>
-    {content == 'paper' ? (
-      <>
-        <StatusIcon status={status} />
-        <span>{status ? 'Can Claim $PAPER' : 'No $PAPER To Claim'}</span>
-      </>
+  <StatusContainer>
+    {content === 'paper' ? (
+      <Box fontSize="xs">{status ? 'Can Claim $PAPER' : 'No $PAPER To Claim'}</Box>
     ) : (
-      <>
-        <StatusIcon status={status} />
-        <span>{status ? 'Can Claim Gear & Initiate Hustler' : 'No Gear To Claim'}</span>
-      </>
+      <Box fontSize="xs">🚫 {status ? 'Can Mint Hustler' : 'Hustler Minted'} 🚫</Box>
     )}
   </StatusContainer>
 );
@@ -43,7 +29,7 @@ const StatusIcon = ({ status }: StatusIconProps) => (
       display: block;
       margin-right: 4px;
     `}
-    src={status ? iconPath + '/check-sm.svg' : iconPath + '/circle-slash.svg'}
+    src={status ? `${iconPath}/check-sm.svg` : `${iconPath}/circle-slash.svg`}
     alt={status ? 'Yes' : 'No'}
   />
 );

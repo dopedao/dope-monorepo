@@ -72,12 +72,12 @@ const RollYourOwnProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [userStateData]);
 
-  const updateTurn = (turn: Turn) => {
+  const updateTurn = useCallback((turn: Turn) => {
     setTurn(prev => ({
       ...prev,
       ...turn,
     }));
-  };
+  }, []);
 
   const haveTurn = useCallback(() => {
     const { locationId, buyOrSell, itemId, amountToGive } = turn;
@@ -95,10 +95,10 @@ const RollYourOwnProvider = ({ children }: { children: ReactNode }) => {
       haveTurn,
       updateTurn,
     }),
-    [money, ownedItems, haveTurn, turn],
+    [money, ownedItems, haveTurn, turn, updateTurn],
   );
 
-  return <RollYourOwnContext.Provider value={value}>{children}</RollYourOwnContext.Provider>;
+  return <RollYourOwnContext.Provider value={value as any}>{children}</RollYourOwnContext.Provider>;
 };
 
 export default RollYourOwnProvider;

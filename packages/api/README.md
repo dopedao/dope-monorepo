@@ -49,8 +49,7 @@ WEB_API_PORT=8080
 ## BACK END
 
 ```sh
-cd packages/api
-docker-compuse up --build
+docker-compose up --build
 grift list # to see scripts that can be run
 grift db:bootstrap
 ```
@@ -66,7 +65,7 @@ Then, go to <http://localhost:3000/game> to verify the game is up
     > Example: `docker exec -it a782349aad34d /bin/bash`
     > You can get the hash from `docker ps`
 
-## TROUBLE SHOOTING
+## TROUBLESHOOTING
 
 ### COMPILE DAEMON
 

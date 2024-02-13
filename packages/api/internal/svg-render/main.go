@@ -216,10 +216,10 @@ func GetOffchainRender(hustlerId *big.Int) (string, error) {
 	cleanTitle := cleanString(title)
 	cleanName := cleanString(hustlerMeta.Name)
 
-	_, logger := logger.LogFor(context.TODO())
-	logger.With().Str("Internal", "SvgRender").Str("hustler", hustlerId.String())
+	log := logger.Log
+	log.With().Str("method", "SvgRender").Str("hustler", hustlerId.String())
 
-	logger.Info().
+	log.Info().
 		Str("Name", cleanName).
 		Str("Title", cleanTitle).
 		Str("Foreground", foreground).
@@ -228,7 +228,7 @@ func GetOffchainRender(hustlerId *big.Int) (string, error) {
 		Int("Resolution", resolution).
 		Msgf("Parts: %v\nViewBox: %v", partNames, viewBox)
 
-	svg := BuildSVG(parts, background, foreground, cleanTitle, cleanName, viewBox, resolution, &logger)
+	svg := BuildSVG(parts, background, foreground, cleanTitle, cleanName, viewBox, resolution)
 	if len(svg) == 0 {
 		return "", fmt.Errorf("rendering hustler %s", hustlerId.String())
 	}

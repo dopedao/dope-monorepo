@@ -3,12 +3,10 @@ package main
 import (
 	"context"
 	"net/http"
-	"os"
 
 	api "github.com/dopedao/dope-monorepo/packages/api/game/api"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
-	"github.com/rs/zerolog"
 	"github.com/yfuruyama/crzerolog"
 )
 
@@ -20,19 +18,19 @@ import (
 // Requires a number of environment variables to be set (see above in source)
 // or the program will crash. Because of this we set defaults.
 func main() {
-	log := zerolog.New(os.Stderr)
+	logger.Init()
 
-	loggerCtx := log.WithContext(context.Background())
+	loggerCtx := logger.Log.WithContext(context.Background())
 
 	srv, err := api.NewServer(
 		loggerCtx,
 		envcfg.Network)
 	logger.LogFatalOnErr(err, "Creating Game Server")
 
-	log.Info().Msg(
+	logger.Log.Info().Msg(
 		"Starting game server to listen on port: " + *envcfg.Listen)
 
-	middleware := crzerolog.InjectLogger(&log)
+	middleware := crzerolog.InjectLogger(logger.Log)
 
 	server := &http.Server{
 		Addr:    ":" + *envcfg.Listen,

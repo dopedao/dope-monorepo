@@ -1,9 +1,10 @@
 import ReactMarkdown from 'react-markdown';
+import { Box } from '@chakra-ui/react';
 
 const MarkdownText = ({ text }: { text: string }) => (
-  <div className="markdown">
+  <Box className="markdown">
     <ReactMarkdown linkTarget="_blank">{text}</ReactMarkdown>
-  </div>
+  </Box>
 );
 
 export default MarkdownText;

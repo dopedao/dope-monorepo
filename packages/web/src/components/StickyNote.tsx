@@ -24,7 +24,7 @@ const NoteContainer = styled.div<{ maxWidth?: string; background?: string }>`
   position: absolute;
   bottom: 25%;
   left: 0%;
-  background: ${({ background }) => background || '#caffff'};
+  background: ${({ background }) => background || '#fcf4a7'};
   text-align: center;
   cursor: pointer;
   cursor: hand;

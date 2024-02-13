@@ -1,6 +1,7 @@
 import { Image } from '@chakra-ui/image';
 import { css } from '@emotion/react';
 import Link from 'next/link';
+import { Box } from '@chakra-ui/react';
 
 type CoverProps = {
   title: string;
@@ -22,15 +23,15 @@ const Cover = ({ title, src, slug }: CoverProps) => {
   );
 
   return (
-    <div className="sm:mx-0">
+    <Box className="sm:mx-0">
       {slug ? (
-        <Link href={`/posts/${slug}`}>
-          <a aria-label={title}>{image}</a>
+        <Link href={`/posts/${slug}`} aria-label={title}>
+          {image}
         </Link>
       ) : (
         image
       )}
-    </div>
+    </Box>
   );
 };
 

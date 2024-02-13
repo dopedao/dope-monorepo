@@ -1,97 +1,56 @@
-import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, ContractTransaction, Overrides, PopulatedTransaction, Signer, utils } from "ethers";
-import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
-import { Listener, Provider } from "@ethersproject/providers";
-import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
-export interface LootInterface extends utils.Interface {
-    functions: {
-        "DELEGATION_TYPEHASH()": FunctionFragment;
-        "DOMAIN_TYPEHASH()": FunctionFragment;
-        "approve(address,uint256)": FunctionFragment;
-        "balanceOf(address)": FunctionFragment;
-        "checkpoints(address,uint32)": FunctionFragment;
-        "claim(uint256)": FunctionFragment;
-        "decimals()": FunctionFragment;
-        "delegate(address)": FunctionFragment;
-        "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-        "delegates(address)": FunctionFragment;
-        "getApproved(uint256)": FunctionFragment;
-        "getClothes(uint256)": FunctionFragment;
-        "getCurrentVotes(address)": FunctionFragment;
-        "getDrugs(uint256)": FunctionFragment;
-        "getFoot(uint256)": FunctionFragment;
-        "getHand(uint256)": FunctionFragment;
-        "getNeck(uint256)": FunctionFragment;
-        "getPriorVotes(address,uint256)": FunctionFragment;
-        "getRing(uint256)": FunctionFragment;
-        "getVehicle(uint256)": FunctionFragment;
-        "getWaist(uint256)": FunctionFragment;
-        "getWeapon(uint256)": FunctionFragment;
-        "isApprovedForAll(address,address)": FunctionFragment;
-        "name()": FunctionFragment;
-        "nonces(address)": FunctionFragment;
-        "numCheckpoints(address)": FunctionFragment;
-        "owner()": FunctionFragment;
-        "ownerOf(uint256)": FunctionFragment;
-        "renounceOwnership()": FunctionFragment;
-        "safeTransferFrom(address,address,uint256)": FunctionFragment;
-        "setApprovalForAll(address,bool)": FunctionFragment;
-        "supportsInterface(bytes4)": FunctionFragment;
-        "symbol()": FunctionFragment;
-        "tokenByIndex(uint256)": FunctionFragment;
-        "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
-        "tokenURI(uint256)": FunctionFragment;
-        "totalSupply()": FunctionFragment;
-        "transferFrom(address,address,uint256)": FunctionFragment;
-        "transferOwnership(address)": FunctionFragment;
-        "votesToDelegate(address)": FunctionFragment;
-    };
+import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
+import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "./common";
+export interface LootInterface extends Interface {
+    getFunction(nameOrSignature: "DELEGATION_TYPEHASH" | "DOMAIN_TYPEHASH" | "approve" | "balanceOf" | "checkpoints" | "claim" | "decimals" | "delegate" | "delegateBySig" | "delegates" | "getApproved" | "getClothes" | "getCurrentVotes" | "getDrugs" | "getFoot" | "getHand" | "getNeck" | "getPriorVotes" | "getRing" | "getVehicle" | "getWaist" | "getWeapon" | "isApprovedForAll" | "name" | "nonces" | "numCheckpoints" | "owner" | "ownerOf" | "renounceOwnership" | "safeTransferFrom(address,address,uint256)" | "safeTransferFrom(address,address,uint256,bytes)" | "setApprovalForAll" | "supportsInterface" | "symbol" | "tokenByIndex" | "tokenOfOwnerByIndex" | "tokenURI" | "totalSupply" | "transferFrom" | "transferOwnership" | "votesToDelegate"): FunctionFragment;
+    getEvent(nameOrSignatureOrTopic: "Approval" | "ApprovalForAll" | "DelegateChanged" | "DelegateVotesChanged" | "OwnershipTransferred" | "Transfer"): EventFragment;
     encodeFunctionData(functionFragment: "DELEGATION_TYPEHASH", values?: undefined): string;
     encodeFunctionData(functionFragment: "DOMAIN_TYPEHASH", values?: undefined): string;
-    encodeFunctionData(functionFragment: "approve", values: [string, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-    encodeFunctionData(functionFragment: "checkpoints", values: [string, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "approve", values: [AddressLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "balanceOf", values: [AddressLike]): string;
+    encodeFunctionData(functionFragment: "checkpoints", values: [AddressLike, BigNumberish]): string;
     encodeFunctionData(functionFragment: "claim", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
-    encodeFunctionData(functionFragment: "delegate", values: [string]): string;
+    encodeFunctionData(functionFragment: "delegate", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "delegateBySig", values: [
-        string,
+        AddressLike,
         BigNumberish,
         BigNumberish,
         BigNumberish,
         BytesLike,
         BytesLike
     ]): string;
-    encodeFunctionData(functionFragment: "delegates", values: [string]): string;
+    encodeFunctionData(functionFragment: "delegates", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "getApproved", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "getClothes", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "getCurrentVotes", values: [string]): string;
+    encodeFunctionData(functionFragment: "getCurrentVotes", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "getDrugs", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "getFoot", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "getHand", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "getNeck", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "getPriorVotes", values: [string, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "getPriorVotes", values: [AddressLike, BigNumberish]): string;
     encodeFunctionData(functionFragment: "getRing", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "getVehicle", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "getWaist", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "getWeapon", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "isApprovedForAll", values: [string, string]): string;
+    encodeFunctionData(functionFragment: "isApprovedForAll", values: [AddressLike, AddressLike]): string;
     encodeFunctionData(functionFragment: "name", values?: undefined): string;
-    encodeFunctionData(functionFragment: "nonces", values: [string]): string;
-    encodeFunctionData(functionFragment: "numCheckpoints", values: [string]): string;
+    encodeFunctionData(functionFragment: "nonces", values: [AddressLike]): string;
+    encodeFunctionData(functionFragment: "numCheckpoints", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
     encodeFunctionData(functionFragment: "ownerOf", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
-    encodeFunctionData(functionFragment: "safeTransferFrom", values: [string, string, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "setApprovalForAll", values: [string, boolean]): string;
+    encodeFunctionData(functionFragment: "safeTransferFrom(address,address,uint256)", values: [AddressLike, AddressLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "safeTransferFrom(address,address,uint256,bytes)", values: [AddressLike, AddressLike, BigNumberish, BytesLike]): string;
+    encodeFunctionData(functionFragment: "setApprovalForAll", values: [AddressLike, boolean]): string;
     encodeFunctionData(functionFragment: "supportsInterface", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
     encodeFunctionData(functionFragment: "tokenByIndex", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "tokenOfOwnerByIndex", values: [string, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "tokenOfOwnerByIndex", values: [AddressLike, BigNumberish]): string;
     encodeFunctionData(functionFragment: "tokenURI", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "totalSupply", values?: undefined): string;
-    encodeFunctionData(functionFragment: "transferFrom", values: [string, string, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "transferOwnership", values: [string]): string;
-    encodeFunctionData(functionFragment: "votesToDelegate", values: [string]): string;
+    encodeFunctionData(functionFragment: "transferFrom", values: [AddressLike, AddressLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
+    encodeFunctionData(functionFragment: "votesToDelegate", values: [AddressLike]): string;
     decodeFunctionResult(functionFragment: "DELEGATION_TYPEHASH", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "DOMAIN_TYPEHASH", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
@@ -121,7 +80,8 @@ export interface LootInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "renounceOwnership", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "safeTransferFrom", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "safeTransferFrom(address,address,uint256)", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "safeTransferFrom(address,address,uint256,bytes)", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "setApprovalForAll", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "supportsInterface", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
@@ -132,407 +92,368 @@ export interface LootInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "transferFrom", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "votesToDelegate", data: BytesLike): Result;
-    events: {
-        "Approval(address,address,uint256)": EventFragment;
-        "ApprovalForAll(address,address,bool)": EventFragment;
-        "DelegateChanged(address,address,address)": EventFragment;
-        "DelegateVotesChanged(address,uint256,uint256)": EventFragment;
-        "OwnershipTransferred(address,address)": EventFragment;
-        "Transfer(address,address,uint256)": EventFragment;
-    };
-    getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "DelegateChanged"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "DelegateVotesChanged"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
-export declare type ApprovalEvent = TypedEvent<[
-    string,
-    string,
-    BigNumber
-], {
-    owner: string;
-    approved: string;
-    tokenId: BigNumber;
-}>;
-export declare type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
-export declare type ApprovalForAllEvent = TypedEvent<[
-    string,
-    string,
-    boolean
-], {
-    owner: string;
-    operator: string;
-    approved: boolean;
-}>;
-export declare type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
-export declare type DelegateChangedEvent = TypedEvent<[
-    string,
-    string,
-    string
-], {
-    delegator: string;
-    fromDelegate: string;
-    toDelegate: string;
-}>;
-export declare type DelegateChangedEventFilter = TypedEventFilter<DelegateChangedEvent>;
-export declare type DelegateVotesChangedEvent = TypedEvent<[
-    string,
-    BigNumber,
-    BigNumber
-], {
-    delegate: string;
-    previousBalance: BigNumber;
-    newBalance: BigNumber;
-}>;
-export declare type DelegateVotesChangedEventFilter = TypedEventFilter<DelegateVotesChangedEvent>;
-export declare type OwnershipTransferredEvent = TypedEvent<[
-    string,
-    string
-], {
-    previousOwner: string;
-    newOwner: string;
-}>;
-export declare type OwnershipTransferredEventFilter = TypedEventFilter<OwnershipTransferredEvent>;
-export declare type TransferEvent = TypedEvent<[
-    string,
-    string,
-    BigNumber
-], {
-    from: string;
-    to: string;
-    tokenId: BigNumber;
-}>;
-export declare type TransferEventFilter = TypedEventFilter<TransferEvent>;
+export declare namespace ApprovalEvent {
+    type InputTuple = [
+        owner: AddressLike,
+        approved: AddressLike,
+        tokenId: BigNumberish
+    ];
+    type OutputTuple = [owner: string, approved: string, tokenId: bigint];
+    interface OutputObject {
+        owner: string;
+        approved: string;
+        tokenId: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace ApprovalForAllEvent {
+    type InputTuple = [
+        owner: AddressLike,
+        operator: AddressLike,
+        approved: boolean
+    ];
+    type OutputTuple = [
+        owner: string,
+        operator: string,
+        approved: boolean
+    ];
+    interface OutputObject {
+        owner: string;
+        operator: string;
+        approved: boolean;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace DelegateChangedEvent {
+    type InputTuple = [
+        delegator: AddressLike,
+        fromDelegate: AddressLike,
+        toDelegate: AddressLike
+    ];
+    type OutputTuple = [
+        delegator: string,
+        fromDelegate: string,
+        toDelegate: string
+    ];
+    interface OutputObject {
+        delegator: string;
+        fromDelegate: string;
+        toDelegate: string;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace DelegateVotesChangedEvent {
+    type InputTuple = [
+        delegate: AddressLike,
+        previousBalance: BigNumberish,
+        newBalance: BigNumberish
+    ];
+    type OutputTuple = [
+        delegate: string,
+        previousBalance: bigint,
+        newBalance: bigint
+    ];
+    interface OutputObject {
+        delegate: string;
+        previousBalance: bigint;
+        newBalance: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace OwnershipTransferredEvent {
+    type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+    type OutputTuple = [previousOwner: string, newOwner: string];
+    interface OutputObject {
+        previousOwner: string;
+        newOwner: string;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace TransferEvent {
+    type InputTuple = [
+        from: AddressLike,
+        to: AddressLike,
+        tokenId: BigNumberish
+    ];
+    type OutputTuple = [from: string, to: string, tokenId: bigint];
+    interface OutputObject {
+        from: string;
+        to: string;
+        tokenId: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
 export interface Loot extends BaseContract {
-    connect(signerOrProvider: Signer | Provider | string): this;
-    attach(addressOrName: string): this;
-    deployed(): Promise<this>;
+    connect(runner?: ContractRunner | null): Loot;
+    waitForDeployment(): Promise<this>;
     interface: LootInterface;
-    queryFilter<TEvent extends TypedEvent>(event: TypedEventFilter<TEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TEvent>>;
-    listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
-    listeners(eventName?: string): Array<Listener>;
-    removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
-    removeAllListeners(eventName?: string): this;
-    off: OnEvent<this>;
-    on: OnEvent<this>;
-    once: OnEvent<this>;
-    removeListener: OnEvent<this>;
-    functions: {
-        DELEGATION_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
-        DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
-        approve(to: string, tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-        checkpoints(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<[number, BigNumber] & {
-            fromBlock: number;
-            votes: BigNumber;
-        }>;
-        claim(tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        decimals(overrides?: CallOverrides): Promise<[number]>;
-        delegate(delegatee: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        delegateBySig(delegatee: string, nonce: BigNumberish, expiry: BigNumberish, v: BigNumberish, r: BytesLike, s: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        delegates(delegator: string, overrides?: CallOverrides): Promise<[string]>;
-        getApproved(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        getClothes(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        getCurrentVotes(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-        getDrugs(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        getFoot(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        getHand(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        getNeck(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        getPriorVotes(account: string, blockNumber: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
-        getRing(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        getVehicle(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        getWaist(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        getWeapon(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        isApprovedForAll(owner: string, operator: string, overrides?: CallOverrides): Promise<[boolean]>;
-        name(overrides?: CallOverrides): Promise<[string]>;
-        nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-        numCheckpoints(arg0: string, overrides?: CallOverrides): Promise<[number]>;
-        owner(overrides?: CallOverrides): Promise<[string]>;
-        ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        "safeTransferFrom(address,address,uint256)"(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        "safeTransferFrom(address,address,uint256,bytes)"(from: string, to: string, tokenId: BigNumberish, _data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<[boolean]>;
-        symbol(overrides?: CallOverrides): Promise<[string]>;
-        tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
-        tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
-        tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
-        transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        votesToDelegate(delegator: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-    };
-    DELEGATION_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-    approve(to: string, tokenId: BigNumberish, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-    checkpoints(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<[number, BigNumber] & {
-        fromBlock: number;
-        votes: BigNumber;
-    }>;
-    claim(tokenId: BigNumberish, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    decimals(overrides?: CallOverrides): Promise<number>;
-    delegate(delegatee: string, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    delegateBySig(delegatee: string, nonce: BigNumberish, expiry: BigNumberish, v: BigNumberish, r: BytesLike, s: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    delegates(delegator: string, overrides?: CallOverrides): Promise<string>;
-    getApproved(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    getClothes(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    getCurrentVotes(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-    getDrugs(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    getFoot(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    getHand(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    getNeck(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    getPriorVotes(account: string, blockNumber: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-    getRing(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    getVehicle(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    getWaist(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    getWeapon(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    isApprovedForAll(owner: string, operator: string, overrides?: CallOverrides): Promise<boolean>;
-    name(overrides?: CallOverrides): Promise<string>;
-    nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-    numCheckpoints(arg0: string, overrides?: CallOverrides): Promise<number>;
-    owner(overrides?: CallOverrides): Promise<string>;
-    ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    renounceOwnership(overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    "safeTransferFrom(address,address,uint256)"(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    "safeTransferFrom(address,address,uint256,bytes)"(from: string, to: string, tokenId: BigNumberish, _data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-    symbol(overrides?: CallOverrides): Promise<string>;
-    tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-    tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-    tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-    transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    transferOwnership(newOwner: string, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    votesToDelegate(delegator: string, overrides?: CallOverrides): Promise<BigNumber>;
-    callStatic: {
-        DELEGATION_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-        DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-        approve(to: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
-        balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-        checkpoints(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<[number, BigNumber] & {
-            fromBlock: number;
-            votes: BigNumber;
-        }>;
-        claim(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
-        decimals(overrides?: CallOverrides): Promise<number>;
-        delegate(delegatee: string, overrides?: CallOverrides): Promise<void>;
-        delegateBySig(delegatee: string, nonce: BigNumberish, expiry: BigNumberish, v: BigNumberish, r: BytesLike, s: BytesLike, overrides?: CallOverrides): Promise<void>;
-        delegates(delegator: string, overrides?: CallOverrides): Promise<string>;
-        getApproved(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        getClothes(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        getCurrentVotes(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-        getDrugs(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        getFoot(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        getHand(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        getNeck(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        getPriorVotes(account: string, blockNumber: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getRing(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        getVehicle(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        getWaist(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        getWeapon(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        isApprovedForAll(owner: string, operator: string, overrides?: CallOverrides): Promise<boolean>;
-        name(overrides?: CallOverrides): Promise<string>;
-        nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-        numCheckpoints(arg0: string, overrides?: CallOverrides): Promise<number>;
-        owner(overrides?: CallOverrides): Promise<string>;
-        ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        renounceOwnership(overrides?: CallOverrides): Promise<void>;
-        "safeTransferFrom(address,address,uint256)"(from: string, to: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
-        "safeTransferFrom(address,address,uint256,bytes)"(from: string, to: string, tokenId: BigNumberish, _data: BytesLike, overrides?: CallOverrides): Promise<void>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: CallOverrides): Promise<void>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-        symbol(overrides?: CallOverrides): Promise<string>;
-        tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-        transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
-        transferOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
-        votesToDelegate(delegator: string, overrides?: CallOverrides): Promise<BigNumber>;
-    };
+    queryFilter<TCEvent extends TypedContractEvent>(event: TCEvent, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    queryFilter<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    on<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+    listeners(eventName?: string): Promise<Array<Listener>>;
+    removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+    DELEGATION_TYPEHASH: TypedContractMethod<[], [string], "view">;
+    DOMAIN_TYPEHASH: TypedContractMethod<[], [string], "view">;
+    approve: TypedContractMethod<[
+        to: AddressLike,
+        tokenId: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    balanceOf: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+    checkpoints: TypedContractMethod<[
+        arg0: AddressLike,
+        arg1: BigNumberish
+    ], [
+        [bigint, bigint] & {
+            fromBlock: bigint;
+            votes: bigint;
+        }
+    ], "view">;
+    claim: TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+    decimals: TypedContractMethod<[], [bigint], "view">;
+    delegate: TypedContractMethod<[delegatee: AddressLike], [void], "nonpayable">;
+    delegateBySig: TypedContractMethod<[
+        delegatee: AddressLike,
+        nonce: BigNumberish,
+        expiry: BigNumberish,
+        v: BigNumberish,
+        r: BytesLike,
+        s: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    delegates: TypedContractMethod<[delegator: AddressLike], [string], "view">;
+    getApproved: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getClothes: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getCurrentVotes: TypedContractMethod<[
+        account: AddressLike
+    ], [
+        bigint
+    ], "view">;
+    getDrugs: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFoot: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getHand: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getNeck: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getPriorVotes: TypedContractMethod<[
+        account: AddressLike,
+        blockNumber: BigNumberish
+    ], [
+        bigint
+    ], "view">;
+    getRing: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getVehicle: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getWaist: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getWeapon: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    isApprovedForAll: TypedContractMethod<[
+        owner: AddressLike,
+        operator: AddressLike
+    ], [
+        boolean
+    ], "view">;
+    name: TypedContractMethod<[], [string], "view">;
+    nonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+    numCheckpoints: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+    owner: TypedContractMethod<[], [string], "view">;
+    ownerOf: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+    "safeTransferFrom(address,address,uint256)": TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        tokenId: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    "safeTransferFrom(address,address,uint256,bytes)": TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        tokenId: BigNumberish,
+        _data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    setApprovalForAll: TypedContractMethod<[
+        operator: AddressLike,
+        approved: boolean
+    ], [
+        void
+    ], "nonpayable">;
+    supportsInterface: TypedContractMethod<[
+        interfaceId: BytesLike
+    ], [
+        boolean
+    ], "view">;
+    symbol: TypedContractMethod<[], [string], "view">;
+    tokenByIndex: TypedContractMethod<[index: BigNumberish], [bigint], "view">;
+    tokenOfOwnerByIndex: TypedContractMethod<[
+        owner: AddressLike,
+        index: BigNumberish
+    ], [
+        bigint
+    ], "view">;
+    tokenURI: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    totalSupply: TypedContractMethod<[], [bigint], "view">;
+    transferFrom: TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        tokenId: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    transferOwnership: TypedContractMethod<[
+        newOwner: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
+    votesToDelegate: TypedContractMethod<[
+        delegator: AddressLike
+    ], [
+        bigint
+    ], "view">;
+    getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+    getFunction(nameOrSignature: "DELEGATION_TYPEHASH"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "DOMAIN_TYPEHASH"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "approve"): TypedContractMethod<[
+        to: AddressLike,
+        tokenId: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "balanceOf"): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+    getFunction(nameOrSignature: "checkpoints"): TypedContractMethod<[
+        arg0: AddressLike,
+        arg1: BigNumberish
+    ], [
+        [bigint, bigint] & {
+            fromBlock: bigint;
+            votes: bigint;
+        }
+    ], "view">;
+    getFunction(nameOrSignature: "claim"): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+    getFunction(nameOrSignature: "decimals"): TypedContractMethod<[], [bigint], "view">;
+    getFunction(nameOrSignature: "delegate"): TypedContractMethod<[delegatee: AddressLike], [void], "nonpayable">;
+    getFunction(nameOrSignature: "delegateBySig"): TypedContractMethod<[
+        delegatee: AddressLike,
+        nonce: BigNumberish,
+        expiry: BigNumberish,
+        v: BigNumberish,
+        r: BytesLike,
+        s: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "delegates"): TypedContractMethod<[delegator: AddressLike], [string], "view">;
+    getFunction(nameOrSignature: "getApproved"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "getClothes"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "getCurrentVotes"): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+    getFunction(nameOrSignature: "getDrugs"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "getFoot"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "getHand"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "getNeck"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "getPriorVotes"): TypedContractMethod<[
+        account: AddressLike,
+        blockNumber: BigNumberish
+    ], [
+        bigint
+    ], "view">;
+    getFunction(nameOrSignature: "getRing"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "getVehicle"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "getWaist"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "getWeapon"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "isApprovedForAll"): TypedContractMethod<[
+        owner: AddressLike,
+        operator: AddressLike
+    ], [
+        boolean
+    ], "view">;
+    getFunction(nameOrSignature: "name"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "nonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+    getFunction(nameOrSignature: "numCheckpoints"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+    getFunction(nameOrSignature: "owner"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "ownerOf"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
+    getFunction(nameOrSignature: "safeTransferFrom(address,address,uint256)"): TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        tokenId: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "safeTransferFrom(address,address,uint256,bytes)"): TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        tokenId: BigNumberish,
+        _data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "setApprovalForAll"): TypedContractMethod<[
+        operator: AddressLike,
+        approved: boolean
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "supportsInterface"): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
+    getFunction(nameOrSignature: "symbol"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "tokenByIndex"): TypedContractMethod<[index: BigNumberish], [bigint], "view">;
+    getFunction(nameOrSignature: "tokenOfOwnerByIndex"): TypedContractMethod<[
+        owner: AddressLike,
+        index: BigNumberish
+    ], [
+        bigint
+    ], "view">;
+    getFunction(nameOrSignature: "tokenURI"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "totalSupply"): TypedContractMethod<[], [bigint], "view">;
+    getFunction(nameOrSignature: "transferFrom"): TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        tokenId: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+    getFunction(nameOrSignature: "votesToDelegate"): TypedContractMethod<[delegator: AddressLike], [bigint], "view">;
+    getEvent(key: "Approval"): TypedContractEvent<ApprovalEvent.InputTuple, ApprovalEvent.OutputTuple, ApprovalEvent.OutputObject>;
+    getEvent(key: "ApprovalForAll"): TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
+    getEvent(key: "DelegateChanged"): TypedContractEvent<DelegateChangedEvent.InputTuple, DelegateChangedEvent.OutputTuple, DelegateChangedEvent.OutputObject>;
+    getEvent(key: "DelegateVotesChanged"): TypedContractEvent<DelegateVotesChangedEvent.InputTuple, DelegateVotesChangedEvent.OutputTuple, DelegateVotesChangedEvent.OutputObject>;
+    getEvent(key: "OwnershipTransferred"): TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+    getEvent(key: "Transfer"): TypedContractEvent<TransferEvent.InputTuple, TransferEvent.OutputTuple, TransferEvent.OutputObject>;
     filters: {
-        "Approval(address,address,uint256)"(owner?: string | null, approved?: string | null, tokenId?: BigNumberish | null): ApprovalEventFilter;
-        Approval(owner?: string | null, approved?: string | null, tokenId?: BigNumberish | null): ApprovalEventFilter;
-        "ApprovalForAll(address,address,bool)"(owner?: string | null, operator?: string | null, approved?: null): ApprovalForAllEventFilter;
-        ApprovalForAll(owner?: string | null, operator?: string | null, approved?: null): ApprovalForAllEventFilter;
-        "DelegateChanged(address,address,address)"(delegator?: string | null, fromDelegate?: string | null, toDelegate?: string | null): DelegateChangedEventFilter;
-        DelegateChanged(delegator?: string | null, fromDelegate?: string | null, toDelegate?: string | null): DelegateChangedEventFilter;
-        "DelegateVotesChanged(address,uint256,uint256)"(delegate?: string | null, previousBalance?: null, newBalance?: null): DelegateVotesChangedEventFilter;
-        DelegateVotesChanged(delegate?: string | null, previousBalance?: null, newBalance?: null): DelegateVotesChangedEventFilter;
-        "OwnershipTransferred(address,address)"(previousOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
-        OwnershipTransferred(previousOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
-        "Transfer(address,address,uint256)"(from?: string | null, to?: string | null, tokenId?: BigNumberish | null): TransferEventFilter;
-        Transfer(from?: string | null, to?: string | null, tokenId?: BigNumberish | null): TransferEventFilter;
-    };
-    estimateGas: {
-        DELEGATION_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
-        DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
-        approve(to: string, tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-        checkpoints(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        claim(tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        decimals(overrides?: CallOverrides): Promise<BigNumber>;
-        delegate(delegatee: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        delegateBySig(delegatee: string, nonce: BigNumberish, expiry: BigNumberish, v: BigNumberish, r: BytesLike, s: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        delegates(delegator: string, overrides?: CallOverrides): Promise<BigNumber>;
-        getApproved(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getClothes(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getCurrentVotes(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-        getDrugs(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getFoot(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getHand(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getNeck(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getPriorVotes(account: string, blockNumber: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getRing(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getVehicle(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getWaist(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        getWeapon(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        isApprovedForAll(owner: string, operator: string, overrides?: CallOverrides): Promise<BigNumber>;
-        name(overrides?: CallOverrides): Promise<BigNumber>;
-        nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-        numCheckpoints(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-        owner(overrides?: CallOverrides): Promise<BigNumber>;
-        ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        "safeTransferFrom(address,address,uint256)"(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        "safeTransferFrom(address,address,uint256,bytes)"(from: string, to: string, tokenId: BigNumberish, _data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-        symbol(overrides?: CallOverrides): Promise<BigNumber>;
-        tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-        transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        votesToDelegate(delegator: string, overrides?: CallOverrides): Promise<BigNumber>;
-    };
-    populateTransaction: {
-        DELEGATION_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        approve(to: string, tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        balanceOf(owner: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        checkpoints(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        claim(tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        delegate(delegatee: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        delegateBySig(delegatee: string, nonce: BigNumberish, expiry: BigNumberish, v: BigNumberish, r: BytesLike, s: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        delegates(delegator: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getApproved(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getClothes(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getCurrentVotes(account: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getDrugs(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getFoot(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getHand(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getNeck(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getPriorVotes(account: string, blockNumber: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getRing(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getVehicle(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getWaist(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        getWeapon(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        isApprovedForAll(owner: string, operator: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        nonces(arg0: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        numCheckpoints(arg0: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        "safeTransferFrom(address,address,uint256)"(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        "safeTransferFrom(address,address,uint256,bytes)"(from: string, to: string, tokenId: BigNumberish, _data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        transferFrom(from: string, to: string, tokenId: BigNumberish, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        votesToDelegate(delegator: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        "Approval(address,address,uint256)": TypedContractEvent<ApprovalEvent.InputTuple, ApprovalEvent.OutputTuple, ApprovalEvent.OutputObject>;
+        Approval: TypedContractEvent<ApprovalEvent.InputTuple, ApprovalEvent.OutputTuple, ApprovalEvent.OutputObject>;
+        "ApprovalForAll(address,address,bool)": TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
+        ApprovalForAll: TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
+        "DelegateChanged(address,address,address)": TypedContractEvent<DelegateChangedEvent.InputTuple, DelegateChangedEvent.OutputTuple, DelegateChangedEvent.OutputObject>;
+        DelegateChanged: TypedContractEvent<DelegateChangedEvent.InputTuple, DelegateChangedEvent.OutputTuple, DelegateChangedEvent.OutputObject>;
+        "DelegateVotesChanged(address,uint256,uint256)": TypedContractEvent<DelegateVotesChangedEvent.InputTuple, DelegateVotesChangedEvent.OutputTuple, DelegateVotesChangedEvent.OutputObject>;
+        DelegateVotesChanged: TypedContractEvent<DelegateVotesChangedEvent.InputTuple, DelegateVotesChangedEvent.OutputTuple, DelegateVotesChangedEvent.OutputObject>;
+        "OwnershipTransferred(address,address)": TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+        OwnershipTransferred: TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+        "Transfer(address,address,uint256)": TypedContractEvent<TransferEvent.InputTuple, TransferEvent.OutputTuple, TransferEvent.OutputObject>;
+        Transfer: TypedContractEvent<TransferEvent.InputTuple, TransferEvent.OutputTuple, TransferEvent.OutputObject>;
     };
 }

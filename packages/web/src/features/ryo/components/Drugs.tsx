@@ -65,40 +65,34 @@ const DrugRow = ({ drug }: { drug: Drug }) => {
   const router = useRouter();
   const { roundId, locationId } = router.query;
 
-  const drugId = RYO_ITEM_IDS[Number(drug.id)]
+  const drugId = RYO_ITEM_IDS[Number(drug.id)];
 
-  const { ownedItems } = useRollYourOwn()
+  const { ownedItems } = useRollYourOwn();
   const [isExpanded, setIsExpanded] = useBoolean();
 
-  const { contract: locationOwned } = useLocationOwnedContract()
+  const { contract: locationOwned } = useLocationOwnedContract();
   const { data } = useStarknetCall({
     contract: locationOwned,
-    method: "check_market_state",
-    args: ["1", drugId.toString()],
-  })
+    method: 'check_market_state',
+    args: ['1', drugId.toString()],
+  });
 
-  const [itemQuantity, moneyQuantity] = useMemo(
-    () => {
-      if (!data) return [undefined, undefined]
+  const [itemQuantity, moneyQuantity] = useMemo(() => {
+    if (!data) return [undefined, undefined];
 
-      const [itemQuantity, moneyQuantity]: BigNumberish[] = data
+    const [itemQuantity, moneyQuantity]: BigNumberish[] = data;
 
-      return [toBN(itemQuantity), toBN(moneyQuantity)]
-    },
-    [data]
-  )
-  const cost = useMemo(
-    () => {
-      if (!itemQuantity || !moneyQuantity) return
+    return [toBN(itemQuantity), toBN(moneyQuantity)];
+  }, [data]);
+  const cost = useMemo(() => {
+    if (!itemQuantity || !moneyQuantity) return;
 
-      return moneyQuantity.div(itemQuantity.sub(toBN(1)))
-    },
-    [itemQuantity, moneyQuantity]
-  )
+    return moneyQuantity.div(itemQuantity.sub(toBN(1)));
+  }, [itemQuantity, moneyQuantity]);
 
-  const userOwnedQuantity = ownedItems[drugId - 1]
-  const isBuyDisabled = cost?.isZero() || itemQuantity?.isZero()
-  const isSellDisalbed = userOwnedQuantity?.isZero()
+  const userOwnedQuantity = ownedItems[drugId - 1];
+  const isBuyDisabled = cost?.isZero() || itemQuantity?.isZero();
+  const isSellDisalbed = userOwnedQuantity?.isZero();
 
   const CELL_PROPS = {
     borderBottom: isExpanded ? 'none' : 'inherit',
@@ -110,7 +104,7 @@ const DrugRow = ({ drug }: { drug: Drug }) => {
       <Tr background={background} cursor="pointer" onClick={() => setIsExpanded.toggle()}>
         <Td {...CELL_PROPS}>
           {drug.rle && (
-            <div
+            <Box
               css={css`
                 width: 32px;
                 height: 32px;
@@ -132,12 +126,16 @@ const DrugRow = ({ drug }: { drug: Drug }) => {
         <Tr background={background}>
           <Td colSpan={2}>
             <NavLink href={`/roll-your-own/${roundId}/location/${locationId}/buy/${drug.id}`}>
-              <Button color="black" disabled={isBuyDisabled} w="full">Buy</Button>
+              <Button color="black" isDisabled={isBuyDisabled} w="full">
+                Buy
+              </Button>
             </NavLink>
           </Td>
           <Td colSpan={2}>
             <NavLink href={`/roll-your-own/${roundId}/location/${locationId}/sell/${drug.id}`}>
-              <Button color="black" disabled={isSellDisalbed} w="full">Sell</Button>
+              <Button color="black" isDisabled={isSellDisalbed} w="full">
+                Sell
+              </Button>
             </NavLink>
           </Td>
         </Tr>

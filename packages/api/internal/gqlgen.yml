@@ -3,11 +3,13 @@
 
 # schema tells gqlgen where the GraphQL schema is located.
 schema:
-  - graph/*.graphql
+ - graph/schema.graphql # existing schema.
+ - graph/ent.graphql	  # generated schema.
 
 # Where should the generated server code go?
 exec:
-  filename: graph/generated/generated.go
+  layout: follow-schema
+  dir: graph/generated
   package: generated
 
 # Where should any generated models go?
@@ -67,22 +69,9 @@ models:
   HustlerType:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/internal/ent/hustler.Type
-  AmountType:
-    model:
-      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/amount.Type
   RLEs:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/internal/ent/schema.RLEs
-  Source:
-    model:
-      - github.com/dopedao/dope-monorepo/packages/api/internal/ent/listing.Source
   SearchType:
     model:
       - github.com/dopedao/dope-monorepo/packages/api/internal/ent/search.Type
-  WyvernOrder:
-    model:
-      - github.com/dopedao/dope-monorepo/packages/api/jobs/opensea.WyvernOrder
-  SeaportOrder:
-    model:
-      - github.com/dopedao/dope-monorepo/packages/api/jobs/opensea.SeaportOrder
-  

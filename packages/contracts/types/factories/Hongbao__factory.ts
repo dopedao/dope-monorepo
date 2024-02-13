@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import { Provider } from "@ethersproject/providers";
+import { Contract, Interface, type ContractRunner } from "ethers";
 import type { Hongbao, HongbaoInterface } from "../Hongbao";
 
 const _abi = [
@@ -172,17 +171,14 @@ const _abi = [
     name: "Invalid",
     inputs: [],
   },
-];
+] as const;
 
 export class Hongbao__factory {
   static readonly abi = _abi;
   static createInterface(): HongbaoInterface {
-    return new utils.Interface(_abi) as HongbaoInterface;
+    return new Interface(_abi) as HongbaoInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): Hongbao {
-    return new Contract(address, _abi, signerOrProvider) as Hongbao;
+  static connect(address: string, runner?: ContractRunner | null): Hongbao {
+    return new Contract(address, _abi, runner) as unknown as Hongbao;
   }
 }

@@ -1,95 +1,62 @@
-import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, ContractTransaction, Overrides, PopulatedTransaction, Signer, utils } from "ethers";
-import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
-import { Listener, Provider } from "@ethersproject/providers";
-import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
-export declare type SetMetadataStruct = {
-    color: BytesLike;
-    background: BytesLike;
-    options: BytesLike;
-    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
-    body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
-    order: BigNumberish[];
-    mask: BytesLike;
-    name: string;
-};
-export declare type SetMetadataStructOutput = [
-    string,
-    string,
-    string,
-    [
-        number,
-        number,
-        number,
-        number
-    ],
-    [
-        number,
-        number,
-        number,
-        number
-    ],
-    number[],
-    string,
-    string
-] & {
-    color: string;
-    background: string;
-    options: string;
-    viewbox: [number, number, number, number];
-    body: [number, number, number, number];
-    order: number[];
-    mask: string;
-    name: string;
-};
-export interface HustlerInterface extends utils.Interface {
-    functions: {
-        "addRles(uint8,bytes[])": FunctionFragment;
-        "attributes(uint256)": FunctionFragment;
-        "balanceOf(address,uint256)": FunctionFragment;
-        "balanceOfBatch(address[],uint256[])": FunctionFragment;
-        "bodyRle(uint8,uint256)": FunctionFragment;
-        "carParts(uint256)": FunctionFragment;
-        "contractURI()": FunctionFragment;
-        "enforcer()": FunctionFragment;
-        "hustlerParts(uint256)": FunctionFragment;
-        "isApprovedForAll(address,address)": FunctionFragment;
-        "metadata(uint256)": FunctionFragment;
-        "mintOGTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)": FunctionFragment;
-        "mintTo(address,bytes)": FunctionFragment;
-        "name()": FunctionFragment;
-        "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
-        "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
-        "owner()": FunctionFragment;
-        "render(string,string,uint8,bytes4,bytes4,uint8[4],bytes[])": FunctionFragment;
-        "renounceOwnership()": FunctionFragment;
-        "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
-        "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
-        "setApprovalForAll(address,bool)": FunctionFragment;
-        "setEnforcer(address)": FunctionFragment;
-        "setMetadata(uint256,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string))": FunctionFragment;
-        "supportsInterface(bytes4)": FunctionFragment;
-        "symbol()": FunctionFragment;
-        "tokenURI(uint256)": FunctionFragment;
-        "transferOwnership(address)": FunctionFragment;
-        "unequip(uint256,uint8[])": FunctionFragment;
-        "uri(uint256)": FunctionFragment;
+import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
+import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "./common";
+export declare namespace IHustlerActions {
+    type SetMetadataStruct = {
+        color: BytesLike;
+        background: BytesLike;
+        options: BytesLike;
+        viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+        body: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+        order: BigNumberish[];
+        mask: BytesLike;
+        name: string;
     };
+    type SetMetadataStructOutput = [
+        color: string,
+        background: string,
+        options: string,
+        viewbox: [bigint, bigint, bigint, bigint],
+        body: [bigint, bigint, bigint, bigint],
+        order: bigint[],
+        mask: string,
+        name: string
+    ] & {
+        color: string;
+        background: string;
+        options: string;
+        viewbox: [bigint, bigint, bigint, bigint];
+        body: [bigint, bigint, bigint, bigint];
+        order: bigint[];
+        mask: string;
+        name: string;
+    };
+}
+export interface HustlerInterface extends Interface {
+    getFunction(nameOrSignature: "addRles" | "attributes" | "balanceOf" | "balanceOfBatch" | "bodyRle" | "carParts" | "contractURI" | "enforcer" | "hustlerParts" | "isApprovedForAll" | "metadata" | "mintOGTo" | "mintTo(address,bytes)" | "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)" | "name" | "onERC1155BatchReceived" | "onERC1155Received" | "owner" | "render" | "renounceOwnership" | "safeBatchTransferFrom" | "safeTransferFrom" | "setApprovalForAll" | "setEnforcer" | "setMetadata" | "supportsInterface" | "symbol" | "tokenURI" | "transferOwnership" | "unequip" | "uri"): FunctionFragment;
+    getEvent(nameOrSignatureOrTopic: "AddRles" | "ApprovalForAll" | "MetadataUpdate" | "OwnershipTransferred" | "TransferBatch" | "TransferSingle" | "URI"): EventFragment;
     encodeFunctionData(functionFragment: "addRles", values: [BigNumberish, BytesLike[]]): string;
     encodeFunctionData(functionFragment: "attributes", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "balanceOf", values: [string, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "balanceOfBatch", values: [string[], BigNumberish[]]): string;
+    encodeFunctionData(functionFragment: "balanceOf", values: [AddressLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "balanceOfBatch", values: [AddressLike[], BigNumberish[]]): string;
     encodeFunctionData(functionFragment: "bodyRle", values: [BigNumberish, BigNumberish]): string;
     encodeFunctionData(functionFragment: "carParts", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "contractURI", values?: undefined): string;
     encodeFunctionData(functionFragment: "enforcer", values?: undefined): string;
     encodeFunctionData(functionFragment: "hustlerParts", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "isApprovedForAll", values: [string, string]): string;
+    encodeFunctionData(functionFragment: "isApprovedForAll", values: [AddressLike, AddressLike]): string;
     encodeFunctionData(functionFragment: "metadata", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "mintOGTo", values: [string, SetMetadataStruct, BytesLike]): string;
-    encodeFunctionData(functionFragment: "mintTo", values: [string, BytesLike]): string;
+    encodeFunctionData(functionFragment: "mintOGTo", values: [AddressLike, IHustlerActions.SetMetadataStruct, BytesLike]): string;
+    encodeFunctionData(functionFragment: "mintTo(address,bytes)", values: [AddressLike, BytesLike]): string;
+    encodeFunctionData(functionFragment: "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)", values: [AddressLike, IHustlerActions.SetMetadataStruct, BytesLike]): string;
     encodeFunctionData(functionFragment: "name", values?: undefined): string;
-    encodeFunctionData(functionFragment: "onERC1155BatchReceived", values: [string, string, BigNumberish[], BigNumberish[], BytesLike]): string;
-    encodeFunctionData(functionFragment: "onERC1155Received", values: [string, string, BigNumberish, BigNumberish, BytesLike]): string;
+    encodeFunctionData(functionFragment: "onERC1155BatchReceived", values: [
+        AddressLike,
+        AddressLike,
+        BigNumberish[],
+        BigNumberish[],
+        BytesLike
+    ]): string;
+    encodeFunctionData(functionFragment: "onERC1155Received", values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BytesLike]): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
     encodeFunctionData(functionFragment: "render", values: [
         string,
@@ -106,15 +73,21 @@ export interface HustlerInterface extends utils.Interface {
         BytesLike[]
     ]): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
-    encodeFunctionData(functionFragment: "safeBatchTransferFrom", values: [string, string, BigNumberish[], BigNumberish[], BytesLike]): string;
-    encodeFunctionData(functionFragment: "safeTransferFrom", values: [string, string, BigNumberish, BigNumberish, BytesLike]): string;
-    encodeFunctionData(functionFragment: "setApprovalForAll", values: [string, boolean]): string;
-    encodeFunctionData(functionFragment: "setEnforcer", values: [string]): string;
-    encodeFunctionData(functionFragment: "setMetadata", values: [BigNumberish, SetMetadataStruct]): string;
+    encodeFunctionData(functionFragment: "safeBatchTransferFrom", values: [
+        AddressLike,
+        AddressLike,
+        BigNumberish[],
+        BigNumberish[],
+        BytesLike
+    ]): string;
+    encodeFunctionData(functionFragment: "safeTransferFrom", values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BytesLike]): string;
+    encodeFunctionData(functionFragment: "setApprovalForAll", values: [AddressLike, boolean]): string;
+    encodeFunctionData(functionFragment: "setEnforcer", values: [AddressLike]): string;
+    encodeFunctionData(functionFragment: "setMetadata", values: [BigNumberish, IHustlerActions.SetMetadataStruct]): string;
     encodeFunctionData(functionFragment: "supportsInterface", values: [BytesLike]): string;
     encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
     encodeFunctionData(functionFragment: "tokenURI", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "transferOwnership", values: [string]): string;
+    encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "unequip", values: [BigNumberish, BigNumberish[]]): string;
     encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
     decodeFunctionResult(functionFragment: "addRles", data: BytesLike): Result;
@@ -129,7 +102,8 @@ export interface HustlerInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "isApprovedForAll", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "metadata", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "mintOGTo", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "mintTo", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "mintTo(address,bytes)", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "onERC1155BatchReceived", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "onERC1155Received", data: BytesLike): Result;
@@ -147,434 +121,480 @@ export interface HustlerInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "unequip", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
-    events: {
-        "AddRles(uint8,uint256)": EventFragment;
-        "ApprovalForAll(address,address,bool)": EventFragment;
-        "MetadataUpdate(uint256)": EventFragment;
-        "OwnershipTransferred(address,address)": EventFragment;
-        "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
-        "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
-        "URI(string,uint256)": EventFragment;
-    };
-    getEvent(nameOrSignatureOrTopic: "AddRles"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "MetadataUpdate"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
 }
-export declare type AddRlesEvent = TypedEvent<[
-    number,
-    BigNumber
-], {
-    part: number;
-    len: BigNumber;
-}>;
-export declare type AddRlesEventFilter = TypedEventFilter<AddRlesEvent>;
-export declare type ApprovalForAllEvent = TypedEvent<[
-    string,
-    string,
-    boolean
-], {
-    account: string;
-    operator: string;
-    approved: boolean;
-}>;
-export declare type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
-export declare type MetadataUpdateEvent = TypedEvent<[BigNumber], {
-    id: BigNumber;
-}>;
-export declare type MetadataUpdateEventFilter = TypedEventFilter<MetadataUpdateEvent>;
-export declare type OwnershipTransferredEvent = TypedEvent<[
-    string,
-    string
-], {
-    previousOwner: string;
-    newOwner: string;
-}>;
-export declare type OwnershipTransferredEventFilter = TypedEventFilter<OwnershipTransferredEvent>;
-export declare type TransferBatchEvent = TypedEvent<[
-    string,
-    string,
-    string,
-    BigNumber[],
-    BigNumber[]
-], {
-    operator: string;
-    from: string;
-    to: string;
-    ids: BigNumber[];
-    values: BigNumber[];
-}>;
-export declare type TransferBatchEventFilter = TypedEventFilter<TransferBatchEvent>;
-export declare type TransferSingleEvent = TypedEvent<[
-    string,
-    string,
-    string,
-    BigNumber,
-    BigNumber
-], {
-    operator: string;
-    from: string;
-    to: string;
-    id: BigNumber;
-    value: BigNumber;
-}>;
-export declare type TransferSingleEventFilter = TypedEventFilter<TransferSingleEvent>;
-export declare type URIEvent = TypedEvent<[
-    string,
-    BigNumber
-], {
-    value: string;
-    id: BigNumber;
-}>;
-export declare type URIEventFilter = TypedEventFilter<URIEvent>;
+export declare namespace AddRlesEvent {
+    type InputTuple = [part: BigNumberish, len: BigNumberish];
+    type OutputTuple = [part: bigint, len: bigint];
+    interface OutputObject {
+        part: bigint;
+        len: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace ApprovalForAllEvent {
+    type InputTuple = [
+        account: AddressLike,
+        operator: AddressLike,
+        approved: boolean
+    ];
+    type OutputTuple = [
+        account: string,
+        operator: string,
+        approved: boolean
+    ];
+    interface OutputObject {
+        account: string;
+        operator: string;
+        approved: boolean;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace MetadataUpdateEvent {
+    type InputTuple = [id: BigNumberish];
+    type OutputTuple = [id: bigint];
+    interface OutputObject {
+        id: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace OwnershipTransferredEvent {
+    type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+    type OutputTuple = [previousOwner: string, newOwner: string];
+    interface OutputObject {
+        previousOwner: string;
+        newOwner: string;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace TransferBatchEvent {
+    type InputTuple = [
+        operator: AddressLike,
+        from: AddressLike,
+        to: AddressLike,
+        ids: BigNumberish[],
+        values: BigNumberish[]
+    ];
+    type OutputTuple = [
+        operator: string,
+        from: string,
+        to: string,
+        ids: bigint[],
+        values: bigint[]
+    ];
+    interface OutputObject {
+        operator: string;
+        from: string;
+        to: string;
+        ids: bigint[];
+        values: bigint[];
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace TransferSingleEvent {
+    type InputTuple = [
+        operator: AddressLike,
+        from: AddressLike,
+        to: AddressLike,
+        id: BigNumberish,
+        value: BigNumberish
+    ];
+    type OutputTuple = [
+        operator: string,
+        from: string,
+        to: string,
+        id: bigint,
+        value: bigint
+    ];
+    interface OutputObject {
+        operator: string;
+        from: string;
+        to: string;
+        id: bigint;
+        value: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace URIEvent {
+    type InputTuple = [value: string, id: BigNumberish];
+    type OutputTuple = [value: string, id: bigint];
+    interface OutputObject {
+        value: string;
+        id: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
 export interface Hustler extends BaseContract {
-    connect(signerOrProvider: Signer | Provider | string): this;
-    attach(addressOrName: string): this;
-    deployed(): Promise<this>;
+    connect(runner?: ContractRunner | null): Hustler;
+    waitForDeployment(): Promise<this>;
     interface: HustlerInterface;
-    queryFilter<TEvent extends TypedEvent>(event: TypedEventFilter<TEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TEvent>>;
-    listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
-    listeners(eventName?: string): Array<Listener>;
-    removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
-    removeAllListeners(eventName?: string): this;
-    off: OnEvent<this>;
-    on: OnEvent<this>;
-    once: OnEvent<this>;
-    removeListener: OnEvent<this>;
-    functions: {
-        addRles(part: BigNumberish, _rles: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        attributes(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<[string[]]>;
-        balanceOf(account: string, id: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
-        balanceOfBatch(accounts: string[], ids: BigNumberish[], overrides?: CallOverrides): Promise<[BigNumber[]]>;
-        bodyRle(part: BigNumberish, idx: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        carParts(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<[string[]]>;
-        contractURI(overrides?: CallOverrides): Promise<[string]>;
-        enforcer(overrides?: CallOverrides): Promise<[string]>;
-        hustlerParts(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<[string[]]>;
-        isApprovedForAll(account: string, operator: string, overrides?: CallOverrides): Promise<[boolean]>;
-        metadata(arg0: BigNumberish, overrides?: CallOverrides): Promise<[
-            string,
-            string,
-            string,
-            string,
-            BigNumber,
-            string
-        ] & {
-            color: string;
-            background: string;
-            mask: string;
-            options: string;
-            age: BigNumber;
-            name: string;
-        }>;
-        mintOGTo(to: string, m: SetMetadataStruct, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        "mintTo(address,bytes)"(to: string, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"(to: string, m: SetMetadataStruct, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        name(overrides?: CallOverrides): Promise<[string]>;
-        onERC1155BatchReceived(operator: string, from: string, ids: BigNumberish[], values: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        onERC1155Received(operator: string, from: string, id: BigNumberish, value: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        owner(overrides?: CallOverrides): Promise<[string]>;
-        render(title: string, subtitle: string, resolution: BigNumberish, background: BytesLike, color: BytesLike, viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish], parts: BytesLike[], overrides?: CallOverrides): Promise<[string]>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        safeBatchTransferFrom(from: string, to: string, ids: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        safeTransferFrom(from: string, to: string, id: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        setEnforcer(enforcer_: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        setMetadata(hustlerId: BigNumberish, m: SetMetadataStruct, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<[boolean]>;
-        symbol(overrides?: CallOverrides): Promise<[string]>;
-        tokenURI(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        unequip(hustlerId: BigNumberish, slots: BigNumberish[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-    };
-    addRles(part: BigNumberish, _rles: BytesLike[], overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    attributes(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
-    balanceOf(account: string, id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-    balanceOfBatch(accounts: string[], ids: BigNumberish[], overrides?: CallOverrides): Promise<BigNumber[]>;
-    bodyRle(part: BigNumberish, idx: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    carParts(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
-    contractURI(overrides?: CallOverrides): Promise<string>;
-    enforcer(overrides?: CallOverrides): Promise<string>;
-    hustlerParts(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
-    isApprovedForAll(account: string, operator: string, overrides?: CallOverrides): Promise<boolean>;
-    metadata(arg0: BigNumberish, overrides?: CallOverrides): Promise<[
-        string,
-        string,
-        string,
-        string,
-        BigNumber,
+    queryFilter<TCEvent extends TypedContractEvent>(event: TCEvent, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    queryFilter<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    on<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+    listeners(eventName?: string): Promise<Array<Listener>>;
+    removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+    addRles: TypedContractMethod<[
+        part: BigNumberish,
+        _rles: BytesLike[]
+    ], [
+        void
+    ], "nonpayable">;
+    attributes: TypedContractMethod<[
+        hustlerId: BigNumberish
+    ], [
+        string[]
+    ], "view">;
+    balanceOf: TypedContractMethod<[
+        account: AddressLike,
+        id: BigNumberish
+    ], [
+        bigint
+    ], "view">;
+    balanceOfBatch: TypedContractMethod<[
+        accounts: AddressLike[],
+        ids: BigNumberish[]
+    ], [
+        bigint[]
+    ], "view">;
+    bodyRle: TypedContractMethod<[
+        part: BigNumberish,
+        idx: BigNumberish
+    ], [
         string
-    ] & {
-        color: string;
-        background: string;
-        mask: string;
-        options: string;
-        age: BigNumber;
-        name: string;
-    }>;
-    mintOGTo(to: string, m: SetMetadataStruct, data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    "mintTo(address,bytes)"(to: string, data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"(to: string, m: SetMetadataStruct, data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    name(overrides?: CallOverrides): Promise<string>;
-    onERC1155BatchReceived(operator: string, from: string, ids: BigNumberish[], values: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    onERC1155Received(operator: string, from: string, id: BigNumberish, value: BigNumberish, data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    owner(overrides?: CallOverrides): Promise<string>;
-    render(title: string, subtitle: string, resolution: BigNumberish, background: BytesLike, color: BytesLike, viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish], parts: BytesLike[], overrides?: CallOverrides): Promise<string>;
-    renounceOwnership(overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    safeBatchTransferFrom(from: string, to: string, ids: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    safeTransferFrom(from: string, to: string, id: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    setEnforcer(enforcer_: string, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    setMetadata(hustlerId: BigNumberish, m: SetMetadataStruct, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-    symbol(overrides?: CallOverrides): Promise<string>;
-    tokenURI(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    transferOwnership(newOwner: string, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    unequip(hustlerId: BigNumberish, slots: BigNumberish[], overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    callStatic: {
-        addRles(part: BigNumberish, _rles: BytesLike[], overrides?: CallOverrides): Promise<void>;
-        attributes(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
-        balanceOf(account: string, id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        balanceOfBatch(accounts: string[], ids: BigNumberish[], overrides?: CallOverrides): Promise<BigNumber[]>;
-        bodyRle(part: BigNumberish, idx: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        carParts(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
-        contractURI(overrides?: CallOverrides): Promise<string>;
-        enforcer(overrides?: CallOverrides): Promise<string>;
-        hustlerParts(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
-        isApprovedForAll(account: string, operator: string, overrides?: CallOverrides): Promise<boolean>;
-        metadata(arg0: BigNumberish, overrides?: CallOverrides): Promise<[
+    ], "view">;
+    carParts: TypedContractMethod<[hustlerId: BigNumberish], [string[]], "view">;
+    contractURI: TypedContractMethod<[], [string], "view">;
+    enforcer: TypedContractMethod<[], [string], "view">;
+    hustlerParts: TypedContractMethod<[
+        hustlerId: BigNumberish
+    ], [
+        string[]
+    ], "view">;
+    isApprovedForAll: TypedContractMethod<[
+        account: AddressLike,
+        operator: AddressLike
+    ], [
+        boolean
+    ], "view">;
+    metadata: TypedContractMethod<[
+        arg0: BigNumberish
+    ], [
+        [
             string,
             string,
             string,
             string,
-            BigNumber,
+            bigint,
             string
         ] & {
             color: string;
             background: string;
             mask: string;
             options: string;
-            age: BigNumber;
+            age: bigint;
             name: string;
-        }>;
-        mintOGTo(to: string, m: SetMetadataStruct, data: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-        "mintTo(address,bytes)"(to: string, data: BytesLike, overrides?: CallOverrides): Promise<void>;
-        "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"(to: string, m: SetMetadataStruct, data: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-        name(overrides?: CallOverrides): Promise<string>;
-        onERC1155BatchReceived(operator: string, from: string, ids: BigNumberish[], values: BigNumberish[], data: BytesLike, overrides?: CallOverrides): Promise<string>;
-        onERC1155Received(operator: string, from: string, id: BigNumberish, value: BigNumberish, data: BytesLike, overrides?: CallOverrides): Promise<string>;
-        owner(overrides?: CallOverrides): Promise<string>;
-        render(title: string, subtitle: string, resolution: BigNumberish, background: BytesLike, color: BytesLike, viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish], parts: BytesLike[], overrides?: CallOverrides): Promise<string>;
-        renounceOwnership(overrides?: CallOverrides): Promise<void>;
-        safeBatchTransferFrom(from: string, to: string, ids: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: CallOverrides): Promise<void>;
-        safeTransferFrom(from: string, to: string, id: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: CallOverrides): Promise<void>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: CallOverrides): Promise<void>;
-        setEnforcer(enforcer_: string, overrides?: CallOverrides): Promise<void>;
-        setMetadata(hustlerId: BigNumberish, m: SetMetadataStruct, overrides?: CallOverrides): Promise<void>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-        symbol(overrides?: CallOverrides): Promise<string>;
-        tokenURI(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        transferOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
-        unequip(hustlerId: BigNumberish, slots: BigNumberish[], overrides?: CallOverrides): Promise<void>;
-        uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    };
+        }
+    ], "view">;
+    mintOGTo: TypedContractMethod<[
+        to: AddressLike,
+        m: IHustlerActions.SetMetadataStruct,
+        data: BytesLike
+    ], [
+        bigint
+    ], "nonpayable">;
+    "mintTo(address,bytes)": TypedContractMethod<[
+        to: AddressLike,
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)": TypedContractMethod<[
+        to: AddressLike,
+        m: IHustlerActions.SetMetadataStruct,
+        data: BytesLike
+    ], [
+        bigint
+    ], "nonpayable">;
+    name: TypedContractMethod<[], [string], "view">;
+    onERC1155BatchReceived: TypedContractMethod<[
+        operator: AddressLike,
+        from: AddressLike,
+        ids: BigNumberish[],
+        values: BigNumberish[],
+        data: BytesLike
+    ], [
+        string
+    ], "nonpayable">;
+    onERC1155Received: TypedContractMethod<[
+        operator: AddressLike,
+        from: AddressLike,
+        id: BigNumberish,
+        value: BigNumberish,
+        data: BytesLike
+    ], [
+        string
+    ], "nonpayable">;
+    owner: TypedContractMethod<[], [string], "view">;
+    render: TypedContractMethod<[
+        title: string,
+        subtitle: string,
+        resolution: BigNumberish,
+        background: BytesLike,
+        color: BytesLike,
+        viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+        parts: BytesLike[]
+    ], [
+        string
+    ], "view">;
+    renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+    safeBatchTransferFrom: TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        ids: BigNumberish[],
+        amounts: BigNumberish[],
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    safeTransferFrom: TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        id: BigNumberish,
+        amount: BigNumberish,
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    setApprovalForAll: TypedContractMethod<[
+        operator: AddressLike,
+        approved: boolean
+    ], [
+        void
+    ], "nonpayable">;
+    setEnforcer: TypedContractMethod<[
+        enforcer_: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
+    setMetadata: TypedContractMethod<[
+        hustlerId: BigNumberish,
+        m: IHustlerActions.SetMetadataStruct
+    ], [
+        void
+    ], "nonpayable">;
+    supportsInterface: TypedContractMethod<[
+        interfaceId: BytesLike
+    ], [
+        boolean
+    ], "view">;
+    symbol: TypedContractMethod<[], [string], "view">;
+    tokenURI: TypedContractMethod<[hustlerId: BigNumberish], [string], "view">;
+    transferOwnership: TypedContractMethod<[
+        newOwner: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
+    unequip: TypedContractMethod<[
+        hustlerId: BigNumberish,
+        slots: BigNumberish[]
+    ], [
+        void
+    ], "nonpayable">;
+    uri: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+    getFunction(nameOrSignature: "addRles"): TypedContractMethod<[
+        part: BigNumberish,
+        _rles: BytesLike[]
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "attributes"): TypedContractMethod<[hustlerId: BigNumberish], [string[]], "view">;
+    getFunction(nameOrSignature: "balanceOf"): TypedContractMethod<[
+        account: AddressLike,
+        id: BigNumberish
+    ], [
+        bigint
+    ], "view">;
+    getFunction(nameOrSignature: "balanceOfBatch"): TypedContractMethod<[
+        accounts: AddressLike[],
+        ids: BigNumberish[]
+    ], [
+        bigint[]
+    ], "view">;
+    getFunction(nameOrSignature: "bodyRle"): TypedContractMethod<[
+        part: BigNumberish,
+        idx: BigNumberish
+    ], [
+        string
+    ], "view">;
+    getFunction(nameOrSignature: "carParts"): TypedContractMethod<[hustlerId: BigNumberish], [string[]], "view">;
+    getFunction(nameOrSignature: "contractURI"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "enforcer"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "hustlerParts"): TypedContractMethod<[hustlerId: BigNumberish], [string[]], "view">;
+    getFunction(nameOrSignature: "isApprovedForAll"): TypedContractMethod<[
+        account: AddressLike,
+        operator: AddressLike
+    ], [
+        boolean
+    ], "view">;
+    getFunction(nameOrSignature: "metadata"): TypedContractMethod<[
+        arg0: BigNumberish
+    ], [
+        [
+            string,
+            string,
+            string,
+            string,
+            bigint,
+            string
+        ] & {
+            color: string;
+            background: string;
+            mask: string;
+            options: string;
+            age: bigint;
+            name: string;
+        }
+    ], "view">;
+    getFunction(nameOrSignature: "mintOGTo"): TypedContractMethod<[
+        to: AddressLike,
+        m: IHustlerActions.SetMetadataStruct,
+        data: BytesLike
+    ], [
+        bigint
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "mintTo(address,bytes)"): TypedContractMethod<[
+        to: AddressLike,
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"): TypedContractMethod<[
+        to: AddressLike,
+        m: IHustlerActions.SetMetadataStruct,
+        data: BytesLike
+    ], [
+        bigint
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "name"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "onERC1155BatchReceived"): TypedContractMethod<[
+        operator: AddressLike,
+        from: AddressLike,
+        ids: BigNumberish[],
+        values: BigNumberish[],
+        data: BytesLike
+    ], [
+        string
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "onERC1155Received"): TypedContractMethod<[
+        operator: AddressLike,
+        from: AddressLike,
+        id: BigNumberish,
+        value: BigNumberish,
+        data: BytesLike
+    ], [
+        string
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "owner"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "render"): TypedContractMethod<[
+        title: string,
+        subtitle: string,
+        resolution: BigNumberish,
+        background: BytesLike,
+        color: BytesLike,
+        viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
+        parts: BytesLike[]
+    ], [
+        string
+    ], "view">;
+    getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
+    getFunction(nameOrSignature: "safeBatchTransferFrom"): TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        ids: BigNumberish[],
+        amounts: BigNumberish[],
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "safeTransferFrom"): TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        id: BigNumberish,
+        amount: BigNumberish,
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "setApprovalForAll"): TypedContractMethod<[
+        operator: AddressLike,
+        approved: boolean
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "setEnforcer"): TypedContractMethod<[enforcer_: AddressLike], [void], "nonpayable">;
+    getFunction(nameOrSignature: "setMetadata"): TypedContractMethod<[
+        hustlerId: BigNumberish,
+        m: IHustlerActions.SetMetadataStruct
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "supportsInterface"): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
+    getFunction(nameOrSignature: "symbol"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "tokenURI"): TypedContractMethod<[hustlerId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+    getFunction(nameOrSignature: "unequip"): TypedContractMethod<[
+        hustlerId: BigNumberish,
+        slots: BigNumberish[]
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "uri"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getEvent(key: "AddRles"): TypedContractEvent<AddRlesEvent.InputTuple, AddRlesEvent.OutputTuple, AddRlesEvent.OutputObject>;
+    getEvent(key: "ApprovalForAll"): TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
+    getEvent(key: "MetadataUpdate"): TypedContractEvent<MetadataUpdateEvent.InputTuple, MetadataUpdateEvent.OutputTuple, MetadataUpdateEvent.OutputObject>;
+    getEvent(key: "OwnershipTransferred"): TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+    getEvent(key: "TransferBatch"): TypedContractEvent<TransferBatchEvent.InputTuple, TransferBatchEvent.OutputTuple, TransferBatchEvent.OutputObject>;
+    getEvent(key: "TransferSingle"): TypedContractEvent<TransferSingleEvent.InputTuple, TransferSingleEvent.OutputTuple, TransferSingleEvent.OutputObject>;
+    getEvent(key: "URI"): TypedContractEvent<URIEvent.InputTuple, URIEvent.OutputTuple, URIEvent.OutputObject>;
     filters: {
-        "AddRles(uint8,uint256)"(part?: null, len?: null): AddRlesEventFilter;
-        AddRles(part?: null, len?: null): AddRlesEventFilter;
-        "ApprovalForAll(address,address,bool)"(account?: string | null, operator?: string | null, approved?: null): ApprovalForAllEventFilter;
-        ApprovalForAll(account?: string | null, operator?: string | null, approved?: null): ApprovalForAllEventFilter;
-        "MetadataUpdate(uint256)"(id?: null): MetadataUpdateEventFilter;
-        MetadataUpdate(id?: null): MetadataUpdateEventFilter;
-        "OwnershipTransferred(address,address)"(previousOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
-        OwnershipTransferred(previousOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
-        "TransferBatch(address,address,address,uint256[],uint256[])"(operator?: string | null, from?: string | null, to?: string | null, ids?: null, values?: null): TransferBatchEventFilter;
-        TransferBatch(operator?: string | null, from?: string | null, to?: string | null, ids?: null, values?: null): TransferBatchEventFilter;
-        "TransferSingle(address,address,address,uint256,uint256)"(operator?: string | null, from?: string | null, to?: string | null, id?: null, value?: null): TransferSingleEventFilter;
-        TransferSingle(operator?: string | null, from?: string | null, to?: string | null, id?: null, value?: null): TransferSingleEventFilter;
-        "URI(string,uint256)"(value?: null, id?: BigNumberish | null): URIEventFilter;
-        URI(value?: null, id?: BigNumberish | null): URIEventFilter;
-    };
-    estimateGas: {
-        addRles(part: BigNumberish, _rles: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        attributes(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        balanceOf(account: string, id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        balanceOfBatch(accounts: string[], ids: BigNumberish[], overrides?: CallOverrides): Promise<BigNumber>;
-        bodyRle(part: BigNumberish, idx: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        carParts(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        contractURI(overrides?: CallOverrides): Promise<BigNumber>;
-        enforcer(overrides?: CallOverrides): Promise<BigNumber>;
-        hustlerParts(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        isApprovedForAll(account: string, operator: string, overrides?: CallOverrides): Promise<BigNumber>;
-        metadata(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        mintOGTo(to: string, m: SetMetadataStruct, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        "mintTo(address,bytes)"(to: string, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"(to: string, m: SetMetadataStruct, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        name(overrides?: CallOverrides): Promise<BigNumber>;
-        onERC1155BatchReceived(operator: string, from: string, ids: BigNumberish[], values: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        onERC1155Received(operator: string, from: string, id: BigNumberish, value: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        owner(overrides?: CallOverrides): Promise<BigNumber>;
-        render(title: string, subtitle: string, resolution: BigNumberish, background: BytesLike, color: BytesLike, viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish], parts: BytesLike[], overrides?: CallOverrides): Promise<BigNumber>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        safeBatchTransferFrom(from: string, to: string, ids: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        safeTransferFrom(from: string, to: string, id: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        setEnforcer(enforcer_: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        setMetadata(hustlerId: BigNumberish, m: SetMetadataStruct, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-        symbol(overrides?: CallOverrides): Promise<BigNumber>;
-        tokenURI(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        unequip(hustlerId: BigNumberish, slots: BigNumberish[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-    };
-    populateTransaction: {
-        addRles(part: BigNumberish, _rles: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        attributes(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        balanceOf(account: string, id: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        balanceOfBatch(accounts: string[], ids: BigNumberish[], overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        bodyRle(part: BigNumberish, idx: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        carParts(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        contractURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        enforcer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        hustlerParts(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        isApprovedForAll(account: string, operator: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        metadata(arg0: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        mintOGTo(to: string, m: SetMetadataStruct, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        "mintTo(address,bytes)"(to: string, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        "mintTo(address,(bytes4,bytes4,bytes2,uint8[4],uint8[4],uint8[10],bytes2,string),bytes)"(to: string, m: SetMetadataStruct, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        onERC1155BatchReceived(operator: string, from: string, ids: BigNumberish[], values: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        onERC1155Received(operator: string, from: string, id: BigNumberish, value: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        render(title: string, subtitle: string, resolution: BigNumberish, background: BytesLike, color: BytesLike, viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish], parts: BytesLike[], overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        safeBatchTransferFrom(from: string, to: string, ids: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        safeTransferFrom(from: string, to: string, id: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        setEnforcer(enforcer_: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        setMetadata(hustlerId: BigNumberish, m: SetMetadataStruct, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        tokenURI(hustlerId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        unequip(hustlerId: BigNumberish, slots: BigNumberish[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        "AddRles(uint8,uint256)": TypedContractEvent<AddRlesEvent.InputTuple, AddRlesEvent.OutputTuple, AddRlesEvent.OutputObject>;
+        AddRles: TypedContractEvent<AddRlesEvent.InputTuple, AddRlesEvent.OutputTuple, AddRlesEvent.OutputObject>;
+        "ApprovalForAll(address,address,bool)": TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
+        ApprovalForAll: TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
+        "MetadataUpdate(uint256)": TypedContractEvent<MetadataUpdateEvent.InputTuple, MetadataUpdateEvent.OutputTuple, MetadataUpdateEvent.OutputObject>;
+        MetadataUpdate: TypedContractEvent<MetadataUpdateEvent.InputTuple, MetadataUpdateEvent.OutputTuple, MetadataUpdateEvent.OutputObject>;
+        "OwnershipTransferred(address,address)": TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+        OwnershipTransferred: TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+        "TransferBatch(address,address,address,uint256[],uint256[])": TypedContractEvent<TransferBatchEvent.InputTuple, TransferBatchEvent.OutputTuple, TransferBatchEvent.OutputObject>;
+        TransferBatch: TypedContractEvent<TransferBatchEvent.InputTuple, TransferBatchEvent.OutputTuple, TransferBatchEvent.OutputObject>;
+        "TransferSingle(address,address,address,uint256,uint256)": TypedContractEvent<TransferSingleEvent.InputTuple, TransferSingleEvent.OutputTuple, TransferSingleEvent.OutputObject>;
+        TransferSingle: TypedContractEvent<TransferSingleEvent.InputTuple, TransferSingleEvent.OutputTuple, TransferSingleEvent.OutputObject>;
+        "URI(string,uint256)": TypedContractEvent<URIEvent.InputTuple, URIEvent.OutputTuple, URIEvent.OutputObject>;
+        URI: TypedContractEvent<URIEvent.InputTuple, URIEvent.OutputTuple, URIEvent.OutputObject>;
     };
 }

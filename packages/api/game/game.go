@@ -75,7 +75,7 @@ type PlayerJoinData struct {
 }
 
 func (g *Game) HandleGameMessages(ctx context.Context, client *ent.Client, conn *websocket.Conn) {
-	ctx, log := logger.LogFor(ctx)
+	log := logger.Log
 	log.Info().Msgf("New connection from %s", conn.RemoteAddr().String())
 
 	WHITELISTED_WALLETS := []string{
@@ -177,7 +177,7 @@ func (g *Game) HandleGameMessages(ctx context.Context, client *ent.Client, conn 
 }
 
 func (g *Game) Start(ctx context.Context, client *ent.Client) {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 
 	log.Info().Msg("starting game")
 
@@ -297,7 +297,7 @@ func (g *Game) PlayerByConn(conn *websocket.Conn) *p.Player {
 }
 
 func (g *Game) tick(ctx context.Context, time time.Time) {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 
 	// TODO: better way of doing this?
 	if g.Time >= MINUTES_DAY {
@@ -415,7 +415,7 @@ func (g *Game) PlayerByUUID(uuid uuid.UUID) *p.Player {
 }
 
 func (g *Game) DispatchPlayerJoin(ctx context.Context, player *p.Player) {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 
 	message, err := messages.NewBroadcast().
 		Data(player.Serialize()).
@@ -442,7 +442,7 @@ func (g *Game) DispatchPlayerJoin(ctx context.Context, player *p.Player) {
 }
 
 func (g *Game) HandlePlayerJoin(ctx context.Context, conn *websocket.Conn, client *ent.Client, gameHustler *ent.GameHustler) {
-	_, log := logger.LogFor(ctx)
+	log := logger.Log
 	// if data.CurrentMap == "" {
 	// 	// we can directly use writejson here
 	// 	// because player is not yet registered
@@ -566,7 +566,7 @@ func (g *Game) GeneratePlayersData() []p.PlayerData {
 }
 
 // func (g *Game) DispatchPlayerMove(ctx context.Context, player *Player) {
-// 	_, log := logger.LogFor(ctx)
+// 	log := logger.Log
 
 // 	moveData, err := json.Marshal(PlayerMoveData{
 // 		Id: player.Id.String(),
@@ -596,7 +596,7 @@ func (g *Game) GeneratePlayersData() []p.PlayerData {
 // 	g.players.mutex.Lock()
 // 	defer g.players.mutex.Unlock()
 
-// 	_, log := logger.LogFor(ctx)
+// 	log := logger.Log
 
 // 	uuid, err := uuid.Parse(data.Id)
 // 	if err != nil {
@@ -618,7 +618,7 @@ func (g *Game) GeneratePlayersData() []p.PlayerData {
 // 	g.itemEntities.mutex.Lock()
 // 	defer g.itemEntities.mutex.Unlock()
 
-// 	_, log := logger.LogFor(ctx)
+// 	log := logger.Log
 
 // 	g.itemEntities.data = append(g.itemEntities.data, &ItemEntity{
 // 		id:   uuid.New(),
@@ -648,7 +648,7 @@ func (g *Game) GeneratePlayersData() []p.PlayerData {
 // 	g.itemEntities.mutex.Lock()
 // 	defer g.itemEntities.mutex.Unlock()
 
-// 	_, log := logger.LogFor(ctx)
+// 	log := logger.Log
 
 // 	uuid, err := uuid.Parse(data.Id)
 // 	if err != nil {

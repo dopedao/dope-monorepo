@@ -1,12 +1,12 @@
-import { Button, Link } from '@chakra-ui/react';
-import DesktopWindow from 'components/DesktopWindow';
-import PanelFooter from 'components/PanelFooter';
-import ContentIntro from 'features/about/components/ContentIntro';
-import ContentFooter from 'features/about/components/ContentFooter';
-import ContentRoadmap from 'features/about/components/ContentRoadmap';
-import ReactPlayer from 'react-player';
+import { Box } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import ContentHustlers from './ContentHustlers';
+import ContentIntro from 'features/about/components/ContentIntro';
+import ContentProjects from 'features/about/components/ContentProjects';
+import DesktopWindow from 'components/DesktopWindow';
+import Link from 'next/link';
+import PanelFooter from 'components/PanelFooter';
 
 const VIDEOS = [
   'https://www.youtube.com/watch?v=kvWM2obNMyI',
@@ -26,7 +26,7 @@ const AboutWindow = ({ ...props }) => {
       hideWalletAddress
       {...props}
     >
-      <div
+      <Box
         css={css`
           overflow-y: auto;
           overflow-x: hidden;
@@ -35,7 +35,7 @@ const AboutWindow = ({ ...props }) => {
           justify-content: stretch;
         `}
       >
-        <div
+        <Box
           css={css`
             flex: 1;
             display: flex;
@@ -50,7 +50,7 @@ const AboutWindow = ({ ...props }) => {
             }
           `}
         >
-          <ReactPlayer
+          {/* <ReactPlayer
             // If we want a cover image
             // light="/images/Logo-Plain.svg"
             //
@@ -73,12 +73,11 @@ const AboutWindow = ({ ...props }) => {
                 Enter the murderverse
               </Button>
             }
-          />
+          /> */}
           <ContentIntro />
           <ContentHustlers />
-          <ContentRoadmap />
-          <ContentFooter />
-        </div>
+          <ContentProjects />
+        </Box>
         <PanelFooter
           css={css`
             position: sticky;
@@ -86,15 +85,12 @@ const AboutWindow = ({ ...props }) => {
             padding-right: 16px;
           `}
         >
-          <div></div>
-          <Link href="/news" passHref>
-            <Button>Latest Announcements</Button>
-          </Link>
-          {/* <Link href="/mint" passHref>
+          <Box />
+          <Link href="/mint" passHref>
             <Button variant="primary">Mint a Hustler</Button>
-          </Link> */}
+          </Link>
         </PanelFooter>
-      </div>
+      </Box>
     </DesktopWindow>
   );
 };

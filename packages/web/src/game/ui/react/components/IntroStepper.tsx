@@ -11,12 +11,11 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import HustlerProfileCard from 'components/hustler/HustlerProfileCard';
-import RenderFromChain from 'components/hustler/RenderFromChain';
+import HustlerProfileCard from 'features/hustlers/components/HustlerProfileCard';
+import RenderFromChain from 'features/hustlers/components/RenderFromChain';
 import { ComponentManager } from 'phaser3-react/src/manager';
 import React, { useEffect, useState } from 'react';
 import theme from 'ui/styles/theme';
-import Image from 'next/image';
 import { CSSProperties } from 'react';
 import Link from 'next/link';
 
@@ -54,7 +53,7 @@ const NoHustler = (props: Props) => {
                 Swap meet
               </Button>
             </Link>
-            <Link href="/hustlers/quick-buy" passHref>
+            <Link href="/hustlers/mint" passHref>
               <Button variant="cny" width="32">
                 Mint
               </Button>

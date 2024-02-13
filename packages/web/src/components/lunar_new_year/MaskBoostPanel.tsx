@@ -1,15 +1,12 @@
 import { Button } from '@chakra-ui/react';
-import { BigNumber, constants, utils } from 'ethers';
 import { css } from '@emotion/react';
 import { Image } from '@chakra-ui/react';
-import { NETWORK } from 'utils/constants';
+import { NETWORK, OPT_CHAIN_ID } from 'utils/constants';
 import Link from 'next/link';
 import { TransferSingleEvent } from '@dopewars/contracts/dist/SwapMeet';
 import { useEffect, useCallback, useState } from 'react';
 import { useHongbao } from 'hooks/contracts';
-import { useOptimism } from 'hooks/web3';
 import { usePaper, useSwapMeet } from 'hooks/contracts';
-import { useWeb3React } from '@web3-react/core';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
@@ -17,6 +14,10 @@ import PanelTitleHeader from 'components/PanelTitleHeader';
 import SpinnerMessage from 'components/SpinnerMessage';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
+import { Box } from '@chakra-ui/react';
+import { useBalance, useAccount } from 'wagmi';
+import { BigNumberish } from 'ethers';
+import { ethers } from 'ethers';
 
 const Stats = styled.div`
   font-size: var(--text-smallest);
@@ -52,7 +53,8 @@ const Progress = styled.div`
 `;
 
 const BoostPanel = () => {
-  const { account, library } = useWeb3React();
+  const { address: account } = useAccount();
+  const ethBalanceResult = useBalance({ address: account });
   const router = useRouter();
 
   const minBoosts = 0;
@@ -69,23 +71,22 @@ const BoostPanel = () => {
   const hongbao = useHongbao();
   const swapmeet = useSwapMeet();
   const paper = usePaper();
-  const { chainId } = useOptimism();
+
+  const chainId = parseInt(OPT_CHAIN_ID);
 
   // Check ETH account balance
-  const [ethBalance, setEthBalance] = useState<BigNumber>();
-  const [ethToSpend, setEthToSpend] = useState<BigNumber>();
+  const [ethBalance, setEthBalance] = useState<bigint>(0n);
+  const [ethToSpend, setEthToSpend] = useState<number>();
   useEffect(() => {
-    library.getBalance(account).then((balance: any) => {
-      console.log('ETH Balance ' + utils.formatEther(balance));
-      setEthBalance(balance);
-    });
+    if (!ethBalanceResult.isSuccess) return;
+    setEthBalance(ethBalanceResult.data?.value ?? 0n);
     const value = boosts === 1 ? (boosts + 0.00042) / 10 : boosts / 10;
-    setEthToSpend(utils.parseEther('' + value));
-  }, [account, library, chainId, boosts]);
+    setEthToSpend(value);
+  }, [ethBalanceResult, boosts]);
 
   const hasEnoughEthToMint = () => {
-    if (!ethToSpend || ethToSpend.isZero()) return true;
-    return ethBalance?.gte(ethToSpend);
+    if (!ethToSpend || ethToSpend === 0) return true;
+    return ethBalance >= ethToSpend;
   };
 
   const mintMask = useCallback(async () => {
@@ -93,9 +94,10 @@ const BoostPanel = () => {
       setIsBuyingMask(true);
       const tx = await hongbao.mint({ value: ethToSpend, gasLimit: 300000 });
       const receipt = await tx.wait(1);
-      receipt.logs.map((log, idx) => {
+      receipt?.logs.map((log, idx) => {
         if (idx !== 0) return;
-        const event = swapmeet.interface.parseLog(log) as unknown as TransferSingleEvent;
+
+        const event = swapmeet.interface.parseLog(log) as unknown as TransferSingleEvent.Event;
         // Set roll to item id
         router.push(
           {
@@ -104,7 +106,7 @@ const BoostPanel = () => {
               items: JSON.stringify([
                 {
                   typ: 1,
-                  id: event.args.id.toString(),
+                  id: event.arguments.id.toString(),
                 },
               ]),
             },
@@ -123,27 +125,31 @@ const BoostPanel = () => {
 
   // Check if PAPER spend approved for 5000
   useEffect(() => {
-    if (account) {
-      paper.allowance(account, NETWORK[chainId].contracts.hongbao).then((allowance: BigNumber) => {
-        setIsPaperApproved(allowance.gte('5000000000000000000000'));
-      });
+    async function effect() {
+      if (account) {
+        const hbAddress = await hongbao.getAddress();
+        const allowance = await paper.allowance(account, hbAddress);
+        const a = BigInt(allowance.toString());
+        setIsPaperApproved(a >= 5000000000000000000000n);
+      }
     }
-  }, [account, paper, chainId]);
+    effect();
+  }, [account, paper, hongbao]);
 
   // Check if has 5000 PAPER
   useEffect(() => {
     if (account) {
-      paper.balanceOf(account).then((balance: BigNumber) => {
-        setHasEnoughPaper(balance.gte('5000000000000000000000'));
+      paper.balanceOf(account).then((balance: BigNumberish) => {
+        const b = BigInt(balance.toString());
+        setHasEnoughPaper(b >= 5000000000000000000000n);
       });
     }
-  }, [account, paper, chainId, roll]);
+  }, [account, paper]);
 
   const approvePaper = async () => {
     try {
       setIsApprovingPaper(true);
-      const txn = await paper.approve(NETWORK[chainId].contracts.hongbao, constants.MaxUint256);
-      await txn.wait(1);
+      await paper.approve(await hongbao.getAddress(), ethers.MaxUint256);
       setIsPaperApproved(true);
     } finally {
       setIsApprovingPaper(false);
@@ -157,11 +163,8 @@ const BoostPanel = () => {
     return boosts / 10;
   };
   const percentChance = () => {
-    if (boosts == 0) {
-      return 0;
-    } else {
-      return boosts * maxBoosts;
-    }
+    if (boosts === 0) return 0;
+    return boosts * maxBoosts;
   };
 
   const subtractBoost = () => {
@@ -180,19 +183,18 @@ const BoostPanel = () => {
 
   const getBoostImage = () => {
     const imgPrefix = '/images/lunar_new_year_2022/';
-    let imgPath;
     switch (boosts) {
       case 0:
-        return imgPrefix + 'tiger-mask-from-chinatown.png';
+        return `${imgPrefix}tiger-mask-from-chinatown.png`;
       case 1:
       case 2:
       case 3:
       case 4:
-        return imgPrefix + 'mask-roulette_2.gif';
+        return `${imgPrefix}mask-roulette_2.gif`;
       case maxBoosts:
-        return imgPrefix + 'golden-mask.png';
+        return `${imgPrefix}golden-mask.png`;
       default:
-        return imgPrefix + 'mask-roulette_3.gif';
+        return `${imgPrefix}mask-roulette_3.gif`;
     }
   };
 
@@ -202,46 +204,46 @@ const BoostPanel = () => {
       <PanelBody>
         <Image src={getBoostImage()} alt="Your Prize Awaits" />
         <Stats>
-          <div
+          <Box
             css={css`
               display: flex;
               gap: 8px;
             `}
           >
-            <div>
-              {boosts} BOOST{boosts == 1 ? '' : 'S'}
-            </div>
-            <div
+            <Box>
+              {boosts} BOOST{boosts === 1 ? '' : 'S'}
+            </Box>
+            <Box
               css={css`
                 color: var(--gray-400);
               `}
             >
               ( {ethCost()}Ξ + $5000P )
-            </div>
-          </div>
-          <div
+            </Box>
+          </Box>
+          <Box
             css={css`
               text-align: right;
             `}
           >
-            {boosts === maxBoosts && <>GOLDEN</>}
-            {boosts === 0 && <>TIGER MASK</>}
+            {boosts === maxBoosts && 'GOLDEN'}
+            {boosts === 0 && 'TIGER MASK'}
             {boosts !== maxBoosts && boosts > 0 && <>{percentChance()}% ODDS</>}
-          </div>
+          </Box>
         </Stats>
         <Divider />
         <Bar>
-          <Button onClick={subtractBoost} disabled={boosts <= minBoosts}>
+          <Button onClick={subtractBoost} isDisabled={boosts <= minBoosts}>
             <Image src="/images/icon/minus.svg" width="16px" alt="Subtract" />
           </Button>
           <Progress>
-            <div
+            <Box
               css={css`
                 width: ${percentChance()}%;
               `}
             />
           </Progress>
-          <Button onClick={addBoost} disabled={boosts >= maxBoosts}>
+          <Button onClick={addBoost} isDisabled={boosts >= maxBoosts}>
             <Image src="/images/icon/plus.svg" width="16px" alt="Add" />
           </Button>
         </Bar>
@@ -249,12 +251,14 @@ const BoostPanel = () => {
       <PanelFooter stacked>
         {!hasEnoughPaper && (
           <Link
-            href={`https://app.uniswap.org/#/swap?outputCurrency=0x00F932F0FE257456b32dedA4758922E56A4F4b42&inputCurrency=ETH&exactAmount=5000&exactField=output`}
+            href={
+              'https://app.uniswap.org/#/swap?outputCurrency=0x00F932F0FE257456b32dedA4758922E56A4F4b42&inputCurrency=ETH&exactAmount=5000&exactField=output'
+            }
+            target="_blank"
+            rel="noreferrer"
             passHref
           >
-            <a target="_blank" rel="noreferrer">
-              <Button variant="cny">Buy $PAPER on Optimism</Button>
-            </a>
+            <Button variant="cny">Buy $PAPER on Optimism</Button>
           </Link>
         )}
         {hasEnoughPaper && !isPaperApproved && (

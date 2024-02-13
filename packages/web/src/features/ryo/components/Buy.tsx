@@ -17,10 +17,10 @@ const Buy = () => {
   const router = useRouter();
   const { drugId } = router.query;
 
-  const ryoItemId = RYO_ITEM_IDS[Number(drugId)]
+  const ryoItemId = RYO_ITEM_IDS[Number(drugId)];
 
-  const { money, ownedItems, updateTurn } = useRollYourOwn()
-  const [buyQuantity, setBuyQuantity] = useState(0)
+  const { money, ownedItems, updateTurn } = useRollYourOwn();
+  const [buyQuantity, setBuyQuantity] = useState(0);
 
   const { data: drugData } = useDrugQuery(
     {
@@ -41,50 +41,44 @@ const Buy = () => {
     return drugItem.node;
   }, [drugData]);
 
-  const { contract } = useLocationOwnedContract()
+  const { contract } = useLocationOwnedContract();
   const { data: marketStateData } = useStarknetCall({
     contract,
-    method: "check_market_state",
-    args: ["1", ryoItemId.toString()],
-  })
+    method: 'check_market_state',
+    args: ['1', ryoItemId.toString()],
+  });
 
-  const [itemQuantity, moneyQuantity] = useMemo(
-    () => {
-      if (!marketStateData) return [undefined, undefined]
+  const [itemQuantity, moneyQuantity] = useMemo(() => {
+    if (!marketStateData) return [undefined, undefined];
 
-      const [itemQuantity, moneyQuantity]: BigNumberish[] = marketStateData
+    const [itemQuantity, moneyQuantity]: BigNumberish[] = marketStateData;
 
-      return [toBN(itemQuantity), toBN(moneyQuantity)]
-    },
-    [marketStateData]
-  )
-  const cost = useMemo(
-    () => {
-      if (!itemQuantity || !moneyQuantity) return
+    return [toBN(itemQuantity), toBN(moneyQuantity)];
+  }, [marketStateData]);
+  const cost = useMemo(() => {
+    if (!itemQuantity || !moneyQuantity) return;
 
-      return moneyQuantity.div(itemQuantity.sub(toBN(1)))
-    },
-    [itemQuantity, moneyQuantity]
-  )
-  const userOwnedQuantity = ownedItems[ryoItemId - 1]
-  const buyAmount = cost ? toBN(buyQuantity).mul(cost) : toBN(0)
- 
+    return moneyQuantity.div(itemQuantity.sub(toBN(1)));
+  }, [itemQuantity, moneyQuantity]);
+  const userOwnedQuantity = ownedItems[ryoItemId - 1];
+  const buyAmount = cost ? toBN(buyQuantity).mul(cost) : toBN(0);
+
   const fillPercentage = useMemo(() => {
-    const p1 = money ? buyAmount.muln(100).div(money) : toBN(0)
-    const p2 = itemQuantity ? toBN(buyQuantity * 100).div(itemQuantity) : toBN(0)
+    const p1 = money ? buyAmount.muln(100).div(money) : toBN(0);
+    const p2 = itemQuantity ? toBN(buyQuantity * 100).div(itemQuantity) : toBN(0);
 
-    return p1.gt(p2) ? p1.toNumber() : p2.toNumber()
-  }, [buyAmount, money, buyQuantity, itemQuantity])
+    return p1 > p2 ? p1.toNumber() : p2.toNumber();
+  }, [buyAmount, money, buyQuantity, itemQuantity]);
 
   const handleBuy = () => {
     updateTurn({
       buyOrSell: BuyOrSell.Buy,
       itemId: ryoItemId,
       amountToGive: buyQuantity,
-    })
+    });
 
-    router.push("/roll-your-own/1/location/brooklyn/travel")
-  }
+    router.push('/roll-your-own/1/location/brooklyn/travel');
+  };
 
   const rle = drug?.rles?.male ? drug?.rles?.male : drug?.base?.rles?.male;
 
@@ -96,7 +90,7 @@ const Buy = () => {
         </ContainerHeader>
 
         {rle && (
-          <div
+          <Box
             css={css`
               display: flex;
               justify-content: center;
@@ -111,22 +105,13 @@ const Buy = () => {
           <Flex justify="space-between">
             <HStack>
               <span>{drug?.name}</span>
-              <Box
-                background="#434345"
-                borderRadius="full"
-                py={0.5}
-                px={2}
-              >
+              <Box background="#434345" borderRadius="full" py={0.5} px={2}>
                 <span>${cost?.toString()}</span>
               </Box>
             </HStack>
             <HStack>
-              <Box>
-                {userOwnedQuantity?.toString()}
-              </Box>
-              <Box color="#22B617">
-                + {buyQuantity}
-              </Box>
+              <Box>{userOwnedQuantity?.toString()}</Box>
+              <Box color="#22B617">+ {buyQuantity}</Box>
             </HStack>
           </Flex>
         </ContainerFooter>
@@ -145,11 +130,7 @@ const Buy = () => {
         />
       </Stack>
       <Flex justify="center" mt={10}>
-        <Button
-          disabled={buyQuantity === 0}
-          variant="primary"
-          onClick={handleBuy}
-        >
+        <Button isDisabled={buyQuantity === 0} variant="primary" onClick={handleBuy}>
           Buy ({buyQuantity})
         </Button>
       </Flex>

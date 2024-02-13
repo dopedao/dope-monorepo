@@ -30,9 +30,6 @@ handlers:
   - url: /gear-claims
     script: auto
     login: admin
-  - url: /opensea-listings
-    script: auto
-    login: admin
   - url: /paper-balances
     script: auto
     login: admin

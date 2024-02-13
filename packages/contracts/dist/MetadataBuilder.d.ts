@@ -1,107 +1,99 @@
-import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, PopulatedTransaction, Signer, utils } from "ethers";
-import { FunctionFragment, Result } from "@ethersproject/abi";
-import { Listener, Provider } from "@ethersproject/providers";
-import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
-export declare type ParamsStruct = {
-    resolution: BigNumberish;
-    color: BytesLike;
-    background: BytesLike;
-    viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
-    text: string;
-    subtext: string;
-    name: string;
-    description: string;
-    attributes: string;
-    parts: BytesLike[];
-};
-export declare type ParamsStructOutput = [
-    number,
-    string,
-    string,
-    [
-        number,
-        number,
-        number,
-        number
-    ],
-    string,
-    string,
-    string,
-    string,
-    string,
-    string[]
-] & {
-    resolution: number;
-    color: string;
-    background: string;
-    viewbox: [number, number, number, number];
-    text: string;
-    subtext: string;
-    name: string;
-    description: string;
-    attributes: string;
-    parts: string[];
-};
-export interface MetadataBuilderInterface extends utils.Interface {
-    functions: {
-        "attributes(bytes[])": FunctionFragment;
-        "contractURI(string,string)": FunctionFragment;
-        "generateSVG((uint8,bytes4,bytes4,uint8[4],string,string,string,string,string,bytes[]),IPaletteProvider)": FunctionFragment;
-        "tokenURI((uint8,bytes4,bytes4,uint8[4],string,string,string,string,string,bytes[]),IPaletteProvider)": FunctionFragment;
+import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
+import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedListener, TypedContractMethod } from "./common";
+export declare namespace MetadataBuilder {
+    type ParamsStruct = {
+        resolution: BigNumberish;
+        color: BytesLike;
+        background: BytesLike;
+        viewbox: [BigNumberish, BigNumberish, BigNumberish, BigNumberish];
+        text: string;
+        subtext: string;
+        name: string;
+        description: string;
+        attributes: string;
+        parts: BytesLike[];
     };
+    type ParamsStructOutput = [
+        resolution: bigint,
+        color: string,
+        background: string,
+        viewbox: [bigint, bigint, bigint, bigint],
+        text: string,
+        subtext: string,
+        name: string,
+        description: string,
+        attributes: string,
+        parts: string[]
+    ] & {
+        resolution: bigint;
+        color: string;
+        background: string;
+        viewbox: [bigint, bigint, bigint, bigint];
+        text: string;
+        subtext: string;
+        name: string;
+        description: string;
+        attributes: string;
+        parts: string[];
+    };
+}
+export interface MetadataBuilderInterface extends Interface {
+    getFunction(nameOrSignature: "attributes" | "contractURI" | "generateSVG" | "tokenURI"): FunctionFragment;
     encodeFunctionData(functionFragment: "attributes", values: [BytesLike[]]): string;
     encodeFunctionData(functionFragment: "contractURI", values: [string, string]): string;
-    encodeFunctionData(functionFragment: "generateSVG", values: [ParamsStruct, string]): string;
-    encodeFunctionData(functionFragment: "tokenURI", values: [ParamsStruct, string]): string;
+    encodeFunctionData(functionFragment: "generateSVG", values: [MetadataBuilder.ParamsStruct, AddressLike]): string;
+    encodeFunctionData(functionFragment: "tokenURI", values: [MetadataBuilder.ParamsStruct, AddressLike]): string;
     decodeFunctionResult(functionFragment: "attributes", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "contractURI", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "generateSVG", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
-    events: {};
 }
 export interface MetadataBuilder extends BaseContract {
-    connect(signerOrProvider: Signer | Provider | string): this;
-    attach(addressOrName: string): this;
-    deployed(): Promise<this>;
+    connect(runner?: ContractRunner | null): MetadataBuilder;
+    waitForDeployment(): Promise<this>;
     interface: MetadataBuilderInterface;
-    queryFilter<TEvent extends TypedEvent>(event: TypedEventFilter<TEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TEvent>>;
-    listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
-    listeners(eventName?: string): Array<Listener>;
-    removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
-    removeAllListeners(eventName?: string): this;
-    off: OnEvent<this>;
-    on: OnEvent<this>;
-    once: OnEvent<this>;
-    removeListener: OnEvent<this>;
-    functions: {
-        attributes(traits: BytesLike[], overrides?: CallOverrides): Promise<[string]>;
-        contractURI(name: string, description: string, overrides?: CallOverrides): Promise<[string]>;
-        generateSVG(params: ParamsStruct, paletteProvider: string, overrides?: CallOverrides): Promise<[string] & {
-            svg: string;
-        }>;
-        tokenURI(params: ParamsStruct, paletteProvider: string, overrides?: CallOverrides): Promise<[string]>;
-    };
-    attributes(traits: BytesLike[], overrides?: CallOverrides): Promise<string>;
-    contractURI(name: string, description: string, overrides?: CallOverrides): Promise<string>;
-    generateSVG(params: ParamsStruct, paletteProvider: string, overrides?: CallOverrides): Promise<string>;
-    tokenURI(params: ParamsStruct, paletteProvider: string, overrides?: CallOverrides): Promise<string>;
-    callStatic: {
-        attributes(traits: BytesLike[], overrides?: CallOverrides): Promise<string>;
-        contractURI(name: string, description: string, overrides?: CallOverrides): Promise<string>;
-        generateSVG(params: ParamsStruct, paletteProvider: string, overrides?: CallOverrides): Promise<string>;
-        tokenURI(params: ParamsStruct, paletteProvider: string, overrides?: CallOverrides): Promise<string>;
-    };
+    queryFilter<TCEvent extends TypedContractEvent>(event: TCEvent, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    queryFilter<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    on<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+    listeners(eventName?: string): Promise<Array<Listener>>;
+    removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+    attributes: TypedContractMethod<[traits: BytesLike[]], [string], "view">;
+    contractURI: TypedContractMethod<[
+        name: string,
+        description: string
+    ], [
+        string
+    ], "view">;
+    generateSVG: TypedContractMethod<[
+        params: MetadataBuilder.ParamsStruct,
+        paletteProvider: AddressLike
+    ], [
+        string
+    ], "view">;
+    tokenURI: TypedContractMethod<[
+        params: MetadataBuilder.ParamsStruct,
+        paletteProvider: AddressLike
+    ], [
+        string
+    ], "view">;
+    getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+    getFunction(nameOrSignature: "attributes"): TypedContractMethod<[traits: BytesLike[]], [string], "view">;
+    getFunction(nameOrSignature: "contractURI"): TypedContractMethod<[name: string, description: string], [string], "view">;
+    getFunction(nameOrSignature: "generateSVG"): TypedContractMethod<[
+        params: MetadataBuilder.ParamsStruct,
+        paletteProvider: AddressLike
+    ], [
+        string
+    ], "view">;
+    getFunction(nameOrSignature: "tokenURI"): TypedContractMethod<[
+        params: MetadataBuilder.ParamsStruct,
+        paletteProvider: AddressLike
+    ], [
+        string
+    ], "view">;
     filters: {};
-    estimateGas: {
-        attributes(traits: BytesLike[], overrides?: CallOverrides): Promise<BigNumber>;
-        contractURI(name: string, description: string, overrides?: CallOverrides): Promise<BigNumber>;
-        generateSVG(params: ParamsStruct, paletteProvider: string, overrides?: CallOverrides): Promise<BigNumber>;
-        tokenURI(params: ParamsStruct, paletteProvider: string, overrides?: CallOverrides): Promise<BigNumber>;
-    };
-    populateTransaction: {
-        attributes(traits: BytesLike[], overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        contractURI(name: string, description: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        generateSVG(params: ParamsStruct, paletteProvider: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        tokenURI(params: ParamsStruct, paletteProvider: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-    };
 }

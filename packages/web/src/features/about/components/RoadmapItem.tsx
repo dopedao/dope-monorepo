@@ -3,15 +3,16 @@ import { Image } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
+import { Box } from '@chakra-ui/react';
 
 const Container = styled.div`
   clear: both;
   margin: 0px 32px;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0, 0, 0, 0.9);
   max-width: 60em;
   .imageBox {
     position: relative;
-    border:4px solid black;
+    border: 4px solid black;
     box-shadow: 4px 4px rgba(0, 0, 0, 0.1);
     // image-rendering: pixelated;
     ${media.tablet`
@@ -21,7 +22,7 @@ const Container = styled.div`
   }
   .contentBox {
     color: white;
-    text-shadow: 1px 1px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
     max-height: 100%;
     padding: 16px;
     ${media.tablet`
@@ -65,7 +66,7 @@ const Content = styled.div`
 
 interface Props {
   title: string;
-  date: string;
+  date?: string;
   imageUrl?: string;
   imageAlt?: string;
   imageReplacement?: ReactNode;
@@ -84,7 +85,7 @@ const RoadmapItem = ({
 }: Props) => {
   return (
     <Container>
-      <div className="imageBox">
+      <Box className="imageBox">
         {imageReplacement && imageReplacement}
         {imageUrl && imageAlt && <Image src={imageUrl} alt={imageAlt} width="100%" />}
         {complete && (
@@ -97,19 +98,19 @@ const RoadmapItem = ({
             opacity="0.5"
           />
         )}
-      </div>
-      <div className="contentBox">
+      </Box>
+      <Box className="contentBox">
         <TitleContainer>
           {title}
           <Date>{date}</Date>
         </TitleContainer>
         <Content>{children}</Content>
-      </div>
-      <div
+      </Box>
+      <Box
         css={css`
           clear: both;
         `}
-      ></div>
+      />
     </Container>
   );
 };

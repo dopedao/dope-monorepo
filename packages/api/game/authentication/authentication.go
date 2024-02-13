@@ -16,7 +16,6 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/jiulongw/siwe-go"
-	"github.com/rs/zerolog"
 )
 
 // seconds
@@ -31,14 +30,11 @@ type LoginBody struct {
 // Block has to maximum [MAX_BLOCK_AGE] old
 func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		_, log := logger.LogFor(
-			r.Context(),
-			func(zctx *zerolog.Context) zerolog.Context {
-				return zctx.Str("Method", "LoginHandler")
-			},
-		)
+		log := logger.Log.With().
+			Str("Method", "LoginHandler").
+			Logger()
 
-		log.Debug().Msg("Starting login handler...")
+		log.Info().Msg("Starting login handler...")
 
 		var body LoginBody
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -138,12 +134,9 @@ func LoginHandler(client *ethclient.Client) func(w http.ResponseWriter, r *http.
 }
 
 func AuthenticatedHandler(w http.ResponseWriter, r *http.Request) {
-	_, log := logger.LogFor(
-		r.Context(),
-		func(zctx *zerolog.Context) zerolog.Context {
-			return zctx.Str("Method", "AuthenticatedHandler")
-		},
-	)
+	log := logger.Log.With().
+		Str("Method", "AuthenticatedHandler").
+		Logger()
 
 	sessionIDToken, err := middleware.Token(r.Context())
 	if err != nil {

@@ -4,7 +4,6 @@ import { getBBcodeText } from 'game/ui/rex/RexUtils';
 import Palette from 'game/constants/Palette';
 import Label from 'phaser3-rex-plugins/templates/ui/label/Label';
 import { GameObjects } from 'phaser';
-import Text from 'phaser3-rex-plugins/plugins/gameobjects/text/textbase/Text';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
 import Buttons from 'phaser3-rex-plugins/templates/ui/buttons/Buttons';
 
@@ -110,11 +109,11 @@ export default class DialogueTextBox extends TextBox {
     if (this.isLastPage) {
       return;
     }
-
-    var icon = this.getElement('action')!.setActive(true);
+    const ele = this.getElement('action')! as any;
+    const icon = ele.setActive(true);
     this.resetChildVisibleState(icon);
     (icon as any).y -= 30;
-    var tween = this.scene.tweens.add({
+    const tween = this.scene.tweens.add({
       targets: icon,
       y: '+=30', // '+=100'
       ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'

@@ -2,6 +2,7 @@ import MarkdownText from 'components/MarkdownText';
 import { Image } from '@chakra-ui/react';
 import ReactPlayer from 'react-player';
 import { css } from '@emotion/react';
+import { Box } from '@chakra-ui/react';
 
 const ContentHustlers = () => {
   const content = `
@@ -19,7 +20,8 @@ Hustlers unlock multiple game experiences. Better equipped Hustlers have higher 
         src="/images/hustler/hustler_about_banner.svg"
         alt="Hustlers are your character in Dope Wars"
       />
-      <div
+      <Box
+        pb="3em"
         css={css`
           .markdown {
             padding-bottom: 0px !important;
@@ -27,15 +29,7 @@ Hustlers unlock multiple game experiences. Better equipped Hustlers have higher 
         `}
       >
         <MarkdownText text={content} />
-      </div>
-      <div
-        className="markdown"
-        css={css`
-          margin-bottom: 4em;
-        `}
-      >
-        <ReactPlayer url="https://www.youtube.com/watch?v=7q5uvmTttzQ" width="100%" controls />
-      </div>
+      </Box>
     </>
   );
 };

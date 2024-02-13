@@ -4,7 +4,6 @@ import (
 	"context"
 	"math/big"
 	"math/rand"
-	"os"
 	"sort"
 	"sync"
 	"time"
@@ -13,11 +12,11 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/ent/item"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/rs/zerolog"
 )
 
 var componentType = map[item.Type]uint8{
@@ -33,15 +32,11 @@ var componentType = map[item.Type]uint8{
 	item.TypeACCESSORY: 9,
 }
 
-func GearMetrics() {
+type GearMetrics struct{}
+
+func (gm GearMetrics) Run() {
 	ctx := context.Background()
-	// Tagged logger
-	// _, log := logger.LogFor(
-	// 	os.Stderr,
-	// 	func(zctx *zerolog.Context) zerolog.Context {
-	// 		return zctx.Str("Job", "GearMetrics")
-	// 	})
-	log := zerolog.New(os.Stderr)
+	log := logger.Log.With().Str("job", "GearMetrics").Logger()
 	dbClient := dbprovider.Ent()
 
 	retryableHTTPClient := retryablehttp.NewClient()
@@ -74,8 +69,9 @@ func GearMetrics() {
 		for _, item := range dope.Edges.Items {
 			wg.Add(1)
 			go func(dope *ent.Dope, item *ent.Item) {
-				r := rand.Intn(180)
-				time.Sleep(time.Duration(r) * time.Second)
+				// sleep to avoid timeouts on the server
+				r := rand.Intn(10)
+				time.Sleep(time.Duration(r) * time.Second / 10)
 
 				id, ok := new(big.Int).SetString(dope.ID, 10)
 				if !ok {
@@ -129,7 +125,7 @@ func GearMetrics() {
 	log.Info().Msg("Setting tier for items")
 
 	// Don't want to overload database connections
-	concurrency := 50
+	concurrency := 512
 	sem := make(chan bool, concurrency)
 
 	for _, itm := range items {
@@ -175,7 +171,11 @@ func GearMetrics() {
 	})
 
 	for i, dope := range dopes {
-		dbClient.Dope.UpdateOneID(dope.ID).SetRank(i).SetScore(dope.Score).ExecX(ctx)
+		sem <- true
+		go func() {
+			defer func() { <-sem }()
+			dbClient.Dope.UpdateOneID(dope.ID).SetRank(i).SetScore(dope.Score).ExecX(ctx)
+		}()
 		println("Updating dope:", dope.ID)
 	}
 	log.Info().Msg("DONE: GearMetrics")

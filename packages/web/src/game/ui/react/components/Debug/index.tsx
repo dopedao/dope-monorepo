@@ -52,7 +52,7 @@ export default function Debug(props: DebugData) {
                 backgroundColor: "rgba(255,255,255,0.8)",
                 borderRadius: "10px",
             }}>
-                <div style={{
+                <Box style={{
                     position: "relative",
                     padding: "1rem",
                 }}>
@@ -83,7 +83,7 @@ export default function Debug(props: DebugData) {
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
-                </div>
+                </Box>
             </Container>
         </ChakraProvider>
     )

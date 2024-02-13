@@ -22,9 +22,9 @@ const PlayerPanel = (props: {player: Player}) => {
                         <InputLeftAddon children='Name' />
                         <Input onChange={(e) => player.name = e.target.value} placeholder={player.name} />
                     </InputGroup>
-                    <div>
+                    <Box>
                         <Position object={player} />
-                    </div>
+                    </Box>
                 </AccordionPanel>
             </AccordionItem>
             <AccordionItem>

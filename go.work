@@ -1,5 +1,5 @@
-go 1.18
+go 1.21
 
-use (
-    ./packages/api/
-)
+toolchain go1.21.6
+
+use ./packages/api/

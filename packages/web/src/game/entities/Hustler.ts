@@ -7,7 +7,7 @@ import PathNavigator from 'game/world/PathNavigator';
 import PF from 'pathfinding';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext';
 import Toast from 'phaser3-rex-plugins/templates/ui/toast/Toast';
-import { API_URI } from 'utils/constants';
+import { MAINNET_API_URL } from 'utils/constants';
 
 export enum Direction {
   North = '_back',
@@ -110,16 +110,16 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
     super(world, x, y, 'male_base', frame);
 
     if (hustlerId) {
-      const key = 'hustler_' + hustlerId;
+      const key = `hustler_${hustlerId}`;
 
       if (!this.scene.textures.exists(key)) {
         this.scene.load.spritesheet(
           key,
-          `${API_URI[1]}/hustlers/${hustlerId}/sprites/composite.png`,
+          `${MAINNET_API_URL}/hustlers/${hustlerId}/sprites/composite.png`,
           { frameWidth: 60, frameHeight: 60 },
         );
         this.setDisplaySize(60, 60);
-        this.scene.load.once('filecomplete-spritesheet-' + key, () => {
+        this.scene.load.once(`filecomplete-spritesheet-${key}`, () => {
           createHustlerAnimations(this.scene, key);
           this.setTexture(key);
           this.setActive(true);
@@ -226,13 +226,14 @@ export default class Hustler extends Phaser.Physics.Matter.Sprite {
           fontFamily: 'Dope',
           fontSize: '30px',
           color: isPlayer ? '#ffffff' : '#9fff9f',
+          delimiters: [], // Add the 'delimiters' property here
           // fixedWidth: this.displayWidth * 2,
           // stroke: '#000000',
           // strokeThickness: 5,
         },
       );
       if (this._hoverText) {
-        this._hoverText.scale = (this.scale / 4);
+        this._hoverText.scale = this.scale / 4;
         this._hoverText.alpha = 0.8;
         this._hoverText.depth = this.depth;
       }

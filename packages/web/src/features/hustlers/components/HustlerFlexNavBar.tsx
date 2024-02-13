@@ -4,16 +4,14 @@ import { PHRASES } from 'features/news/components/NewsHeader';
 import { Share } from 'react-twitter-widgets';
 import AppWindowNavBar from 'components/AppWindowNavBar';
 import Link from 'next/link';
+import { Box } from '@chakra-ui/react';
 
 const HustlerFlexNavBar = () => (
   <AppWindowNavBar>
-    <Link href="/inventory?section=Hustlers" passHref>
-      <Button variant="navBar">Your Hustlers</Button>
+    <Link href="/swap-meet/inventory?section=Hustlers" passHref>
+      <Button variant="navBar">← Your Hustlers</Button>
     </Link>
-    <Link href="/gangsta-party" passHref>
-      <Button variant="navBar">All Hustlers</Button>
-    </Link>
-    <div
+    <Box
       css={css`
         position: absolute;
         right: 16px;
@@ -28,7 +26,7 @@ const HustlerFlexNavBar = () => (
           } \n#hustlerFollowHustler @TheDopeWars`,
         }}
       />
-    </div>
+    </Box>
   </AppWindowNavBar>
 );
 export default HustlerFlexNavBar;

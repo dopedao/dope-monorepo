@@ -10,7 +10,6 @@ const desktopImageCss = [
   "#202221 url('/images/hustler/street_scene.png') center / cover no-repeat fixed",
   "#202221 url('/images/dope-wars-stacked-logo.png') center / 400px no-repeat fixed",
   "#202221 url('/images/dope-wars-smiley.png') center / 400px no-repeat fixed",
-  "#000 url('/images/desktop/the-crew.jpg') center / cover no-repeat fixed",
   "#333 url('/images/game/map/full.png') center / cover no-repeat fixed",
   "#333 url('/images/game/map/nyc-hustler-walk.gif') center / cover no-repeat fixed",
 ];
@@ -64,6 +63,7 @@ export default function GlobalStyles() {
           --bg-color: #000;
           --hover-bg: #434345;
           --primary: #3523fe;
+          --success-green: #9bffcb;
           --new-year-red: #e02514;
           --overlay: rgba(0, 0, 0, 0.85);
           --overlay-light: rgba(0, 0, 0, 0.35);
@@ -191,7 +191,7 @@ export default function GlobalStyles() {
         }
         h1 {
           font-size: var(--text-05) !important;
-          line-height: 1;
+          line-height: 1 !important;
           margin-bottom: 0.5em !important;
         }
         h2 {
@@ -259,6 +259,11 @@ export default function GlobalStyles() {
           border-top: 2px solid rgba(0, 0, 0, 0.15);
           margin-top: 8px;
           margin-bottom: 16px;
+        }
+
+        //  For reservoir dialogs to fix line height
+        div[role='dialog'] p {
+          padding: 0 !important;
         }
 
         .markdown {

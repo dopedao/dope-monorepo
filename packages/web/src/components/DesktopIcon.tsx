@@ -1,4 +1,4 @@
-import { Image } from '@chakra-ui/react';
+import { Box, Image } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { media } from 'ui/styles/mixins';
 
@@ -9,8 +9,11 @@ type IconProps = {
 };
 
 const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
-  <div
+  <Box
     onClick={() => clickAction()}
+    onKeyDown={() => {}}
+    onKeyUp={() => {}}
+    onKeyPress={() => {}}
     className="desktop-icon"
     css={css`
       display: flex;
@@ -26,7 +29,7 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
       `}
     `}
   >
-    <div
+    <Box
       className="desktop-icon-image"
       css={css`
         align-self: center;
@@ -34,9 +37,9 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
         justify-content: center;
         align-items: center;
         margin-bottom: 8px;
-        img {
-          display: block;
-        }
+        // img {
+        //   display: block;
+        // }
         width: 48px;
         height: 48px;
         ${media.tablet`
@@ -46,8 +49,8 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
       `}
     >
       <Image src={`/images/icon/${icon}.svg`} alt={icon} width="100%" height="100%" />
-    </div>
-    <div
+    </Box>
+    <Box
       className="desktop-icon-label"
       css={css`
         align-self: center;
@@ -63,9 +66,9 @@ const DesktopIcon = ({ icon, label, clickAction }: IconProps) => (
         `}
       `}
     >
-      {label}
-    </div>
-  </div>
+      {label.toUpperCase()}
+    </Box>
+  </Box>
 );
 
 export default DesktopIcon;

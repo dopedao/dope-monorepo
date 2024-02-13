@@ -6,7 +6,7 @@ export const PanelFooter = styled.div<{ stacked?: boolean | undefined }>`
   display: flex;
   flex-direction: ${({ stacked }) => (stacked ? 'column' : 'row')};
   align-items: ${({ stacked }) => (stacked ? 'stretch' : 'center')};
-  justify-content: space-between;
+  // justify-content: space-between;
   gap: 8px;
   padding: 8px;
   background-color: #dededd;

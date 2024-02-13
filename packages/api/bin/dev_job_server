@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Uses "go watch" to reload server on file changes
+# https://github.com/mitranim/gow
+# (to install run `go install github.com/mitranim/gow@latest`)
+cd "$(dirname "$0")/.."
+gow run cmd/jobServer/main.go

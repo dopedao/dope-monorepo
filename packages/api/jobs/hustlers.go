@@ -14,7 +14,6 @@ import (
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
 	a "github.com/dopedao/dope-monorepo/packages/api/jobs/alchemy"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
@@ -22,17 +21,14 @@ import (
 var baseUrl = "https://opt-mainnet.g.alchemy.com/nft/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG"
 var hustlerContractAddr = "0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E"
 
-func SyncHustlers() {
+type SyncHustlers struct{}
+
+func (sh SyncHustlers) Run() {
 	ctx := context.Background()
 	ownersWithTokenBalances := GetHustlerOwners()
 	numOwners := len(ownersWithTokenBalances)
 
-	// Tagged logger
-	_, log := logger.LogFor(
-		ctx,
-		func(zctx *zerolog.Context) zerolog.Context {
-			return zctx.Str("Job", "SyncHustlers")
-		})
+	log := logger.Log.With().Str("Job", "SyncHustlers").Logger()
 
 	// hContractBinding := GetHustlerContractBinding(log)
 

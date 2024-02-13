@@ -1,4 +1,21 @@
-import { InputGroup, InputRightElement, Button, Input, ChakraProvider, Container, Stack, Center, Spacer, Text, List, ListItem, AbsoluteCenter, HStack, IconButton } from '@chakra-ui/react';
+import {
+  Box,
+  InputGroup,
+  InputRightElement,
+  Button,
+  Input,
+  ChakraProvider,
+  Container,
+  Stack,
+  Center,
+  Spacer,
+  Text,
+  List,
+  ListItem,
+  AbsoluteCenter,
+  HStack,
+  IconButton,
+} from '@chakra-ui/react';
 import { Hustler } from '@dopewars/contracts';
 import { DataTypes, NetworkEvents } from 'game/handlers/network/types';
 import { ComponentManager } from 'phaser3-react/src/manager';
@@ -19,14 +36,18 @@ const isVisible = (ele: HTMLElement, container: HTMLElement) => {
   const { bottom, height, top } = ele.getBoundingClientRect();
   const containerRect = container.getBoundingClientRect();
 
-  return top <= containerRect.top ? containerRect.top - top <= height : bottom - containerRect.bottom <= height;
+  return top <= containerRect.top
+    ? containerRect.top - top <= height
+    : bottom - containerRect.bottom <= height;
 };
 
 export default function ChatType(props: Props) {
-  const [ unreadMessages, setUnreadMessages ] = React.useState(0);
-  const [ inputText, setInputText ] = React.useState('');
-  const [ messages, setMessages ] = React.useState(props.messagesStore);
-  const [ canSendMessage, setCanSendMessage ] = React.useState((props.chatMessageBoxes?.length ?? 0) < 3);
+  const [unreadMessages, setUnreadMessages] = React.useState(0);
+  const [inputText, setInputText] = React.useState('');
+  const [messages, setMessages] = React.useState(props.messagesStore);
+  const [canSendMessage, setCanSendMessage] = React.useState(
+    (props.chatMessageBoxes?.length ?? 0) < 3,
+  );
 
   const messagesListRef = React.useRef<HTMLUListElement>(null);
 
@@ -35,16 +56,24 @@ export default function ChatType(props: Props) {
   });
 
   useEffect(() => {
-    props.manager.events.on('chat_message', (message: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => {
-      setMessages(m => [...m, message]);
-      const lastMessageEl = messagesListRef.current?.lastElementChild as HTMLLIElement;
-      if (lastMessageEl && 
-        lastMessageEl?.parentElement?.parentElement && !isVisible(lastMessageEl, lastMessageEl?.parentElement?.parentElement)) 
-        setUnreadMessages(u => u + 1);
-    });
+    props.manager.events.on(
+      'chat_message',
+      (message: DataTypes[NetworkEvents.SERVER_PLAYER_CHAT_MESSAGE]) => {
+        setMessages(m => [...m, message]);
+        const lastMessageEl = messagesListRef.current?.lastElementChild as HTMLLIElement;
+        if (
+          lastMessageEl &&
+          lastMessageEl?.parentElement?.parentElement &&
+          !isVisible(lastMessageEl, lastMessageEl?.parentElement?.parentElement)
+        )
+          setUnreadMessages(u => u + 1);
+      },
+    );
 
     // constantly check chatMessageBoxes size and if it's less than 3, set canSendMessage to true
-    const interval = setInterval(() => setCanSendMessage((props.chatMessageBoxes?.length ?? 0) < 3));
+    const interval = setInterval(() =>
+      setCanSendMessage((props.chatMessageBoxes?.length ?? 0) < 3),
+    );
     return () => clearInterval(interval);
   }, [props.chatMessageBoxes?.length, props.manager.events]);
 
@@ -68,10 +97,9 @@ export default function ChatType(props: Props) {
   };
 
   const handleSubmit = (content: string) => {
-    if (content.length > 150)
-      return;
+    if (content.length > 150) return;
 
-      props.manager.events.emit('chat_submit', content);
+    props.manager.events.emit('chat_submit', content);
   };
 
   return (
@@ -84,71 +112,83 @@ export default function ChatType(props: Props) {
           boxShadow: '0 0.5rem 1rem rgba(0, 0, 0, 0.7)',
           height: '30%',
           width: '30%',
-          left: "1%",
-          bottom: "1%",
+          left: '1%',
+          bottom: '1%',
         }}
       >
-        <Stack style={{
-          paddingTop: '1rem',
-          height: '95%',
-        }}>
-          <div style={{
-            display: 'flex',
-            overflow: 'auto',
-            flexDirection: 'column-reverse',
-            marginBottom: '-3%',
-          }}>
-            <List ref={messagesListRef} spacing={-2} style={{
-            }}>
-              <Text style={{
-                color: 'blueviolet',
-              }}>
+        <Stack
+          style={{
+            paddingTop: '1rem',
+            height: '95%',
+          }}
+        >
+          <Box
+            style={{
+              display: 'flex',
+              overflow: 'auto',
+              flexDirection: 'column-reverse',
+              marginBottom: '-3%',
+            }}
+          >
+            <List ref={messagesListRef} spacing={-2} style={{}}>
+              <Text
+                style={{
+                  color: 'blueviolet',
+                }}
+              >
                 Welcome to the Dopeverse!
               </Text>
-              {messages.map((message, i) => 
-              <ListItem key={i}>
-                  <HStack style={{
-                    opacity: '0.8'
-                  }}>
-                    <Text style={{
-                      color: "white",
-                      width: '80%',
-                    }}>
-                      {message.author}: <span style={{color: message.color}}>{message.message}</span>
+              {messages.map((message, i) => (
+                <ListItem key={i}>
+                  <HStack
+                    style={{
+                      opacity: '0.8',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: 'white',
+                        width: '80%',
+                      }}
+                    >
+                      {message.author}:{' '}
+                      <span style={{ color: message.color }}>{message.message}</span>
                     </Text>
                     <Spacer />
-                    <Text style={{
-                      color: 'grey',
-                      fontSize: '0.6rem',
-                    }}>
+                    <Text
+                      style={{
+                        color: 'grey',
+                        fontSize: '0.6rem',
+                      }}
+                    >
                       {new Date(message.timestamp).toLocaleString()}
                     </Text>
                   </HStack>
                 </ListItem>
-              )}
+              ))}
             </List>
-          </div>
+          </Box>
           <Spacer />
           <Center>
-            <Button 
-                  style={{
-                    marginRight: '1%',
-                    marginTop: '-10%'
-                  }}
-                  variant="primary"
-                  backgroundColor="red.600"
-                  hidden={inputText.length <= 150} 
-                  onClick={() => setInputText(inputText.substring(0, 150))}
-                >
-                ❌ Message too long
+            <Button
+              style={{
+                marginRight: '1%',
+                marginTop: '-10%',
+              }}
+              variant="primary"
+              backgroundColor="red.600"
+              hidden={inputText.length <= 150}
+              onClick={() => setInputText(inputText.substring(0, 150))}
+            >
+              ❌ Message too long
             </Button>
-            <Button 
+            <Button
               style={{
                 marginTop: '-10%',
               }}
-              variant="primary" 
-              hidden={unreadMessages === 0} 
-              onClick={(e) => {
+              variant="primary"
+              hidden={unreadMessages === 0}
+              onClick={e => {
                 setUnreadMessages(0);
                 e.currentTarget.hidden = true;
                 if (messagesListRef.current)
@@ -183,7 +223,12 @@ export default function ChatType(props: Props) {
                 }}
               />
               <InputRightElement width="4.5rem" style={{ paddingRight: '2%' }}>
-                <Button h="1.75rem" size="sm" disabled={!canSendMessage || inputText.length > 150} onClick={() => handleSubmit(inputText)}>
+                <Button
+                  h="1.75rem"
+                  size="sm"
+                  isDisabled={!canSendMessage || inputText.length > 150}
+                  onClick={() => handleSubmit(inputText)}
+                >
                   Send
                 </Button>
               </InputRightElement>

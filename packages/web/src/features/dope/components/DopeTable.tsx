@@ -5,30 +5,12 @@ import { media } from 'ui/styles/mixins';
 import PanelContainer from 'components/PanelContainer';
 import PanelFooter from 'components/PanelFooter';
 import Check from 'ui/svg/Check';
-import { ItemTier, ItemType } from 'generated/graphql';
+import { Dope } from 'generated/graphql';
+import { Box } from '@chakra-ui/react';
 
 type DopeTableProps = {
   className?: string;
-  data: {
-    id: string;
-    claimed: boolean;
-    opened: boolean;
-    rank: number;
-    items: Array<{
-      __typename?: 'Item';
-      id: string;
-      fullname: string;
-      type: ItemType;
-      name: string;
-      namePrefix?: string | null | undefined;
-      nameSuffix?: string | null | undefined;
-      suffix?: string | null | undefined;
-      augmented?: boolean | null | undefined;
-      tier: ItemTier;
-      greatness: number;
-      count: number;
-    }>;
-  }[];
+  data: Pick<Dope, 'id' | 'claimed' | 'opened' | 'rank' | 'items'>[];
   selected: number;
   onSelect: (i: number) => void;
 };
@@ -79,8 +61,11 @@ const DopeTable = ({ className = '', data, selected, onSelect }: DopeTableProps)
           switch (sort) {
             case 'id':
               return a.id < b.id ? -1 : 1;
-            case 'rank':
-              return a.rank < b.rank ? -1 : 1;
+            case 'rank': {
+              const rankA = a.rank !== undefined ? a.rank : Number.MAX_VALUE;
+              const rankB = b.rank !== undefined ? b.rank : Number.MAX_VALUE;
+              return rankA !== null && rankB !== null ? (rankA < rankB ? -1 : 1) : 0;
+            }
             default:
               return a.id > b.id ? -1 : 1;
           }
@@ -111,7 +96,7 @@ const DopeTable = ({ className = '', data, selected, onSelect }: DopeTableProps)
         }
       `}
     >
-      <div
+      <Box
         css={css`
           display: flex;
           min-height: 100%;
@@ -165,7 +150,7 @@ const DopeTable = ({ className = '', data, selected, onSelect }: DopeTableProps)
             </Th>
           </Tfoot>
         </Table>
-      </div>
+      </Box>
     </PanelContainer>
   );
 };

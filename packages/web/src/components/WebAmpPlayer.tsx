@@ -62,16 +62,16 @@ const TRACKS = [
 
 const playerTracks: WebAmpTrack[] = [];
 
-TRACKS.forEach(track => {
+for (const track of TRACKS) {
   playerTracks.push({
     metaData: {
       title: track.title,
       artist: track.artist,
     },
-    url: BUCKET_URL +  track.url,
+    url: BUCKET_URL + track.url,
     duration: track.duration,
   });
-});
+}
 
 const Container = styled.div`
   position: absolute;
@@ -89,7 +89,7 @@ const WebAmpPlayer = ({ onClose }: Props) => {
   const previousWebAmp = useRef(null);
 
   useEffect(() => {
-    if (typeof window == 'undefined' || !containerEl.current) return;
+    if (typeof window === 'undefined' || !containerEl.current) return;
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/webamp@1.4.2/built/webamp.bundle.min.js';
     script.async = true;
@@ -117,7 +117,7 @@ const WebAmpPlayer = ({ onClose }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [containerEl]);
 
-  return <Container id="webamp-container" ref={containerEl}></Container>;
+  return <Container id="webamp-container" ref={containerEl} />;
 };
 
 export default WebAmpPlayer;

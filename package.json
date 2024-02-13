@@ -1,39 +1,32 @@
 {
-	"name": "dopewars",
-	"private": true,
-	"scripts": {
-		"web": "yarn workspace @dopewars/web",
-		"web:dev": "yarn workspace @dopewars/web dev",
-		"web:test": "yarn workspace @dopewars/web test",
-		"web:build": "yarn workspace @dopewars/web build",
-		"web:lint": "yarn workspace @dopewars/web lint",
-		"web:format": "yarn workspace @dopewars/web format",
-		"contracts": "yarn workspace @dopewars/contracts",
-		"format": "prettier --write 'packages/web/**/*.{ts(x)?,sol,md,css}' '!**/typechain/**'"
-	},
-	"devDependencies": {
-		"@typechain/ethers-v5": "^8.0.2",
-		"@types/howler": "^2.2.7",
-		"@types/mocha": "^8.2.2",
-		"@types/node": "^14.14.34",
-		"lerna": "^3.22.1",
-		"mocha": "^8.4.0",
-		"pinst": "^2.1.6",
-		"ts-node": "^10.0.0",
-		"typescript": "^4.3.2"
-	},
-	"workspaces": [
-		"packages/*"
-	],
-	"dependencies": {
-		"@dopewars/contracts": "workspace:packages/contracts",
-		"@dopewars/web": "workspace:packages/web",
-		"@sentry/react": "^6.17.4",
-		"@sentry/tracing": "^6.17.4",
-		"@types/isomorphic-fetch": "^0.0.35",
-		"howler": "^2.2.3",
-		"isomorphic-fetch": "^3.0.0",
-		"next": "12"
-	},
-	"packageManager": "yarn@3.3.0"
+  "name": "dopewars",
+  "private": true,
+  "scripts": {
+    "dev": "bin/dev",
+    "dev_all": "bin/dev_all",
+    "web:dev": "pnpm --filter @dopewars/web dev",
+    "web:start": "pnpm --filter @dopewars/web start",
+    "web:test": "pnpm --filter @dopewars/web test",
+    "web:build": "pnpm --filter @dopewars/web build",
+    "web:lint": "pnpm --filter @dopewars/web lint",
+    "web:format": "pnpm --filter @dopewars/web format",
+    "contracts": "pnpm --filter @dopewars/contracts",
+    "format": "prettier --write 'packages/web/**/*.{ts(x)?,sol,md,css}' '!**/typechain/**'"
+  },
+  "devDependencies": {
+    "@typechain/ethers-v5": "^8.0.2",
+    "@types/howler": "^2.2.7",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^14.14.34",
+    "concurrently": "^8.2.2",
+    "lerna": "^3.22.1",
+    "mocha": "^8.4.0",
+    "pinst": "^2.1.6",
+    "ts-node": "^10.0.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@dopewars/contracts": "workspace:*",
+    "@dopewars/web": "workspace:*"
+  }
 }

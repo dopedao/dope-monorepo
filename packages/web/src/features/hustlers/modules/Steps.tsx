@@ -7,7 +7,7 @@ import Finalize from 'features/hustlers/modules/Finalize';
 import useHustler from 'features/hustlers/hooks/useHustler';
 import useDispatchHustler from 'features/hustlers/hooks/useDispatchHustler';
 import Stepper from 'features/hustlers/components/Stepper';
-import HustlerContainer from 'components/hustler/HustlerContainer';
+import HustlerContainer from 'features/hustlers/components/HustlerContainer';
 import { Box } from '@chakra-ui/react';
 
 export type StepsProps = {
@@ -21,7 +21,11 @@ const Steps = () => {
   const hustler = useHustler();
   const dispatch = useDispatchHustler();
   const [hustlerConfig, setHustlerConfig] = useState(
-    getRandomHustler({ dopeId: String(router.query.id), zoomWindow: ZOOM_WINDOWS[2], isVehicle: true }),
+    getRandomHustler({
+      dopeId: String(router.query.id),
+      zoomWindow: ZOOM_WINDOWS[2],
+      showVehicle: true,
+    }),
   );
 
   const handleFinishConfiguration = () => {

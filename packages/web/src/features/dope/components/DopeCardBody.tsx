@@ -1,17 +1,18 @@
 import { css } from '@emotion/react';
-import { DopeCardProps, DopeItemApiResponse } from './DopeCard';
 import { DopeLegendColors } from 'features/dope/components/DopeLegend';
 import { Image } from '@chakra-ui/react';
 import { NUM_DOPE_TOKENS } from 'utils/constants';
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { Link } from '@chakra-ui/layout';
 import styled from '@emotion/styled';
+import { Dope } from 'generated/graphql';
 import DopeCardItems from 'features/dope/components/DopeCardItems';
 import DopeItem from 'features/dope/components/DopeItem';
 import DopeCardPreviewButton from 'features/dope/components/DopeCardPreviewButton';
 import DopeStatus from 'features/dope/components/DopeStatus';
-import RenderFromDopeIdOnly from 'components/hustler/RenderFromDopeIdOnly';
-import HustlerContainer from 'components/hustler/HustlerContainer';
+import RenderFromDopeIdOnly from 'features/hustlers/components/RenderFromDopeIdOnly';
+import HustlerContainer from 'features/hustlers/components/HustlerContainer';
+import { Box } from '@chakra-ui/react';
 
 export const ITEM_ORDER = [
   'WEAPON',
@@ -35,12 +36,10 @@ const DopeCardBody = ({
   dope,
   isExpanded,
   hidePreviewButton = false,
-  showDopeClaimStatus = false,
 }: {
-  dope: Omit<DopeItemApiResponse, 'listings'>;
+  dope: Pick<Dope, 'id' | 'claimed' | 'opened' | 'rank' | 'items'>;
   isExpanded: boolean;
   hidePreviewButton?: boolean;
-  showDopeClaimStatus?: boolean;
 }) => {
   const [isPreviewShown, setPreviewShown] = useState(false);
   const [isRarityVisible, setRarityVisible] = useState(false);
@@ -65,8 +64,22 @@ const DopeCardBody = ({
     }
   };
 
+  const sortedItems = useMemo(() => {
+    return dope?.items?.sort((a, b) => {
+      const indexA = ITEM_ORDER.indexOf(a.type.toUpperCase());
+      const indexB = ITEM_ORDER.indexOf(b.type.toUpperCase());
+      if (indexA > indexB) {
+        return 1;
+      }
+      if (indexA < indexB) {
+        return -1;
+      }
+      return 0;
+    });
+  }, [dope?.items]);
+
   return (
-    <div
+    <Box
       css={css`
         flex: 1;
         background: #fff;
@@ -80,7 +93,7 @@ const DopeCardBody = ({
       `}
     >
       <DopeCardItems isExpanded={isExpanded}>
-        <div
+        <Box
           css={css`
             padding-bottom: 8px;
             font-size: var(--text-small);
@@ -94,26 +107,26 @@ const DopeCardBody = ({
           onClick={toggleItemLegendVisibility}
         >
           <span>
-            ( {dope.rank + 1} / {NUM_DOPE_TOKENS} )
+            ( {(dope.rank ?? 0) + 1} / {NUM_DOPE_TOKENS} )
           </span>
           {!dope.opened && isExpanded && (isRarityVisible ? '🙈' : '👀')}
-        </div>
+        </Box>
         {dope.opened && isExpanded && (
-          <div>
+          <Box>
             <HustlerContainer bgColor="transparent">
               <Image
                 src="/images/hustler/vote_female.png"
                 alt="This DOPE NFT has no Gear to Unpack"
               />
               <FinePrint>
-                This DOPE NFT has been fully claimed. It serves as a DAO voting token, and will be
+                This DOPE NFT has been fully claimed. It serves as a DAO voting token, and might be
                 eligible for future airdrops.
               </FinePrint>
             </HustlerContainer>
-          </div>
+          </Box>
         )}
         {!dope.opened && dope.items && (
-          <div
+          <Box
             className="slideContainer"
             css={css`
               display: flex;
@@ -135,16 +148,13 @@ const DopeCardBody = ({
               }
             `}
           >
-            <div className="slide" ref={hustlerItemsRef}>
-              {dope.items
-                .sort(function (a, b) {
-                  if (ITEM_ORDER.indexOf(a.type) > ITEM_ORDER.indexOf(b.type)) {
-                    return 1;
-                  } else {
-                    return -1;
+            <Box className="slide" ref={hustlerItemsRef}>
+              {sortedItems?.map(
+                ({ id, name, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
+                  let color = DopeLegendColors.COMMON;
+                  if (tier) {
+                    color = DopeLegendColors[tier];
                   }
-                })
-                .map(({ id, name, namePrefix, nameSuffix, suffix, augmented, type, tier }) => {
                   return (
                     // @ts-ignore
                     <DopeItem
@@ -155,15 +165,16 @@ const DopeCardBody = ({
                       suffix={suffix}
                       augmented={augmented}
                       type={type}
-                      color={DopeLegendColors[tier]}
+                      color={color}
                       isExpanded={isExpanded}
                       tier={tier}
                       showRarity={isRarityVisible}
                     />
                   );
-                })}
-            </div>
-            <div className="slide" ref={hustlerPreviewRef}>
+                },
+              )}
+            </Box>
+            <Box className="slide" ref={hustlerPreviewRef}>
               <HustlerContainer bgColor="transparent">
                 {!hidePreviewButton && isPreviewShown && <RenderFromDopeIdOnly id={dope.id} />}
                 <FinePrint>
@@ -181,24 +192,18 @@ const DopeCardBody = ({
                   </Link>
                 </FinePrint>
               </HustlerContainer>
-            </div>
-          </div>
+            </Box>
+          </Box>
         )}
       </DopeCardItems>
-      {!hidePreviewButton && isExpanded && (
+      {!hidePreviewButton && !dope.opened && isExpanded && (
         <DopeCardPreviewButton
           togglePreview={togglePreview}
           isPreviewShown={isPreviewShown}
           disabled={dope.opened}
         />
       )}
-      {showDopeClaimStatus && (
-        <>
-          <DopeStatus content={'hustler'} status={!dope.opened} />
-          <DopeStatus content={'paper'} status={!dope.claimed} />
-        </>
-      )}
-    </div>
+    </Box>
   );
 };
 export default DopeCardBody;

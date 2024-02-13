@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import { Provider } from "@ethersproject/providers";
+import { Contract, Interface, type ContractRunner } from "ethers";
 import type { SwapMeet, SwapMeetInterface } from "../SwapMeet";
 
 const _abi = [
@@ -781,17 +780,14 @@ const _abi = [
     stateMutability: "view",
     type: "function",
   },
-];
+] as const;
 
 export class SwapMeet__factory {
   static readonly abi = _abi;
   static createInterface(): SwapMeetInterface {
-    return new utils.Interface(_abi) as SwapMeetInterface;
+    return new Interface(_abi) as SwapMeetInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): SwapMeet {
-    return new Contract(address, _abi, signerOrProvider) as SwapMeet;
+  static connect(address: string, runner?: ContractRunner | null): SwapMeet {
+    return new Contract(address, _abi, runner) as unknown as SwapMeet;
   }
 }

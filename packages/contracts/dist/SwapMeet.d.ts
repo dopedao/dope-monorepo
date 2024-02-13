@@ -1,47 +1,17 @@
-import { BaseContract, BigNumber, BigNumberish, BytesLike, CallOverrides, ContractTransaction, Overrides, PopulatedTransaction, Signer, utils } from "ethers";
-import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
-import { Listener, Provider } from "@ethersproject/providers";
-import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
-export interface SwapMeetInterface extends utils.Interface {
-    functions: {
-        "balanceOf(address,uint256)": FunctionFragment;
-        "balanceOfBatch(address[],uint256[])": FunctionFragment;
-        "batchSetRle(uint256[],bytes[])": FunctionFragment;
-        "contractURI()": FunctionFragment;
-        "fullname(uint256)": FunctionFragment;
-        "isApprovedForAll(address,address)": FunctionFragment;
-        "itemIds(uint256)": FunctionFragment;
-        "mint(address,uint8[5],uint8,uint256,bytes)": FunctionFragment;
-        "mintBatch(address,uint8[],uint8[],uint256[],bytes)": FunctionFragment;
-        "name()": FunctionFragment;
-        "open(uint256,address,bytes)": FunctionFragment;
-        "owner()": FunctionFragment;
-        "palette(uint8)": FunctionFragment;
-        "params(uint256)": FunctionFragment;
-        "renounceOwnership()": FunctionFragment;
-        "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
-        "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
-        "setApprovalForAll(address,bool)": FunctionFragment;
-        "setPalette(uint8,bytes4[])": FunctionFragment;
-        "setRle(uint256,bytes,bytes)": FunctionFragment;
-        "supportsInterface(bytes4)": FunctionFragment;
-        "symbol()": FunctionFragment;
-        "toBaseId(uint256)": FunctionFragment;
-        "toId(uint8[5],uint8)": FunctionFragment;
-        "tokenRle(uint256,uint8)": FunctionFragment;
-        "tokenURI(uint256)": FunctionFragment;
-        "transferOwnership(address)": FunctionFragment;
-        "uri(uint256)": FunctionFragment;
-    };
-    encodeFunctionData(functionFragment: "balanceOf", values: [string, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "balanceOfBatch", values: [string[], BigNumberish[]]): string;
+import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
+import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "./common";
+export interface SwapMeetInterface extends Interface {
+    getFunction(nameOrSignature: "balanceOf" | "balanceOfBatch" | "batchSetRle" | "contractURI" | "fullname" | "isApprovedForAll" | "itemIds" | "mint" | "mintBatch" | "name" | "open" | "owner" | "palette" | "params" | "renounceOwnership" | "safeBatchTransferFrom" | "safeTransferFrom" | "setApprovalForAll" | "setPalette" | "setRle" | "supportsInterface" | "symbol" | "toBaseId" | "toId" | "tokenRle" | "tokenURI" | "transferOwnership" | "uri"): FunctionFragment;
+    getEvent(nameOrSignatureOrTopic: "ApprovalForAll" | "OwnershipTransferred" | "SetRle" | "TransferBatch" | "TransferSingle" | "URI"): EventFragment;
+    encodeFunctionData(functionFragment: "balanceOf", values: [AddressLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "balanceOfBatch", values: [AddressLike[], BigNumberish[]]): string;
     encodeFunctionData(functionFragment: "batchSetRle", values: [BigNumberish[], BytesLike[]]): string;
     encodeFunctionData(functionFragment: "contractURI", values?: undefined): string;
     encodeFunctionData(functionFragment: "fullname", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "isApprovedForAll", values: [string, string]): string;
+    encodeFunctionData(functionFragment: "isApprovedForAll", values: [AddressLike, AddressLike]): string;
     encodeFunctionData(functionFragment: "itemIds", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "mint", values: [
-        string,
+        AddressLike,
         [
             BigNumberish,
             BigNumberish,
@@ -53,16 +23,28 @@ export interface SwapMeetInterface extends utils.Interface {
         BigNumberish,
         BytesLike
     ]): string;
-    encodeFunctionData(functionFragment: "mintBatch", values: [string, BigNumberish[], BigNumberish[], BigNumberish[], BytesLike]): string;
+    encodeFunctionData(functionFragment: "mintBatch", values: [
+        AddressLike,
+        BigNumberish[],
+        BigNumberish[],
+        BigNumberish[],
+        BytesLike
+    ]): string;
     encodeFunctionData(functionFragment: "name", values?: undefined): string;
-    encodeFunctionData(functionFragment: "open", values: [BigNumberish, string, BytesLike]): string;
+    encodeFunctionData(functionFragment: "open", values: [BigNumberish, AddressLike, BytesLike]): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
     encodeFunctionData(functionFragment: "palette", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "params", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
-    encodeFunctionData(functionFragment: "safeBatchTransferFrom", values: [string, string, BigNumberish[], BigNumberish[], BytesLike]): string;
-    encodeFunctionData(functionFragment: "safeTransferFrom", values: [string, string, BigNumberish, BigNumberish, BytesLike]): string;
-    encodeFunctionData(functionFragment: "setApprovalForAll", values: [string, boolean]): string;
+    encodeFunctionData(functionFragment: "safeBatchTransferFrom", values: [
+        AddressLike,
+        AddressLike,
+        BigNumberish[],
+        BigNumberish[],
+        BytesLike
+    ]): string;
+    encodeFunctionData(functionFragment: "safeTransferFrom", values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BytesLike]): string;
+    encodeFunctionData(functionFragment: "setApprovalForAll", values: [AddressLike, boolean]): string;
     encodeFunctionData(functionFragment: "setPalette", values: [BigNumberish, BytesLike[]]): string;
     encodeFunctionData(functionFragment: "setRle", values: [BigNumberish, BytesLike, BytesLike]): string;
     encodeFunctionData(functionFragment: "supportsInterface", values: [BytesLike]): string;
@@ -80,7 +62,7 @@ export interface SwapMeetInterface extends utils.Interface {
     ]): string;
     encodeFunctionData(functionFragment: "tokenRle", values: [BigNumberish, BigNumberish]): string;
     encodeFunctionData(functionFragment: "tokenURI", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "transferOwnership", values: [string]): string;
+    encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
     decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "balanceOfBatch", data: BytesLike): Result;
@@ -110,403 +92,413 @@ export interface SwapMeetInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
-    events: {
-        "ApprovalForAll(address,address,bool)": EventFragment;
-        "OwnershipTransferred(address,address)": EventFragment;
-        "SetRle(uint256)": EventFragment;
-        "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
-        "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
-        "URI(string,uint256)": EventFragment;
-    };
-    getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "SetRle"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
-    getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
 }
-export declare type ApprovalForAllEvent = TypedEvent<[
-    string,
-    string,
-    boolean
-], {
-    account: string;
-    operator: string;
-    approved: boolean;
-}>;
-export declare type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
-export declare type OwnershipTransferredEvent = TypedEvent<[
-    string,
-    string
-], {
-    previousOwner: string;
-    newOwner: string;
-}>;
-export declare type OwnershipTransferredEventFilter = TypedEventFilter<OwnershipTransferredEvent>;
-export declare type SetRleEvent = TypedEvent<[BigNumber], {
-    id: BigNumber;
-}>;
-export declare type SetRleEventFilter = TypedEventFilter<SetRleEvent>;
-export declare type TransferBatchEvent = TypedEvent<[
-    string,
-    string,
-    string,
-    BigNumber[],
-    BigNumber[]
-], {
-    operator: string;
-    from: string;
-    to: string;
-    ids: BigNumber[];
-    values: BigNumber[];
-}>;
-export declare type TransferBatchEventFilter = TypedEventFilter<TransferBatchEvent>;
-export declare type TransferSingleEvent = TypedEvent<[
-    string,
-    string,
-    string,
-    BigNumber,
-    BigNumber
-], {
-    operator: string;
-    from: string;
-    to: string;
-    id: BigNumber;
-    value: BigNumber;
-}>;
-export declare type TransferSingleEventFilter = TypedEventFilter<TransferSingleEvent>;
-export declare type URIEvent = TypedEvent<[
-    string,
-    BigNumber
-], {
-    value: string;
-    id: BigNumber;
-}>;
-export declare type URIEventFilter = TypedEventFilter<URIEvent>;
+export declare namespace ApprovalForAllEvent {
+    type InputTuple = [
+        account: AddressLike,
+        operator: AddressLike,
+        approved: boolean
+    ];
+    type OutputTuple = [
+        account: string,
+        operator: string,
+        approved: boolean
+    ];
+    interface OutputObject {
+        account: string;
+        operator: string;
+        approved: boolean;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace OwnershipTransferredEvent {
+    type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+    type OutputTuple = [previousOwner: string, newOwner: string];
+    interface OutputObject {
+        previousOwner: string;
+        newOwner: string;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace SetRleEvent {
+    type InputTuple = [id: BigNumberish];
+    type OutputTuple = [id: bigint];
+    interface OutputObject {
+        id: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace TransferBatchEvent {
+    type InputTuple = [
+        operator: AddressLike,
+        from: AddressLike,
+        to: AddressLike,
+        ids: BigNumberish[],
+        values: BigNumberish[]
+    ];
+    type OutputTuple = [
+        operator: string,
+        from: string,
+        to: string,
+        ids: bigint[],
+        values: bigint[]
+    ];
+    interface OutputObject {
+        operator: string;
+        from: string;
+        to: string;
+        ids: bigint[];
+        values: bigint[];
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace TransferSingleEvent {
+    type InputTuple = [
+        operator: AddressLike,
+        from: AddressLike,
+        to: AddressLike,
+        id: BigNumberish,
+        value: BigNumberish
+    ];
+    type OutputTuple = [
+        operator: string,
+        from: string,
+        to: string,
+        id: bigint,
+        value: bigint
+    ];
+    interface OutputObject {
+        operator: string;
+        from: string;
+        to: string;
+        id: bigint;
+        value: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
+export declare namespace URIEvent {
+    type InputTuple = [value: string, id: BigNumberish];
+    type OutputTuple = [value: string, id: bigint];
+    interface OutputObject {
+        value: string;
+        id: bigint;
+    }
+    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+    type Filter = TypedDeferredTopicFilter<Event>;
+    type Log = TypedEventLog<Event>;
+    type LogDescription = TypedLogDescription<Event>;
+}
 export interface SwapMeet extends BaseContract {
-    connect(signerOrProvider: Signer | Provider | string): this;
-    attach(addressOrName: string): this;
-    deployed(): Promise<this>;
+    connect(runner?: ContractRunner | null): SwapMeet;
+    waitForDeployment(): Promise<this>;
     interface: SwapMeetInterface;
-    queryFilter<TEvent extends TypedEvent>(event: TypedEventFilter<TEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TEvent>>;
-    listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
-    listeners(eventName?: string): Array<Listener>;
-    removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
-    removeAllListeners(eventName?: string): this;
-    off: OnEvent<this>;
-    on: OnEvent<this>;
-    once: OnEvent<this>;
-    removeListener: OnEvent<this>;
-    functions: {
-        balanceOf(account: string, id: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
-        balanceOfBatch(accounts: string[], ids: BigNumberish[], overrides?: CallOverrides): Promise<[BigNumber[]]>;
-        batchSetRle(ids: BigNumberish[], rles: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        contractURI(overrides?: CallOverrides): Promise<[string]>;
-        fullname(id: BigNumberish, overrides?: CallOverrides): Promise<[string] & {
-            n: string;
-        }>;
-        isApprovedForAll(account: string, operator: string, overrides?: CallOverrides): Promise<[boolean]>;
-        itemIds(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber[]]>;
-        mint(to: string, components: [
+    queryFilter<TCEvent extends TypedContractEvent>(event: TCEvent, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    queryFilter<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, fromBlockOrBlockhash?: string | number | undefined, toBlock?: string | number | undefined): Promise<Array<TypedEventLog<TCEvent>>>;
+    on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    on<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+    once<TCEvent extends TypedContractEvent>(filter: TypedDeferredTopicFilter<TCEvent>, listener: TypedListener<TCEvent>): Promise<this>;
+    listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+    listeners(eventName?: string): Promise<Array<Listener>>;
+    removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+    balanceOf: TypedContractMethod<[
+        account: AddressLike,
+        id: BigNumberish
+    ], [
+        bigint
+    ], "view">;
+    balanceOfBatch: TypedContractMethod<[
+        accounts: AddressLike[],
+        ids: BigNumberish[]
+    ], [
+        bigint[]
+    ], "view">;
+    batchSetRle: TypedContractMethod<[
+        ids: BigNumberish[],
+        rles: BytesLike[]
+    ], [
+        void
+    ], "nonpayable">;
+    contractURI: TypedContractMethod<[], [string], "view">;
+    fullname: TypedContractMethod<[id: BigNumberish], [string], "view">;
+    isApprovedForAll: TypedContractMethod<[
+        account: AddressLike,
+        operator: AddressLike
+    ], [
+        boolean
+    ], "view">;
+    itemIds: TypedContractMethod<[tokenId: BigNumberish], [bigint[]], "view">;
+    mint: TypedContractMethod<[
+        to: AddressLike,
+        components: [
             BigNumberish,
             BigNumberish,
             BigNumberish,
             BigNumberish,
             BigNumberish
-        ], componentType: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        mintBatch(to: string, components: BigNumberish[], componentTypes: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        name(overrides?: CallOverrides): Promise<[string]>;
-        open(id: BigNumberish, to: string, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        owner(overrides?: CallOverrides): Promise<[string]>;
-        palette(id: BigNumberish, overrides?: CallOverrides): Promise<[string[]]>;
-        params(id: BigNumberish, overrides?: CallOverrides): Promise<[string, string, string, string, string, string]>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        safeBatchTransferFrom(from: string, to: string, ids: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        safeTransferFrom(from: string, to: string, id: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        setPalette(id: BigNumberish, palette: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        setRle(id: BigNumberish, male: BytesLike, female: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<[boolean]>;
-        symbol(overrides?: CallOverrides): Promise<[string]>;
-        toBaseId(id: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
-        toId(components: [
+        ],
+        componentType: BigNumberish,
+        amount: BigNumberish,
+        data: BytesLike
+    ], [
+        bigint
+    ], "nonpayable">;
+    mintBatch: TypedContractMethod<[
+        to: AddressLike,
+        components: BigNumberish[],
+        componentTypes: BigNumberish[],
+        amounts: BigNumberish[],
+        data: BytesLike
+    ], [
+        bigint[]
+    ], "nonpayable">;
+    name: TypedContractMethod<[], [string], "view">;
+    open: TypedContractMethod<[
+        id: BigNumberish,
+        to: AddressLike,
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    owner: TypedContractMethod<[], [string], "view">;
+    palette: TypedContractMethod<[id: BigNumberish], [string[]], "view">;
+    params: TypedContractMethod<[
+        id: BigNumberish
+    ], [
+        [string, string, string, string, string, string]
+    ], "view">;
+    renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+    safeBatchTransferFrom: TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        ids: BigNumberish[],
+        amounts: BigNumberish[],
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    safeTransferFrom: TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        id: BigNumberish,
+        amount: BigNumberish,
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    setApprovalForAll: TypedContractMethod<[
+        operator: AddressLike,
+        approved: boolean
+    ], [
+        void
+    ], "nonpayable">;
+    setPalette: TypedContractMethod<[
+        id: BigNumberish,
+        palette: BytesLike[]
+    ], [
+        void
+    ], "nonpayable">;
+    setRle: TypedContractMethod<[
+        id: BigNumberish,
+        male: BytesLike,
+        female: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    supportsInterface: TypedContractMethod<[
+        interfaceId: BytesLike
+    ], [
+        boolean
+    ], "view">;
+    symbol: TypedContractMethod<[], [string], "view">;
+    toBaseId: TypedContractMethod<[id: BigNumberish], [bigint], "view">;
+    toId: TypedContractMethod<[
+        components: [
             BigNumberish,
             BigNumberish,
             BigNumberish,
             BigNumberish,
             BigNumberish
-        ], componentType: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
-        tokenRle(id: BigNumberish, gender: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<ContractTransaction>;
-        uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-    };
-    balanceOf(account: string, id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-    balanceOfBatch(accounts: string[], ids: BigNumberish[], overrides?: CallOverrides): Promise<BigNumber[]>;
-    batchSetRle(ids: BigNumberish[], rles: BytesLike[], overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    contractURI(overrides?: CallOverrides): Promise<string>;
-    fullname(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    isApprovedForAll(account: string, operator: string, overrides?: CallOverrides): Promise<boolean>;
-    itemIds(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber[]>;
-    mint(to: string, components: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-    ], componentType: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    mintBatch(to: string, components: BigNumberish[], componentTypes: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    name(overrides?: CallOverrides): Promise<string>;
-    open(id: BigNumberish, to: string, data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    owner(overrides?: CallOverrides): Promise<string>;
-    palette(id: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
-    params(id: BigNumberish, overrides?: CallOverrides): Promise<[string, string, string, string, string, string]>;
-    renounceOwnership(overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    safeBatchTransferFrom(from: string, to: string, ids: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    safeTransferFrom(from: string, to: string, id: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    setPalette(id: BigNumberish, palette: BytesLike[], overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    setRle(id: BigNumberish, male: BytesLike, female: BytesLike, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-    symbol(overrides?: CallOverrides): Promise<string>;
-    toBaseId(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-    toId(components: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-    ], componentType: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-    tokenRle(id: BigNumberish, gender: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    transferOwnership(newOwner: string, overrides?: Overrides & {
-        from?: string | Promise<string>;
-    }): Promise<ContractTransaction>;
-    uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    callStatic: {
-        balanceOf(account: string, id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        balanceOfBatch(accounts: string[], ids: BigNumberish[], overrides?: CallOverrides): Promise<BigNumber[]>;
-        batchSetRle(ids: BigNumberish[], rles: BytesLike[], overrides?: CallOverrides): Promise<void>;
-        contractURI(overrides?: CallOverrides): Promise<string>;
-        fullname(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        isApprovedForAll(account: string, operator: string, overrides?: CallOverrides): Promise<boolean>;
-        itemIds(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber[]>;
-        mint(to: string, components: [
+        ],
+        componentType: BigNumberish
+    ], [
+        bigint
+    ], "view">;
+    tokenRle: TypedContractMethod<[
+        id: BigNumberish,
+        gender: BigNumberish
+    ], [
+        string
+    ], "view">;
+    tokenURI: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    transferOwnership: TypedContractMethod<[
+        newOwner: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
+    uri: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+    getFunction(nameOrSignature: "balanceOf"): TypedContractMethod<[
+        account: AddressLike,
+        id: BigNumberish
+    ], [
+        bigint
+    ], "view">;
+    getFunction(nameOrSignature: "balanceOfBatch"): TypedContractMethod<[
+        accounts: AddressLike[],
+        ids: BigNumberish[]
+    ], [
+        bigint[]
+    ], "view">;
+    getFunction(nameOrSignature: "batchSetRle"): TypedContractMethod<[
+        ids: BigNumberish[],
+        rles: BytesLike[]
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "contractURI"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "fullname"): TypedContractMethod<[id: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "isApprovedForAll"): TypedContractMethod<[
+        account: AddressLike,
+        operator: AddressLike
+    ], [
+        boolean
+    ], "view">;
+    getFunction(nameOrSignature: "itemIds"): TypedContractMethod<[tokenId: BigNumberish], [bigint[]], "view">;
+    getFunction(nameOrSignature: "mint"): TypedContractMethod<[
+        to: AddressLike,
+        components: [
             BigNumberish,
             BigNumberish,
             BigNumberish,
             BigNumberish,
             BigNumberish
-        ], componentType: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-        mintBatch(to: string, components: BigNumberish[], componentTypes: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: CallOverrides): Promise<BigNumber[]>;
-        name(overrides?: CallOverrides): Promise<string>;
-        open(id: BigNumberish, to: string, data: BytesLike, overrides?: CallOverrides): Promise<void>;
-        owner(overrides?: CallOverrides): Promise<string>;
-        palette(id: BigNumberish, overrides?: CallOverrides): Promise<string[]>;
-        params(id: BigNumberish, overrides?: CallOverrides): Promise<[string, string, string, string, string, string]>;
-        renounceOwnership(overrides?: CallOverrides): Promise<void>;
-        safeBatchTransferFrom(from: string, to: string, ids: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: CallOverrides): Promise<void>;
-        safeTransferFrom(from: string, to: string, id: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: CallOverrides): Promise<void>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: CallOverrides): Promise<void>;
-        setPalette(id: BigNumberish, palette: BytesLike[], overrides?: CallOverrides): Promise<void>;
-        setRle(id: BigNumberish, male: BytesLike, female: BytesLike, overrides?: CallOverrides): Promise<void>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-        symbol(overrides?: CallOverrides): Promise<string>;
-        toBaseId(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        toId(components: [
+        ],
+        componentType: BigNumberish,
+        amount: BigNumberish,
+        data: BytesLike
+    ], [
+        bigint
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "mintBatch"): TypedContractMethod<[
+        to: AddressLike,
+        components: BigNumberish[],
+        componentTypes: BigNumberish[],
+        amounts: BigNumberish[],
+        data: BytesLike
+    ], [
+        bigint[]
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "name"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "open"): TypedContractMethod<[
+        id: BigNumberish,
+        to: AddressLike,
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "owner"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "palette"): TypedContractMethod<[id: BigNumberish], [string[]], "view">;
+    getFunction(nameOrSignature: "params"): TypedContractMethod<[
+        id: BigNumberish
+    ], [
+        [string, string, string, string, string, string]
+    ], "view">;
+    getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
+    getFunction(nameOrSignature: "safeBatchTransferFrom"): TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        ids: BigNumberish[],
+        amounts: BigNumberish[],
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "safeTransferFrom"): TypedContractMethod<[
+        from: AddressLike,
+        to: AddressLike,
+        id: BigNumberish,
+        amount: BigNumberish,
+        data: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "setApprovalForAll"): TypedContractMethod<[
+        operator: AddressLike,
+        approved: boolean
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "setPalette"): TypedContractMethod<[
+        id: BigNumberish,
+        palette: BytesLike[]
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "setRle"): TypedContractMethod<[
+        id: BigNumberish,
+        male: BytesLike,
+        female: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "supportsInterface"): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
+    getFunction(nameOrSignature: "symbol"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "toBaseId"): TypedContractMethod<[id: BigNumberish], [bigint], "view">;
+    getFunction(nameOrSignature: "toId"): TypedContractMethod<[
+        components: [
             BigNumberish,
             BigNumberish,
             BigNumberish,
             BigNumberish,
             BigNumberish
-        ], componentType: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        tokenRle(id: BigNumberish, gender: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-        transferOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
-        uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-    };
+        ],
+        componentType: BigNumberish
+    ], [
+        bigint
+    ], "view">;
+    getFunction(nameOrSignature: "tokenRle"): TypedContractMethod<[
+        id: BigNumberish,
+        gender: BigNumberish
+    ], [
+        string
+    ], "view">;
+    getFunction(nameOrSignature: "tokenURI"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+    getFunction(nameOrSignature: "uri"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getEvent(key: "ApprovalForAll"): TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
+    getEvent(key: "OwnershipTransferred"): TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+    getEvent(key: "SetRle"): TypedContractEvent<SetRleEvent.InputTuple, SetRleEvent.OutputTuple, SetRleEvent.OutputObject>;
+    getEvent(key: "TransferBatch"): TypedContractEvent<TransferBatchEvent.InputTuple, TransferBatchEvent.OutputTuple, TransferBatchEvent.OutputObject>;
+    getEvent(key: "TransferSingle"): TypedContractEvent<TransferSingleEvent.InputTuple, TransferSingleEvent.OutputTuple, TransferSingleEvent.OutputObject>;
+    getEvent(key: "URI"): TypedContractEvent<URIEvent.InputTuple, URIEvent.OutputTuple, URIEvent.OutputObject>;
     filters: {
-        "ApprovalForAll(address,address,bool)"(account?: string | null, operator?: string | null, approved?: null): ApprovalForAllEventFilter;
-        ApprovalForAll(account?: string | null, operator?: string | null, approved?: null): ApprovalForAllEventFilter;
-        "OwnershipTransferred(address,address)"(previousOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
-        OwnershipTransferred(previousOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
-        "SetRle(uint256)"(id?: null): SetRleEventFilter;
-        SetRle(id?: null): SetRleEventFilter;
-        "TransferBatch(address,address,address,uint256[],uint256[])"(operator?: string | null, from?: string | null, to?: string | null, ids?: null, values?: null): TransferBatchEventFilter;
-        TransferBatch(operator?: string | null, from?: string | null, to?: string | null, ids?: null, values?: null): TransferBatchEventFilter;
-        "TransferSingle(address,address,address,uint256,uint256)"(operator?: string | null, from?: string | null, to?: string | null, id?: null, value?: null): TransferSingleEventFilter;
-        TransferSingle(operator?: string | null, from?: string | null, to?: string | null, id?: null, value?: null): TransferSingleEventFilter;
-        "URI(string,uint256)"(value?: null, id?: BigNumberish | null): URIEventFilter;
-        URI(value?: null, id?: BigNumberish | null): URIEventFilter;
-    };
-    estimateGas: {
-        balanceOf(account: string, id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        balanceOfBatch(accounts: string[], ids: BigNumberish[], overrides?: CallOverrides): Promise<BigNumber>;
-        batchSetRle(ids: BigNumberish[], rles: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        contractURI(overrides?: CallOverrides): Promise<BigNumber>;
-        fullname(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        isApprovedForAll(account: string, operator: string, overrides?: CallOverrides): Promise<BigNumber>;
-        itemIds(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        mint(to: string, components: [
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish
-        ], componentType: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        mintBatch(to: string, components: BigNumberish[], componentTypes: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        name(overrides?: CallOverrides): Promise<BigNumber>;
-        open(id: BigNumberish, to: string, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        owner(overrides?: CallOverrides): Promise<BigNumber>;
-        palette(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        params(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        safeBatchTransferFrom(from: string, to: string, ids: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        safeTransferFrom(from: string, to: string, id: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        setPalette(id: BigNumberish, palette: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        setRle(id: BigNumberish, male: BytesLike, female: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-        symbol(overrides?: CallOverrides): Promise<BigNumber>;
-        toBaseId(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        toId(components: [
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish
-        ], componentType: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        tokenRle(id: BigNumberish, gender: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<BigNumber>;
-        uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-    };
-    populateTransaction: {
-        balanceOf(account: string, id: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        balanceOfBatch(accounts: string[], ids: BigNumberish[], overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        batchSetRle(ids: BigNumberish[], rles: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        contractURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        fullname(id: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        isApprovedForAll(account: string, operator: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        itemIds(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        mint(to: string, components: [
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish
-        ], componentType: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        mintBatch(to: string, components: BigNumberish[], componentTypes: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        open(id: BigNumberish, to: string, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        palette(id: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        params(id: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        renounceOwnership(overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        safeBatchTransferFrom(from: string, to: string, ids: BigNumberish[], amounts: BigNumberish[], data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        safeTransferFrom(from: string, to: string, id: BigNumberish, amount: BigNumberish, data: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        setApprovalForAll(operator: string, approved: boolean, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        setPalette(id: BigNumberish, palette: BytesLike[], overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        setRle(id: BigNumberish, male: BytesLike, female: BytesLike, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        supportsInterface(interfaceId: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        toBaseId(id: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        toId(components: [
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish
-        ], componentType: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        tokenRle(id: BigNumberish, gender: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        transferOwnership(newOwner: string, overrides?: Overrides & {
-            from?: string | Promise<string>;
-        }): Promise<PopulatedTransaction>;
-        uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        "ApprovalForAll(address,address,bool)": TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
+        ApprovalForAll: TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
+        "OwnershipTransferred(address,address)": TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+        OwnershipTransferred: TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
+        "SetRle(uint256)": TypedContractEvent<SetRleEvent.InputTuple, SetRleEvent.OutputTuple, SetRleEvent.OutputObject>;
+        SetRle: TypedContractEvent<SetRleEvent.InputTuple, SetRleEvent.OutputTuple, SetRleEvent.OutputObject>;
+        "TransferBatch(address,address,address,uint256[],uint256[])": TypedContractEvent<TransferBatchEvent.InputTuple, TransferBatchEvent.OutputTuple, TransferBatchEvent.OutputObject>;
+        TransferBatch: TypedContractEvent<TransferBatchEvent.InputTuple, TransferBatchEvent.OutputTuple, TransferBatchEvent.OutputObject>;
+        "TransferSingle(address,address,address,uint256,uint256)": TypedContractEvent<TransferSingleEvent.InputTuple, TransferSingleEvent.OutputTuple, TransferSingleEvent.OutputObject>;
+        TransferSingle: TypedContractEvent<TransferSingleEvent.InputTuple, TransferSingleEvent.OutputTuple, TransferSingleEvent.OutputObject>;
+        "URI(string,uint256)": TypedContractEvent<URIEvent.InputTuple, URIEvent.OutputTuple, URIEvent.OutputObject>;
+        URI: TypedContractEvent<URIEvent.InputTuple, URIEvent.OutputTuple, URIEvent.OutputObject>;
     };
 }

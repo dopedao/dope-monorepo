@@ -28,36 +28,31 @@ func (Search) Fields() []ent.Field {
 			),
 		field.Bool("claimed"),
 		field.Bool("opened"),
-		field.Bool("sale_active"),
-		field.Int("sale_price").
-			GoType(BigInt{}).
-			SchemaType(BigIntSchemaType).
-			DefaultFunc(func() BigInt {
-				return NewBigInt(0)
-			}).
+		field.Bool("banned"),
+		field.Float("sale_price").
+			Optional().
 			Annotations(
-				entgql.Type("BigInt"),
 				entgql.OrderField("SALE_PRICE"),
 			),
-		field.Int("last_sale_price").
-			GoType(BigInt{}).
-			SchemaType(BigIntSchemaType).
-			DefaultFunc(func() BigInt {
-				return NewBigInt(0)
-			}).
-			Annotations(
-				entgql.Type("BigInt"),
-				entgql.OrderField("LAST_SALE_PRICE"),
-			),
+		// field.Int("last_sale_price").
+		// 	GoType(BigInt{}).
+		// 	SchemaType(BigIntSchemaType).
+		// 	DefaultFunc(func() BigInt {
+		// 		return NewBigInt(0)
+		// 	}).
+		// 	Annotations(
+		// 		entgql.Type("BigInt"),
+		// 		entgql.OrderField("LAST_SALE_PRICE"),
+		// 	),
 	}
 }
 
 // Edges of the Search.
 func (Search) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("dope", Dope.Type).Ref("index").Unique().Annotations(entgql.Bind()),
-		edge.From("item", Item.Type).Ref("index").Unique().Annotations(entgql.Bind()),
-		edge.From("hustler", Hustler.Type).Ref("index").Unique().Annotations(entgql.Bind()),
+		edge.From("dope", Dope.Type).Ref("index").Unique().Annotations(),
+		edge.From("item", Item.Type).Ref("index").Unique().Annotations(),
+		edge.From("hustler", Hustler.Type).Ref("index").Unique().Annotations(),
 	}
 }
 
@@ -65,5 +60,9 @@ func (Search) Edges() []ent.Edge {
 func (Search) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "search_index"},
+		entgql.RelayConnection(),
+		// We define this in the schema.graphql file instead,
+		// because we want to add a custom resolver.
+		// entgql.QueryField("search"),
 	}
 }

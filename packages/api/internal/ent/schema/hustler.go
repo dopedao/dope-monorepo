@@ -5,6 +5,7 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -48,6 +49,11 @@ func (Hustler) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("CREATED_AT"),
 			),
+		field.Float("best_ask_price_eth").
+			Optional().
+			Annotations(
+				entgql.OrderField("BEST_ASK_PRICE"),
+			),
 	}
 }
 
@@ -68,6 +74,15 @@ func (Hustler) Edges() []ent.Edge {
 		edge.From("body", BodyPart.Type).Ref("hustler_bodies").Unique(),
 		edge.From("hair", BodyPart.Type).Ref("hustler_hairs").Unique(),
 		edge.From("beard", BodyPart.Type).Ref("hustler_beards").Unique(),
-		edge.To("index", Search.Type).Unique().Annotations(entgql.Bind()),
+		edge.To("index", Search.Type).Unique().Annotations(),
+	}
+}
+
+// Necessary to implement graphql resolvers…hidden implementation bullshit
+// https://entgo.io/docs/tutorial-todo-gql-schema-generator/#add-annotations-to-todo-schema
+func (Hustler) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entgql.RelayConnection(),
+		entgql.QueryField(),
 	}
 }

@@ -143,10 +143,10 @@ var DopeInitiator__factory = /** @class */ (function () {
     function DopeInitiator__factory() {
     }
     DopeInitiator__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    DopeInitiator__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    DopeInitiator__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     DopeInitiator__factory.abi = _abi;
     return DopeInitiator__factory;

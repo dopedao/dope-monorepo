@@ -2,7 +2,7 @@ import { Button, Box, Image } from '@chakra-ui/react';
 import { media } from 'ui/styles/mixins';
 import RoadmapItem from 'features/about/components/RoadmapItem';
 import styled from '@emotion/styled';
-import HustlerSpriteSheetWalk from 'components/hustler/HustlerSpriteSheetWalk';
+import HustlerSpriteSheetWalk from 'features/hustlers/components/HustlerSpriteSheetWalk';
 import { getRandomNumber } from 'utils/utils';
 import Link from 'next/link';
 
@@ -91,8 +91,8 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            <Link href="https://opensea.io/collection/dope-v4" passHref>
-              <a target="opensea">8,000 randomized, limited-edition NFT bundles</a>
+            <Link href="https://opensea.io/collection/dope-v4" passHref target="opensea">
+              8,000 randomized, limited-edition NFT bundles
             </Link>{' '}
             of $PAPER and Gear were released September 2021 during a fair-mint, costing only gas.
           </p>
@@ -106,8 +106,8 @@ const ContentRoadmap = () => (
             games, and provides an equal Governance Vote on Proposals from the DAO.
           </p>
           <p>
-            <Link href="/swap-meet" passHref>
-              <a target="roadmap">BUY DOPE NFT</a>
+            <Link href="/swap-meet" passHref target="roadmap">
+              BUY DOPE NFT
             </Link>
           </p>
         </>
@@ -121,8 +121,12 @@ const ContentRoadmap = () => (
       >
         <>
           <p>
-            <Link href="https://www.coingecko.com/en/coins/dope-wars-paper" passHref>
-              <a target="coingecko">PAPER is an Ethereum ERC-20 token</a>
+            <Link
+              href="https://www.coingecko.com/en/coins/dope-wars-paper"
+              passHref
+              target="coingecko"
+            >
+              PAPER is an Ethereum ERC-20 token
             </Link>{' '}
             , and the in-game currency of Dope Wars.
           </p>
@@ -134,9 +138,10 @@ const ContentRoadmap = () => (
           <p>
             <Link
               href="https://www.dextools.io/app/ether/pair-explorer/0xad6d2f2cb7bf2c55c7493fd650d3a66a4c72c483"
+              target="roadmap"
               passHref
             >
-              <a target="roadmap">GET $PAPER</a>
+              GET $PAPER
             </Link>
           </p>
         </>
@@ -164,23 +169,16 @@ const ContentRoadmap = () => (
           <p>
             Gear is tradeable on our{' '}
             <Link href="/swap-meet-gear" passHref>
-              <a>Swap Meet</a>
-            </Link>{' '}
-            and on 3rd party marketplaces like{' '}
-            <Link
-              href="https://qx.app/collection/opt/0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110"
-              passHref
-            >
-              <a target="quix">Quixotic</a>
+              <a>Swap Meet</a>.
             </Link>
-            .
           </p>
           <p>
             <Link
               href="https://qx.app/collection/opt/0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110"
               passHref
+              target="roadmap"
             >
-              <a target="roadmap">GET GEAR</a>
+              GET GEAR
             </Link>
           </p>
         </>
@@ -196,25 +194,15 @@ const ContentRoadmap = () => (
           <p>
             <Link
               href="https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2#d491a70fab074062b7b3248d6d09c06a"
+              target="wiki"
               passHref
             >
-              <a target="wiki">Hustlers</a>
+              Hustlers
             </Link>{' '}
             are bleeding edge, fully-customizable in-game characters and profile pictures created by
             Claiming Gear from an original DOPE NFT then minting a Hustler NFT on the Optimism L2
             network for low gas fees. All Hustler artwork is stored on the blockchain and can be
-            changed at any time using our <Link href="/swap-meet"><a>Swap Meet</a></Link>.
-          </p>
-          <p>
-            Hustlers will soon be tradeable on our <Link href="/swap-meet-hustlers"><a>Swap Meet</a></Link>, but
-            are available now to be traded on{' '}
-            <Link
-              href="https://qx.app/collection/opt/0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E?attributes=&tab=0&query="
-              passHref
-            >
-              <a target="quix">Quixotic</a>
-            </Link>
-            .
+            changed at any time using our <Link href="/swap-meet">Swap Meet</Link>.
           </p>
           {/* <p>
             <a href="/mint" target="roadmap">MINT A HUSTLER</a>
@@ -228,9 +216,11 @@ const ContentRoadmap = () => (
         date="Q1 2022"
       >
         <p>
-          <Link href="https://community.dopewars.gg/mugshots" passHref><a>Dope Wars Mugshots</a></Link> are photo
-          snapshots of Hustlers from the Dope Wars metaverse represented as ERC-721 tokens on
-          Ethereum Mainnet.
+          <Link href="https://community.dopewars.gg/mugshots" passHref>
+            Dope Wars Mugshots
+          </Link>{' '}
+          are photo snapshots of Hustlers from the Dope Wars metaverse represented as ERC-721 tokens
+          on Ethereum Mainnet.
         </p>
         <p>
           Our Hustler NFTs are so cutting-edge that apps like OpenSea and Rainbow won&apos;t support
@@ -255,10 +245,10 @@ const ContentRoadmap = () => (
         <>
           <p>
             Feb 1st — Feb 15th{' '}
-            <Link href="/lunar-new-year"><a>
+            <Link href="/lunar-new-year">
               we&apos;re celebrating the Lunar New Year with a free Gear Accessory drop from
               Chinatown
-            </a></Link>
+            </Link>
             . All Hustlers created before January 31st, 2022 were eligible.
           </p>
           <p>新年好</p>
@@ -357,8 +347,8 @@ const ContentRoadmap = () => (
         <>
           <p>
             Buy, sell, and trade DOPE, Hustlers, Gear, and more on our Dope Wars Marketplace, or{' '}
-            <Link href="/swap-meet"><a>Swap Meet</a></Link>. Powered by the L2 Optimism network, all transactions
-            will happen quickly with almost nothing spent in gas fees.
+            <Link href="/swap-meet">Swap Meet</Link>. Powered by the L2 Optimism network, all
+            transactions will happen quickly with almost nothing spent in gas fees.
           </p>
           <p>
             All transactions on our Swap Meet will feed 5% royalties to the DAO treasury, which
@@ -381,9 +371,9 @@ const ContentRoadmap = () => (
             <Link
               href="https://www.notion.so/dope-wars/DIP-24-The-Hustle-TURF-10be2b8155004341b13fa3c836d7daf7"
               target="wiki"
-            ><a>
+            >
               Our proposal allows for enhanced game mechanics
-            </a></Link>{' '}
+            </Link>{' '}
             and a blueprint of land ownership rights for the Dope Wars Metaverse.
           </p>
         </>

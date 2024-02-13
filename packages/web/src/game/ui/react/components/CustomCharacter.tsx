@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   ChakraProvider,
   Container,
@@ -15,7 +16,7 @@ import AppWindow from 'components/AppWindow';
 export default function CustomCharacter(props: { gameWidth: number }) {
   return (
     <DesktopWindow title="Character customization" width={props.gameWidth / 2}>
-      <div style={{ backgroundColor: 'white' }}>
+      <Box style={{ backgroundColor: 'white' }}>
         {/* {        <Container style={{marginBottom: "5vh", marginTop: "5vh"}}>
                         <FormControl>
                             <FormLabel htmlFor='clothes'>Clothes</FormLabel>
@@ -37,7 +38,7 @@ export default function CustomCharacter(props: { gameWidth: number }) {
                         </FormControl>
                     </Container>} */}
         <h1>Hello</h1>
-      </div>
+      </Box>
     </DesktopWindow>
   );
 }

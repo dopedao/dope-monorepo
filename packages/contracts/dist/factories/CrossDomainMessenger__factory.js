@@ -39,10 +39,10 @@ var CrossDomainMessenger__factory = /** @class */ (function () {
     function CrossDomainMessenger__factory() {
     }
     CrossDomainMessenger__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    CrossDomainMessenger__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    CrossDomainMessenger__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     CrossDomainMessenger__factory.abi = _abi;
     return CrossDomainMessenger__factory;

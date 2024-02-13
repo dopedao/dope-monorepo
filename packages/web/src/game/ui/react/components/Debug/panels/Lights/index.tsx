@@ -13,7 +13,7 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
 
     return (
         <>
-            <div style={{
+            <Box style={{
                 paddingLeft: '1rem',
             }}>
                 Enabled: <Checkbox onChange={(e) => lights.active = e.target.checked} defaultChecked={lights.active}/>
@@ -54,7 +54,7 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
                 }}>
                     Add pointlight
                 </Button>
-            </div>
+            </Box>
             <br/>
             <Accordion defaultIndex={0}>
                 {
@@ -85,7 +85,7 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
                                 </InputGroup>
                                 <br/>
                                 Visible: <Checkbox onChange={(e) => light.visible = e.target.checked} defaultChecked={light.visible}/>
-                                <div>
+                                <Box>
                                     Color:
                                     <input 
                                         type="color" 
@@ -102,7 +102,7 @@ const LightsPanel = (props: { player: Player, lights: Phaser.GameObjects.LightsM
                                             ((light.color as any).g * 255).toString(16).padStart(2, '0') + 
                                             ((light.color as any).b * 255).toString(16).padStart(2, '0')}
                                     />
-                                </div>
+                                </Box>
                                 <br/>
                                 <Button variant="cny" onClick={(e) => {
                                     if (light instanceof Phaser.GameObjects.PointLight)

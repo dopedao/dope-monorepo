@@ -1,6 +1,6 @@
-import { FC, useMemo } from 'react';
-import { Button, HStack } from '@chakra-ui/react';
-import { useWeb3React } from '@web3-react/core';
+import { useMemo } from 'react';
+import { Button, HStack, Text } from '@chakra-ui/react';
+import { useAccount } from 'wagmi';
 import { Item, Maybe, useInfiniteProfileGearQuery, WalletItems } from 'generated/graphql';
 import CardContainer from './CardContainer';
 import GearCard from './GearCard';
@@ -8,6 +8,8 @@ import ItemCount from './ItemCount';
 import LoadingBlock from 'components/LoadingBlock';
 import SectionContent from './SectionContent';
 import SectionHeader from './SectionHeader';
+import { REFETCH_INTERVAL } from 'utils/constants';
+import Dialog from 'components/Dialog';
 
 type ProfileItem = Pick<WalletItems, 'id' | 'balance'> & {
   item: Pick<Item, 'id' | 'count' | 'fullname' | 'name' | 'svg' | 'suffix' | 'type'> & {
@@ -21,7 +23,7 @@ type GearData = {
 };
 
 const GearWrapper = ({ searchValue }: { searchValue: string }) => {
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
 
   const { data, hasNextPage, isFetching, fetchNextPage } = useInfiniteProfileGearQuery(
     {
@@ -41,17 +43,20 @@ const GearWrapper = ({ searchValue }: { searchValue: string }) => {
           },
         ],
       },
-      first: 50,
+      first: 100,
     },
     {
+      queryKey: ['profile-gear', account, searchValue],
+      initialPageParam: { after: null },
       getNextPageParam: lastPage => {
         if (lastPage.walletItems.pageInfo.hasNextPage) {
-          return {
-            after: lastPage.walletItems.pageInfo.endCursor,
-          };
+          return { after: lastPage.walletItems.pageInfo.endCursor };
         }
-        return false;
+        return null;
       },
+      // refresh faster since it's hard to invalidate this data
+      // will update the ui faster and feel snappier
+      refetchInterval: REFETCH_INTERVAL / 3,
     },
   );
 
@@ -71,8 +76,7 @@ const GearWrapper = ({ searchValue }: { searchValue: string }) => {
           ...result.walletItems,
           ...page.walletItems.edges.reduce((result, edge) => {
             if (!edge?.node) return result;
-
-            return [...result, edge.node];
+            return result.concat(edge.node as ProfileItem);
           }, [] as ProfileItem[]),
         ],
       };
@@ -93,21 +97,29 @@ const GearWrapper = ({ searchValue }: { searchValue: string }) => {
       >
         {gearData.walletItems.length ? (
           <CardContainer>
-            {gearData.walletItems.map(walletItem => {
-              return (
-                <GearCard
-                  key={walletItem.id}
-                  item={walletItem.item}
-                  balance={walletItem.balance}
-                  showEquipFooter
-                />
-              );
-            })}
+            {gearData.walletItems
+              .sort((a, b) => a.item.type.localeCompare(b.item.type))
+              .map(walletItem => {
+                return (
+                  <GearCard
+                    key={walletItem.id}
+                    item={walletItem.item}
+                    balance={walletItem.balance}
+                    showEquipFooter
+                  />
+                );
+              })}
             {isFetching && gearData.walletItems.length && <LoadingBlock maxRows={1} />}
             {hasNextPage && <Button onClick={() => fetchNextPage()}>Load more</Button>}
           </CardContainer>
         ) : (
-          <span>No Gear found</span>
+          <Dialog backgroundCss="">
+            <Text fontSize="medium">No GEAR in the connected wallet.</Text>
+            <Text>
+              If you&apos;ve recently transferred something it might take a few moments for it to
+              show here.
+            </Text>
+          </Dialog>
         )}
       </SectionContent>
     </>

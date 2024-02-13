@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import { Provider } from "@ethersproject/providers";
+import { Contract, Interface, type ContractRunner } from "ethers";
 import type {
   CrossDomainMessenger,
   CrossDomainMessengerInterface,
@@ -38,21 +37,21 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
-];
+] as const;
 
 export class CrossDomainMessenger__factory {
   static readonly abi = _abi;
   static createInterface(): CrossDomainMessengerInterface {
-    return new utils.Interface(_abi) as CrossDomainMessengerInterface;
+    return new Interface(_abi) as CrossDomainMessengerInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): CrossDomainMessenger {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as CrossDomainMessenger;
+      runner
+    ) as unknown as CrossDomainMessenger;
   }
 }

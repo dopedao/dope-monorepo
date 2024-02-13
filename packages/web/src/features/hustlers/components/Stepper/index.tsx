@@ -10,7 +10,7 @@ const STEPS = [
   },
   {
     step: 1,
-    title: 'Initiate',
+    title: 'Mint',
   },
   {
     step: 2,
@@ -64,7 +64,7 @@ const Stepper = () => {
     <StepContainer>
       {STEPS.map(({ step, title }, i) => (
         <>
-          <Item key={`item-${i}`}>
+          <Item key={`item-${step.toString}`}>
             <Button
               type="button"
               onClick={() => goToStep(step)}
@@ -74,7 +74,7 @@ const Stepper = () => {
               {title}
             </Button>
           </Item>
-          {step < 2 && <ChevronRight key={`chevron-${i}`} />}
+          {step < 2 && <ChevronRight key={`chevron-${step.toString}`} />}
         </>
       ))}
     </StepContainer>

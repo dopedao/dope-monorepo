@@ -785,10 +785,10 @@ var SwapMeet__factory = /** @class */ (function () {
     function SwapMeet__factory() {
     }
     SwapMeet__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    SwapMeet__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    SwapMeet__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     SwapMeet__factory.abi = _abi;
     return SwapMeet__factory;

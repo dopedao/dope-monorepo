@@ -21,7 +21,7 @@ export default class LoginScene extends Phaser.Scene {
     create() {
         this.background = this.add.image(this.sys.game.canvas.width / 2, this.sys.game.canvas.height / 2, 'background');
         
-        const comp = this.add.reactDom(Login, {
+        const comp = this.add.reactDom(Login as any, {
             authenticator: NetworkHandler.getInstance().authenticator
         });
 

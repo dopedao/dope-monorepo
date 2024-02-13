@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import AppWindow from 'components/AppWindow';
 import Head from 'components/Head';
-import DisconnectWallet from 'components/DisconnectWallet';
+import Account from 'components/web3account/Account';
 import DopeWarsExeNav from 'components/DopeWarsExeNav';
 import DesktopIconList from 'components/DesktopIconList';
 
@@ -17,7 +17,7 @@ const Wallet = () => {
       <DesktopIconList />
       <AppWindow requiresWalletConnection={true} padBody={false} navbar={<DopeWarsExeNav />}>
         <Head />
-        <DisconnectWallet onClose={() => closeApp()} />
+        <Account onClose={() => closeApp()} />
       </AppWindow>
     </>
   );

@@ -1,0 +1,18 @@
+#!/bin/sh
+# Shortcut to run postgres in docker locally because 
+# how the fuck can people remember all this shit
+DIR=$(pwd)
+
+docker start pg || docker run -d \
+  --name pg \
+  -e POSTGRES_PASSWORD=postgres \
+  -p 5432:5432 \
+  postgres \
+  -c 'log_statement=all' \
+  -c 'log_destination=csvlog' \
+  -c 'logging_collector=on' \
+  -c 'log_directory=/var/log/postgresql' \
+  -c 'log_filename=postgresql.log' \
+  -c 'deadlock_timeout=1s' \
+  -c 'log_lock_waits=true' \
+  -c 'log_error_verbosity=verbose'

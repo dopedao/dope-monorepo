@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Button, Input, Image } from '@chakra-ui/react';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount } from 'wagmi';
 import { useIsContract } from 'hooks/web3';
 import PanelBody from 'components/PanelBody';
 import PanelContainer from 'components/PanelContainer';
@@ -18,7 +18,7 @@ const MintTo = ({
   mintAddress: string | undefined;
   setMintAddress: (value: string) => void;
 }) => {
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
   const isContract = useIsContract(account);
 
   useEffect(() => {
@@ -32,7 +32,12 @@ const MintTo = ({
   }
 
   return (
-    <PanelContainer justifyContent="flex-start" css={css`max-height:180px;`}>
+    <PanelContainer
+      justifyContent="flex-start"
+      css={css`
+        max-height: 180px;
+      `}
+    >
       <PanelTitleBarFlex onClick={() => setMintTo(false)}>
         <span>Send to Different Address</span>
         <Image
@@ -47,7 +52,8 @@ const MintTo = ({
         {!isContract && <p>Send to a friend, or another wallet?</p>}
         {isContract && (
           <p>
-            It looks like you are using a contract wallet. Please set the Optimism address you want these items sent to.
+            It looks like you are using a contract wallet. Please set the Optimism address you want
+            these items sent to.
           </p>
         )}
         <Input

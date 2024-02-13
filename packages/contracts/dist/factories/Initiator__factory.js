@@ -335,10 +335,10 @@ var Initiator__factory = /** @class */ (function () {
     function Initiator__factory() {
     }
     Initiator__factory.createInterface = function () {
-        return new ethers_1.utils.Interface(_abi);
+        return new ethers_1.Interface(_abi);
     };
-    Initiator__factory.connect = function (address, signerOrProvider) {
-        return new ethers_1.Contract(address, _abi, signerOrProvider);
+    Initiator__factory.connect = function (address, runner) {
+        return new ethers_1.Contract(address, _abi, runner);
     };
     Initiator__factory.abi = _abi;
     return Initiator__factory;

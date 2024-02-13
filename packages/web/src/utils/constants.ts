@@ -1,4 +1,10 @@
 export const NUM_DOPE_TOKENS = 8000;
+
+export const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID || '1';
+export const OPT_CHAIN_ID = process.env.NEXT_PUBLIC_OPT_CHAIN_ID || '10';
+
+export const REFETCH_INTERVAL = 30_000;
+
 export const NETWORK = {
   1: {
     name: 'Mainnet',
@@ -86,18 +92,28 @@ export const NETWORK = {
   },
 };
 
-let apiUrl = 'https://api.dopewars.gg';
-// Set in .env.local in /packages/web
-if (process.env.NEXT_PUBLIC_APP_ENV && process.env.NEXT_PUBLIC_APP_ENV === 'development') {
-  apiUrl = 'http://localhost:8080';
+export const findChainIdAndContractKey = (contractAddress: string): { chainId: number; contractKey: string } => {
+  for (const chainId in NETWORK) {
+    const network = NETWORK[chainId as unknown as keyof typeof NETWORK];
+    if (network.contracts) {
+      for (const contractKey in network.contracts) {
+        // Contract addresses can come back lowercase from various
+        // sources like Alchemy or Reservoir.
+        if ((network.contracts as { [key: string]: string })[contractKey].toLowerCase() === contractAddress.toLowerCase()) {
+          return { chainId: Number(chainId), contractKey };
+        }
+      }
+    }
+  }
+  return { chainId: 0, contractKey: '' };
 }
-const MAINNET_API_URL = apiUrl;
 
-const TESTNET_API_URL = 'https://testnet.api.dopewars.gg/query';
 
-export const API_URI = {
-  1: MAINNET_API_URL,
-  10: MAINNET_API_URL,
-  42: TESTNET_API_URL,
-  69: TESTNET_API_URL,
-};
+// Set in .env.local in /packages/web
+let apiUrl = '';
+if (process.env.NEXT_PUBLIC_API_URL) {
+  apiUrl = process.env.NEXT_PUBLIC_API_URL;
+} else {
+  console.error('NEXT_PUBLIC_API_URL not set in .env.local');
+}
+export const MAINNET_API_URL = apiUrl;

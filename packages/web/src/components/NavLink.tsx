@@ -2,6 +2,7 @@ import React, { Children, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import cx from 'classnames';
 import Link, { LinkProps } from 'next/link';
+import { Box } from '@chakra-ui/react';
 
 type NavLinkProps = React.PropsWithChildren<LinkProps> & {
   activeClassName?: string;
@@ -31,17 +32,13 @@ export const NavLink = ({ children, activeClassName = 'active', ...props }: NavL
     }
   }, [isActive, tabRef]);
 
-  useEffect(()=>{
-    
-  }, [props.saveFullScreen])
+  useEffect(() => {}, [props.saveFullScreen]);
 
   return (
-    <div ref={tabRef}>
-      <Link {...props}>
-        {React.cloneElement(child, {
-          className: className || null,
-        })}
+    <Box ref={tabRef}>
+      <Link className={className} {...props}>
+        {child}
       </Link>
-    </div>
+    </Box>
   );
 };

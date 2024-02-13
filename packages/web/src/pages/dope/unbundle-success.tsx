@@ -6,6 +6,7 @@ import { getRandomNumber } from 'utils/utils';
 import { media } from 'ui/styles/mixins';
 import Head from 'components/Head';
 import WebAmpPlayer from 'components/WebAmpPlayer';
+import { Box } from '@chakra-ui/react';
 
 const MASTHEADS = [
   'dope.svg',
@@ -212,9 +213,9 @@ const UnbundleSuccess = () => {
                   return (
                     <li key={`plug-${index}`}>
                       <a href={plug.link} target={plug.name}>
-                        {plug.prefix ? <div className="prefix">&quot;{plug.prefix}&quot;</div> : ''}
+                        {plug.prefix ? <Box className="prefix">&quot;{plug.prefix}&quot;</Box> : ''}
                         {plug.name}
-                        {plug.suffix ? <div className="suffix">&quot;{plug.suffix}&quot;</div> : ''}
+                        {plug.suffix ? <Box className="suffix">&quot;{plug.suffix}&quot;</Box> : ''}
                       </a>
                     </li>
                   );
@@ -231,7 +232,7 @@ const UnbundleSuccess = () => {
             </MastheadContainer>
             <AlertContainer>
               <Alert status="success">
-                <div>
+                <Box>
                   <p>
                     Your Gear is making its way to the Optimism network.
                     <br />
@@ -246,7 +247,7 @@ const UnbundleSuccess = () => {
                   >
                     Gangsta Party
                   </Button>
-                </div>
+                </Box>
               </Alert>
             </AlertContainer>
           </>
@@ -261,7 +262,7 @@ const UnbundleSuccess = () => {
         width="100%"
         justifyContent="end"
       >
-        <Link href="/inventory?section=Dope" passHref>
+        <Link href="/swap-meet/inventory?section=Dope" passHref>
           <Button variant="primary">Unbundle More</Button>
         </Link>
       </HStack>

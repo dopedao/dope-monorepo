@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import { Provider } from "@ethersproject/providers";
+import { Contract, Interface, type ContractRunner } from "ethers";
 import type { Loot, LootInterface } from "../Loot";
 
 const _abi = [
@@ -922,14 +921,14 @@ const _abi = [
     stateMutability: "view",
     type: "function",
   },
-];
+] as const;
 
 export class Loot__factory {
   static readonly abi = _abi;
   static createInterface(): LootInterface {
-    return new utils.Interface(_abi) as LootInterface;
+    return new Interface(_abi) as LootInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): Loot {
-    return new Contract(address, _abi, signerOrProvider) as Loot;
+  static connect(address: string, runner?: ContractRunner | null): Loot {
+    return new Contract(address, _abi, runner) as unknown as Loot;
   }
 }

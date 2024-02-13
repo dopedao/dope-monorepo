@@ -11,6 +11,10 @@ query Hustler($where: HustlerWhereInput) {
         color
         background
         age
+        sex
+        svg
+        viewbox
+        order
         neck {
           id
           type
@@ -34,9 +38,7 @@ query Hustler($where: HustlerWhereInput) {
             }
           }
         }
-        sex
-        viewbox
-        order
+
         ring {
           id
           type
@@ -83,7 +85,6 @@ query Hustler($where: HustlerWhereInput) {
             }
           }
         }
-        svg
         body {
           id
           rle

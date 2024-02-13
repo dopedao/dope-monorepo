@@ -4,13 +4,13 @@ import { HustlerCustomization } from 'utils/HustlerConfig';
 import { Image } from '@chakra-ui/react';
 import { PanelFooter } from 'components/PanelFooter';
 import { StepsProps } from 'features/hustlers/modules/Steps';
-import ConfigurationControls from 'components/hustler/ConfigurationControls';
+import ConfigurationControls from 'features/hustlers/components/ConfigurationControls';
 import PanelContainer from 'components/PanelContainer';
-import RenderFromDopeId from 'components/hustler/RenderFromDopeId';
-import RenderFromItemIds from 'components/hustler/RenderFromItemIds';
+import RenderFromDopeId from 'features/hustlers/components/RenderFromDopeId';
+import RenderFromItemRles from 'features/hustlers/components/RenderFromItemRles';
 import StackedResponsiveContainer from 'components/StackedResponsiveContainer';
 import styled from '@emotion/styled';
-import ZoomControls from 'components/hustler/ZoomControls';
+import ZoomControls from 'features/hustlers/components/ZoomControls';
 import Link from 'next/link';
 import PngDownloadButton from '../PngDownloadButton';
 
@@ -41,80 +41,68 @@ const ConfigureHustler = ({
   hustlerId,
   itemRles,
   handleFinishConfiguration,
-}: ConfigureHustlerProps) => (
-  <StackedResponsiveContainer>
-    <PanelContainer
-      css={css`
-        min-height: 500px;
-        background-color: var(--gray-00);
-        gap: 16px;
-        flex: 2 !important;
-      `}
-    >
-      <HustlerCard bgColor={config.bgColor}>
-        {isCustomize && itemRles ? (
-          <RenderFromItemIds
-            bgColor={config.bgColor}
-            body={config.body}
-            facialHair={config.facialHair}
-            hair={config.hair}
-            itemRles={itemRles}
-            name={config.name}
-            renderName={config.renderName}
-            sex={config.sex}
-            textColor={config.textColor}
-            zoomWindow={config.zoomWindow}
-            ogTitle={ogTitle}
-            dopeId={config.dopeId}
-            isVehicle={config.isVehicle}
-          />
-        ) : (
-          <RenderFromDopeId
-            bgColor={config.bgColor}
-            body={config.body}
-            facialHair={config.facialHair}
-            hair={config.hair}
-            id={config.dopeId}
-            name={config.name}
-            renderName={config.renderName}
-            sex={config.sex}
-            textColor={config.textColor}
-            zoomWindow={config.zoomWindow}
-            ogTitle={ogTitle}
-            isVehicle={config.isVehicle}
-          />
-        )}
-      </HustlerCard>
-      <PanelFooter>
-        {isCustomize && itemRles && (
-          <>
-            <PngDownloadButton hustlerConfig={config} />
-            <Link
-              href={`https://community.dopewars.gg/collectibles/new?hustler_id=${hustlerId}`}
-              passHref
-            >
-              <a target="rebel">
-                <Button>
-                  <Image 
-                    src="/images/icon/camera.svg" 
-                    alt="Mint a Mugshot" 
-                    height="40px" 
-                  />
-                </Button>
-              </a>
-            </Link>
-          </>
-        )}
-        <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
-      </PanelFooter>
-    </PanelContainer>
-    <ConfigurationControls
-      config={config}
-      setHustlerConfig={setHustlerConfig}
-      handleFinishConfiguration={handleFinishConfiguration}
-      isCustomize={isCustomize}
-    />
-  </StackedResponsiveContainer>
-);
+}: ConfigureHustlerProps) => {
+  return (
+    <StackedResponsiveContainer>
+      <PanelContainer
+        css={css`
+          min-height: 500px;
+          background-color: var(--gray-00);
+          gap: 16px;
+          flex: 2 !important;
+        `}
+      >
+        <HustlerCard bgColor={config.bgColor}>
+          {isCustomize && itemRles ? (
+            <RenderFromItemRles
+              bgColor={config.bgColor}
+              body={config.body}
+              facialHair={config.facialHair}
+              hair={config.hair}
+              itemRles={itemRles}
+              name={config.name}
+              renderName={config.renderName}
+              sex={config.sex}
+              textColor={config.textColor}
+              zoomWindow={config.zoomWindow}
+              ogTitle={ogTitle}
+              dopeId={config.dopeId}
+              showVehicle={config.showVehicle}
+            />
+          ) : (
+            <RenderFromDopeId
+              bgColor={config.bgColor}
+              body={config.body}
+              facialHair={config.facialHair}
+              hair={config.hair}
+              id={config.dopeId}
+              name={config.name}
+              renderName={config.renderName}
+              sex={config.sex}
+              textColor={config.textColor}
+              zoomWindow={config.zoomWindow}
+              ogTitle={ogTitle}
+              showVehicle={config.showVehicle}
+            />
+          )}
+        </HustlerCard>
+        <PanelFooter>
+          {isCustomize && itemRles && (
+            <>
+              <PngDownloadButton hustlerConfig={config} />
+            </>
+          )}
+          <ZoomControls config={config} setHustlerConfig={setHustlerConfig} />
+        </PanelFooter>
+      </PanelContainer>
+      <ConfigurationControls
+        config={config}
+        setHustlerConfig={setHustlerConfig}
+        handleFinishConfiguration={handleFinishConfiguration}
+        isCustomize={isCustomize}
+      />
+    </StackedResponsiveContainer>
+  );
+};
 
 export default ConfigureHustler;

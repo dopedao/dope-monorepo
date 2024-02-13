@@ -1,0 +1,206 @@
+query Search(
+  $query: String!
+  $where: SearchWhereInput
+  $orderBy: SearchOrder
+  $first: Int
+  $last: Int
+  $before: Cursor
+  $after: Cursor
+) {
+  search(
+    query: $query
+    where: $where
+    orderBy: $orderBy
+    first: $first
+    last: $last
+    before: $before
+    after: $after
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      node {
+        dope {
+          __typename
+          id
+          claimed
+          opened
+          score
+          rank
+          bestAskPriceEth
+          items {
+            id
+            fullname
+            type
+            name
+            namePrefix
+            nameSuffix
+            suffix
+            augmented
+            tier
+            greatness
+            count
+          }
+        }
+        hustler {
+          __typename
+          id
+          bestAskPriceEth
+          title
+          name
+          type
+          title
+          color
+          background
+          age
+          sex
+          svg
+          neck {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+            fullname
+          }
+
+          ring {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+            fullname
+          }
+          accessory {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+            fullname
+          }
+          body {
+            id
+            sex
+            type
+            rle
+          }
+          hair {
+            id
+            sex
+            type
+            rle
+          }
+          beard {
+            id
+            sex
+            type
+            rle
+          }
+          drug {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+            fullname
+          }
+          hand {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+            fullname
+          }
+          weapon {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+            fullname
+          }
+          clothes {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+            fullname
+          }
+          vehicle {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+            fullname
+          }
+          waist {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+            fullname
+          }
+          foot {
+            id
+            type
+            name
+            suffix
+            augmented
+            tier
+            greatness
+            count
+            fullname
+          }
+        }
+        item {
+          __typename
+          bestAskPriceEth
+          id
+          fullname
+          name
+          svg
+          type
+          suffix
+        }
+      }
+    }
+  }
+}

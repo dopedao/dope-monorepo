@@ -14,13 +14,15 @@ var _ = g.Namespace("gear", func() {
 
 	g.Desc("sync_claims", "Sync the GEAR CLAIM status of every DOPE NFT")
 	g.Add("sync_claims", func(c *g.Context) error {
-		jobs.GearClaims()
+		gc := jobs.GearClaims{}
+		gc.Run()
 		return nil
 	})
 
 	g.Desc("set_metrics", "Set rarity metrics of all Gear in the database")
 	g.Add("set_metrics", func(c *g.Context) error {
-		jobs.GearMetrics()
+		gm := jobs.GearMetrics{}
+		gm.Run()
 		return nil
 	})
 })

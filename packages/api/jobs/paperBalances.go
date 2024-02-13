@@ -1,5 +1,5 @@
-// Updates PAPER balance for wallets we have stored
-// inside our database.
+// Updates PAPER balance for wallets that have had PAPER transferred to them
+// by using the BigQuery public dataset
 package jobs
 
 import (
@@ -25,10 +25,12 @@ import (
 
 var paperAddress = "0x7ae1d57b58fa6411f32948314badd83583ee0e8c"
 
+type SeedPaperWallets struct{}
+
 // Gets all wallet addresses who have ever transferred PAPER
 // using the BigQuery Ethereum dataset.
 // https://cloud.google.com/blog/products/data-analytics/ethereum-bigquery-public-dataset-smart-contract-analytics
-func SeedPaperWallets() error {
+func (spw SeedPaperWallets) Run() error {
 	db := dbprovider.Ent()
 
 	qStr := fmt.Sprintf(`
@@ -78,7 +80,9 @@ func SeedPaperWallets() error {
 }
 
 // Assumes Wallets are already in the database, otherwise it does nothing.
-func PaperBalances() {
+type PaperBalances struct{}
+
+func (pb PaperBalances) Run() {
 	ctx := context.Background()
 	db := dbprovider.Ent()
 	retryableHTTPClient := retryablehttp.NewClient()
@@ -112,8 +116,11 @@ func PaperBalances() {
 				log.Fatalf("Getting paper balance: %+v.", err)
 			}
 
-			db.Wallet.UpdateOneID(wallet.ID).SetPaper(schema.BigInt{Int: bal}).ExecX(ctx)
-
+			db.Wallet.
+				UpdateOneID(wallet.ID).
+				SetPaper(schema.BigInt{Int: bal}).
+				SetLastSetPaperBalanceAt(time.Now()).
+				ExecX(ctx)
 			wg.Done()
 		}(wallet)
 	}

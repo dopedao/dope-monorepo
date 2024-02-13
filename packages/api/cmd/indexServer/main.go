@@ -1,39 +1,34 @@
-// Runs the Ethereum Indexer webserver to be utilized
-// on Google Cloud Platform.
-//
-// THIS WILL NOT RUN ON YOUR LOCAL MACHINE UNLESS YOU HIT /_ah/start
-// ( It's a legacy Google Cloud Platform App Engine scaling control. )
-//
-// This is how the program is launched both on your local machine,
-// and when run remotely on GCP.
+// Runs the Ethereum Indexer webserver to be used when
+// deployed remotely.
 package main
 
 import (
 	"context"
 	"net/http"
-	"os"
 
 	"github.com/dopedao/dope-monorepo/packages/api/indexer"
-	"github.com/dopedao/dope-monorepo/packages/api/internal/dbprovider"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/envcfg"
 	"github.com/dopedao/dope-monorepo/packages/api/internal/logger"
-	"github.com/rs/zerolog"
 	"github.com/yfuruyama/crzerolog"
 )
 
+// Exposes a http server that runs the indexer.
+// This is used to sync the indexer with the Ethereum blockchain.
+//
+// Will start indexer automatically and allow for health check,
+// shutdown, restart, and status checks.
 func main() {
-	log := zerolog.New(os.Stderr)
-
+	logger.Init()
 	ctx := context.Background()
 
+	// Start the HTTP server (which will start the indexer)
 	srv, err := indexer.NewServer(
-		log.WithContext(ctx),
-		dbprovider.Conn(),
+		logger.Log.WithContext(ctx),
 		envcfg.Network)
 	logger.LogFatalOnErr(err, "Creating Indexer")
 
-	log.Info().Msg("Starting to listen on port: " + *envcfg.Listen)
-	middleware := crzerolog.InjectLogger(&log)
+	logger.Log.Info().Msg("Starting to listen on port: " + *envcfg.Listen)
+	middleware := crzerolog.InjectLogger(logger.Log)
 	server := &http.Server{Addr: ":" + *envcfg.Listen, Handler: middleware(srv)}
 
 	err = server.ListenAndServe()

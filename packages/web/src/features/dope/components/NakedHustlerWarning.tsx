@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import PanelContainer from 'components/PanelContainer';
 import ProfileCardHeader from 'features/profile/components/ProfileCardHeader';
 import PanelBody from 'components/PanelBody';
-
+import { Box } from '@chakra-ui/react';
 
 const NakedHustlerWarning = () => (
   <PanelContainer>
@@ -13,11 +13,11 @@ const NakedHustlerWarning = () => (
       flex: 2;
     `}
   >
-    <div
+    <Box
       css={css`color: #fff;`}
     >
       Hustlers with no GEAR are FREE TO MINT and should not be purchased for a premium on the aftermarket.
-    </div>
+    </Box>
   </PanelBody>
 </PanelContainer>
 );

@@ -1,11 +1,36 @@
 package indexer
 
 import (
+	"sync"
 	"time"
 
 	"github.com/dopedao/dope-monorepo/packages/api/indexer/processor"
+	"github.com/dopedao/dope-monorepo/packages/api/internal/ent"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/withtally/synceth/engine"
 )
+
+type Contract struct {
+	sync.Mutex
+	Name       string
+	Address    common.Address
+	StartBlock uint64
+	Processor  processor.Processor
+}
+
+type EthConfig struct {
+	RPC       string
+	Interval  time.Duration
+	Contracts []Contract
+}
+
+type Ethereum struct {
+	latest    uint64
+	ent       *ent.Client
+	eth       engine.Client
+	ticker    *time.Ticker
+	contracts []*Contract
+}
 
 type ConfigCollection []interface{}
 
@@ -14,7 +39,7 @@ var Config = map[string]ConfigCollection{
 		// Ethereum
 		EthConfig{
 			RPC:      "https://eth-mainnet.alchemyapi.io/v2/Mq8Cx8urUvW9FNzv6NW87MYJQ9CnExlj",
-			Interval: time.Second * 5,
+			Interval: time.Second * 12, // time of blocks on main
 			Contracts: []Contract{
 				{
 					Name:       "DOPE",
@@ -23,26 +48,26 @@ var Config = map[string]ConfigCollection{
 					Processor:  new(processor.DopeProcessor),
 				},
 				{
-					Name:       "PAPER",
-					Address:    common.HexToAddress("0x7ae1d57b58fa6411f32948314badd83583ee0e8c"),
-					StartBlock: 13162150,
-					Processor:  new(processor.PaperProcessor),
-				},
-				{
 					Name:       "INITIATOR",
 					Address:    common.HexToAddress("0x7aa8e897d712CFB9C7cb6B37634A1C4d21181c8B"),
 					StartBlock: 13650250,
 					Processor:  new(processor.InitiatorProcessor),
+				},
+				{
+					Name:       "PAPER",
+					Address:    common.HexToAddress("0x7ae1d57b58fa6411f32948314badd83583ee0e8c"),
+					StartBlock: 13162150,
+					Processor:  new(processor.PaperProcessor),
 				},
 			},
 		},
 		// Optimism
 		EthConfig{
 			RPC:      "https://opt-mainnet.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG",
-			Interval: time.Second * 5,
+			Interval: time.Second * 2, // time of blocks on op
 			Contracts: []Contract{
 				{
-					Name:       "SWAP MEET",
+					Name:       "GEAR",
 					Address:    common.HexToAddress("0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110"),
 					StartBlock: 278375,
 					Processor:  new(processor.SwapMeetProcessor),
@@ -60,7 +85,7 @@ var Config = map[string]ConfigCollection{
 		// Ethereum
 		EthConfig{
 			RPC:      "https://eth-kovan.alchemyapi.io/v2/imTJSp6gKyrAIFPFrQRXy1lD087y3FN-",
-			Interval: time.Second * 5,
+			Interval: time.Second * 12, // time of blocks on main
 			Contracts: []Contract{
 				// DOPE
 				{
@@ -85,7 +110,7 @@ var Config = map[string]ConfigCollection{
 		// Optimism
 		EthConfig{
 			RPC:      "https://opt-kovan.g.alchemy.com/v2/m-suB_sgPaMFttpSJMU9QWo60c1yxnlG",
-			Interval: time.Second * 5,
+			Interval: time.Second * 2, // time of blocks on op
 			Contracts: []Contract{
 				// SwapMeet
 				{

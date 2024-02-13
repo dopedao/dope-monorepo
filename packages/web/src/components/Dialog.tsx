@@ -3,6 +3,7 @@ import { ReactNode, useCallback, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { media } from 'ui/styles/mixins';
+import { Box } from '@chakra-ui/react';
 
 export interface DialogProps {
   title?: string;
@@ -59,7 +60,7 @@ const Dialog = ({
 
   return (
     <DialogContainer onClick={onClick}>
-      <div
+      <Box
         ref={content}
         css={css`
           background: #dededd;
@@ -94,11 +95,11 @@ const Dialog = ({
             `}
           />
         )}
-        <div>
+        <Box>
           {!!title && <h3>{title}</h3>}
           {children}
-        </div>
-      </div>
+        </Box>
+      </Box>
     </DialogContainer>
   );
 };
